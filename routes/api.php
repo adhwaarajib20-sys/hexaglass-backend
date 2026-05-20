@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\SupirController;
 use App\Http\Controllers\Api\LaporanPengisianController;
 use App\Http\Controllers\Api\InformasiPerusahaanController;
+use App\Http\Controllers\Api\ExportController;
+
 
 // Public routes (tanpa auth)
 Route::prefix('auth')->group(function () {
@@ -84,4 +86,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('perusahaan/{id}',    [InformasiPerusahaanController::class, 'show']);
     Route::put('perusahaan/{id}',    [InformasiPerusahaanController::class, 'update']);
     Route::delete('perusahaan/{id}', [InformasiPerusahaanController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    // ... route yang sudah ada ...
+
+    // Upload foto laporan
+    Route::post('laporan/{id}/foto',           [LaporanController::class, 'uploadFoto']);
+    Route::delete('laporan/{id}/foto/{fotoId}', [LaporanController::class, 'hapusFoto']);
+
+    // Export Excel (Admin only)
+    Route::get('export/laporan',  [ExportController::class, 'exportLaporan']);
+    Route::get('export/antrean',  [ExportController::class, 'exportAntrean']);
 });
