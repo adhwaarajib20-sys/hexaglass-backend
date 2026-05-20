@@ -12,7 +12,7 @@
                 </div>
                 <span class="text-xs text-gray-500">Hari ini</span>
             </div>
-            <p class="text-3xl font-bold text-gray-800">{{ $stats['total_antrean'] }}</p>
+                <p class="mt-2 text-2xl font-bold text-gray-800">{{ $stats['total_antrean'] }}</p>
             <p class="text-sm text-gray-500 mt-1">Total Antrean</p>
         </div>
 
@@ -25,7 +25,7 @@
                 </div>
                 <span class="text-xs text-yellow-500 font-medium">● Menunggu</span>
             </div>
-            <p class="text-3xl font-bold text-gray-800">{{ $stats['menunggu'] }}</p>
+                <p class="mt-2 text-2xl font-bold text-gray-800">{{ $stats['menunggu'] }}</p>
             <p class="text-sm text-gray-500 mt-1">Kendaraan Menunggu</p>
         </div>
 
@@ -38,7 +38,7 @@
                 </div>
                 <span class="text-xs text-green-500 font-medium">● Selesai</span>
             </div>
-            <p class="text-3xl font-bold text-gray-800">{{ $stats['selesai'] }}</p>
+                <p class="mt-2 text-2xl font-bold text-gray-800">{{ $stats['selesai'] }}</p>
             <p class="text-sm text-gray-500 mt-1">Kendaraan Selesai</p>
         </div>
 
@@ -51,7 +51,7 @@
                 </div>
                 <span class="text-xs text-gray-500">Liter</span>
             </div>
-            <p class="text-3xl font-bold text-gray-800">{{ number_format($stats['total_liter'], 0, ',', '.') }}</p>
+                <p class="mt-2 text-2xl font-bold text-gray-800">{{ number_format($stats['total_liter'], 0, ',', '.') }}</p>
             <p class="text-sm text-gray-500 mt-1">Total Gas Tersalurkan</p>
         </div>
 
@@ -116,6 +116,7 @@
                 </div>
             </div>
             <div id="chartHarian"></div>
+            <div id="grafik-data" data-json='@json($grafikHarian)' class="hidden"></div>
         </div>
 
         {{-- Laporan Terbaru --}}
@@ -237,8 +238,9 @@
 
     {{-- Script Grafik --}}
     <script>
-        // Data dari PHP
-        const grafikData = @json($grafikHarian);
+        // Data dari PHP (dibaca dari elemen data untuk menghindari parsing blade di dalam skrip)
+        const grafikEl = document.getElementById('grafik-data');
+        const grafikData = grafikEl ? JSON.parse(grafikEl.getAttribute('data-json')) : [];
 
         const options = {
             series: [

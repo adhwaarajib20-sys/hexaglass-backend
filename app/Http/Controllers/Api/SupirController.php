@@ -120,7 +120,7 @@ class SupirController extends Controller
     // Cek status antrean (tanpa auth)
     public function statusAntrean($kode)
     {
-        $antrean = Antrean::with(['kendaraan', 'operator'])
+        $antrean = Antrean::with(['kendaraan', 'laporanPengisian.operator'])
             ->whereRaw('UPPER(nomor_antrean) = UPPER(?)', [trim($kode)])
             ->latest()
             ->first();
@@ -143,6 +143,7 @@ class SupirController extends Controller
                 'kendaraan'       => $antrean->kendaraan,
                 'waktu_daftar'    => $antrean->waktu_daftar,
                 'waktu_dipanggil' => $antrean->waktu_dipanggil,
+                'laporan_pengisian' => $antrean->laporanPengisian,
             ],
         ]);
     }

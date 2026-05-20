@@ -8,14 +8,25 @@
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui']
+                    },
                     colors: {
-                        primary:   { DEFAULT: '#1a7a2e', dark: '#145c22', light: '#e8f5ec' },
-                        accent:    { DEFAULT: '#e8650a', light: '#fff3ec' },
-                        sidebar:   { DEFAULT: '#0f2318', light: '#172d21' },
+                        primary:   { DEFAULT: '#0b3d91', dark: '#082b6a', light: '#eaf2ff' },
+                        accent:    { DEFAULT: '#17a34a', light: '#eaf8ee' },
+                        accent2:   { DEFAULT: '#e8650a', light: '#fff4e8' },
+                        sidebar:   { DEFAULT: '#071632', light: '#0b274a' },
+                        surface:   { DEFAULT: '#ffffff', muted: '#f6f7fb' }
+                    },
+                    boxShadow: {
+                        'soft': '0 6px 18px rgba(10, 25, 47, 0.06)'
                     }
                 }
             }
@@ -35,18 +46,63 @@
 
     <style>
         [x-cloak] { display: none !important; }
-        .sidebar-link { @apply flex items-center gap-3 px-4 py-3 rounded-xl text-gray-200 hover:bg-primary/10 hover:text-white transition-all duration-200 text-sm font-medium; }
-        .sidebar-link svg { @apply text-gray-400; }
-        .sidebar-link.active { @apply bg-primary text-white shadow-sm ring-1 ring-white/10; }
-        .sidebar-link.active svg { @apply text-white; }
-        .sidebar-link:hover svg { @apply text-white; }
-        .sidebar-card { @apply bg-sidebar-light rounded-2xl p-4 border border-white/10; }
-        .sidebar-section { @apply text-gray-400 text-xs font-semibold uppercase tracking-wider px-3 py-2; }
-        .stat-card { @apply bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow; }
-        .btn-primary { @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium; }
-        .btn-accent { @apply bg-accent text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity text-sm font-medium; }
-        .btn-outline { @apply border border-primary text-primary px-4 py-2 rounded-lg hover:bg-primary-light transition-colors text-sm font-medium; }
-        .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+        :root {
+            --color-primary: #0b3d91;
+            --color-primary-dark: #082b6a;
+            --color-surface: #ffffff;
+            --color-sidebar: #071632;
+            --color-accent: #17a34a;
+            --shadow-soft: 0 6px 18px rgba(10,25,47,0.06);
+        }
+
+        html, body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background-color: #f6f7fb; }
+
+        /* Sidebar */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: rgba(255,255,255,0.95);
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.18s ease;
+        }
+        .sidebar-link svg { width: 1.25rem; height: 1.25rem; color: rgba(255,255,255,0.78); flex-shrink:0; }
+        .sidebar-link:hover { background: rgba(11,61,145,0.08); color: #fff; }
+        .sidebar-link:hover svg { color: rgba(255,255,255,0.95); }
+        .sidebar-link.active {
+            background: linear-gradient(90deg, var(--color-primary), rgba(11,61,145,0.75));
+            color: #fff;
+            box-shadow: var(--shadow-soft);
+            border-left: 4px solid var(--color-accent);
+        }
+        .sidebar-section { color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:0.5rem 0.75rem; }
+        .sidebar-card { background: rgba(11,38,72,0.06); border-radius: 0.75rem; padding: 1rem; border: 1px solid rgba(255,255,255,0.04); }
+
+        /* Topbar */
+        header { background: var(--color-surface); border-bottom: 1px solid #eef2f7; box-shadow: 0 1px 4px rgba(16,24,40,0.03); }
+
+        /* Cards & Surface */
+        .stat-card { background: var(--color-surface); border-radius: 1rem; padding: 1.25rem; box-shadow: var(--shadow-soft); border: 1px solid #f0f2f6; transition: box-shadow .18s ease; }
+        .stat-card:hover { box-shadow: 0 10px 30px rgba(10,25,47,0.06); }
+        .card { background: var(--color-surface); border-radius: 1rem; padding: 1.25rem; box-shadow: var(--shadow-soft); border: 1px solid #f0f2f6; }
+
+        /* Buttons */
+        .btn-primary { background: var(--color-primary); color: #fff; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight:600; font-size:0.9rem; border: none; display:inline-flex; align-items:center; gap:0.5rem; }
+        .btn-primary:hover { background: var(--color-primary-dark); }
+        .btn-accent { background: var(--color-accent); color:#fff; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:600; }
+        .btn-outline { border:1px solid var(--color-primary); color:var(--color-primary); padding:0.5rem 1rem; border-radius:0.5rem; }
+
+        /* Badges */
+        .badge { display:inline-flex; align-items:center; padding:0.25rem 0.6rem; border-radius:9999px; font-size:0.75rem; font-weight:600; background:#f3f4f6; color:#374151; }
+
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            aside { width: 4rem !important; }
+            .sidebar-link span { display: none !important; }
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans" x-data="{ sidebarOpen: true }">
