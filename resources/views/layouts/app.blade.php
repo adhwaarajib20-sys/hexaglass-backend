@@ -104,10 +104,187 @@
         /* Badges */
         .badge { display:inline-flex; align-items:center; padding:0.25rem 0.6rem; border-radius:9999px; font-size:0.75rem; font-weight:600; background:#f3f4f6; color:#374151; }
 
+        /* ============== DataTables Styling ============== */
+        
+        /* Wrapper & Container */
+        .dataTables_wrapper {
+            padding: 0;
+        }
+        
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .dataTables_wrapper .dataTables_length {
+            flex: 0 0 auto;
+        }
+        
+        .dataTables_wrapper .dataTables_filter {
+            flex: 1;
+            justify-content: flex-end;
+        }
+        
+        /* Length Menu Styling */
+        .dataTables_length label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+            white-space: nowrap;
+        }
+        
+        .dataTables_length label select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            background-color: #ffffff;
+            color: #1f2937;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 70px;
+        }
+        
+        .dataTables_length label select:hover {
+            border-color: var(--color-primary);
+            background-color: rgba(26,122,46,0.02);
+        }
+        
+        .dataTables_length label select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            ring: 2px;
+            box-shadow: 0 0 0 3px rgba(26,122,46,0.1);
+        }
+        
+        /* Search Input Styling */
+        .dataTables_filter label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        
+        .dataTables_filter label input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            min-width: 200px;
+            transition: all 0.2s;
+        }
+        
+        .dataTables_filter label input:hover {
+            border-color: var(--color-primary);
+        }
+        
+        .dataTables_filter label input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(26,122,46,0.1);
+        }
+        
+        /* Info Text Styling */
+        .dataTables_info {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            background-color: #f9fafb;
+            border-top: 1px solid #f3f4f6;
+        }
+        
+        /* Pagination Styling */
+        .dataTables_paginate {
+            padding: 1rem;
+            text-align: right;
+            background-color: #f9fafb;
+            border-top: 1px solid #f3f4f6;
+        }
+        
+        .dataTables_paginate .paginate_button {
+            display: inline-block;
+            padding: 0.5rem 0.75rem;
+            margin: 0 0.25rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: #ffffff;
+            color: var(--color-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .dataTables_paginate .paginate_button:hover {
+            background-color: rgba(26,122,46,0.08);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+        
+        .dataTables_paginate .paginate_button.current {
+            background-color: var(--color-primary);
+            color: #ffffff;
+            border-color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            color: #9ca3af;
+        }
+        
+        .dataTables_paginate .paginate_button.disabled:hover {
+            background-color: #ffffff;
+            border-color: #d1d5db;
+        }
+        
+        .dataTables_paginate .paginate_button.previous::before,
+        .dataTables_paginate .paginate_button.next::after {
+            content: '';
+        }
+        
+        /* Empty State Styling */
+        .dataTables_empty {
+            text-align: center;
+            padding: 2rem 1rem !important;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+        
+        .dataTables_wrapper table tbody tr.dtrg-group td {
+            background-color: #f9fafb;
+            padding: 0.75rem 1rem;
+        }
+
         /* Responsive tweaks */
         @media (max-width: 768px) {
             aside { width: 4rem !important; }
             .sidebar-link span { display: none !important; }
+            
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .dataTables_filter label input {
+                min-width: 100%;
+            }
+            
+            .dataTables_paginate {
+                text-align: left;
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -350,5 +527,48 @@ class="sidebar-link {{ request()->routeIs('operator.perusahaan') ? 'active' : ''
         </div>
     </div>
 
+    {{-- Global DataTables Helper Script --}}
+    <script>
+        /**
+         * Initialize DataTable dengan konfigurasi default yang konsisten
+         * Gunakan di halaman yang memiliki tabel dengan ID tertentu
+         * 
+         * Contoh:
+         * $(document).ready(function() {
+         *     initDataTable('#tabelAntrean');
+         *     // atau dengan options custom:
+         *     initDataTable('#tabelAntrean', { pageLength: 25 });
+         * });
+         */
+        function initDataTable(tableId, customOptions = {}) {
+            const defaultOptions = {
+                pageLength: 10,
+                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Semua"]],
+                ordering: false,
+                searching: true,
+                language: {
+                    search: 'Cari:',
+                    searchPlaceholder: 'Ketik untuk mencari...',
+                    lengthMenu: 'Tampilkan _MENU_ data',
+                    info: 'Menampilkan _START_ hingga _END_ dari _TOTAL_ data',
+                    infoEmpty: 'Tidak ada data',
+                    infoFiltered: '(disaring dari _MAX_ total data)',
+                    paginate: {
+                        first: 'Pertama',
+                        last: 'Terakhir',
+                        next: 'Berikutnya',
+                        previous: 'Sebelumnya'
+                    }
+                },
+                dom: '<"dataTables_top"lf>t<"dataTables_bottom"ip>',
+                columnDefs: [
+                    { orderable: false, targets: '_all' }
+                ]
+            };
+
+            const options = { ...defaultOptions, ...customOptions };
+            return $(tableId).DataTable(options);
+        }
+    </script>
 </body>
 </html>

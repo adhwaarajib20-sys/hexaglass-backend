@@ -132,11 +132,16 @@
             const hasEmptyMessage = $('#tabelAntrean tbody tr').find('td[colspan]').length > 0;
             if (!hasEmptyMessage) {
                 $('#tabelAntrean').DataTable({
-                    pageLength: 20,
+                    pageLength: -1,
+                    lengthMenu: false,
                     searching: true,
                     paging: false,
                     info: false,
-                    language: { search: 'Cari dalam tabel:' }
+                    ordering: false,
+                    language: {
+                        search: 'Cari:',
+                        searchPlaceholder: 'Ketik untuk mencari...'
+                    }
                 });
             }
         });

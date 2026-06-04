@@ -293,16 +293,31 @@
 
         new ApexCharts(document.querySelector('#chartHarian'), options).render();
 
-        // DataTables
+        // DataTables Configuration
         $(document).ready(function() {
             $('#tabelAntrean').DataTable({
                 pageLength: 10,
+                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Semua"]],
+                ordering: false,
+                searching: true,
                 language: {
                     search: 'Cari:',
+                    searchPlaceholder: 'Ketik untuk mencari...',
                     lengthMenu: 'Tampilkan _MENU_ data',
-                    info: 'Menampilkan _START_ - _END_ dari _TOTAL_ data',
-                    paginate: { next: 'Next', previous: 'Prev' }
-                }
+                    info: 'Menampilkan _START_ hingga _END_ dari _TOTAL_ data',
+                    infoEmpty: 'Tidak ada data',
+                    infoFiltered: '(disaring dari _MAX_ total data)',
+                    paginate: {
+                        first: 'Pertama',
+                        last: 'Terakhir',
+                        next: 'Berikutnya',
+                        previous: 'Sebelumnya'
+                    }
+                },
+                dom: '<"dataTables_top"lf>t<"dataTables_bottom"ip>',
+                columnDefs: [
+                    { orderable: false, targets: '_all' }
+                ]
             });
         });
     </script>
