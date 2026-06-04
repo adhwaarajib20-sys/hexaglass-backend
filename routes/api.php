@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\SupirController;
 use App\Http\Controllers\Api\LaporanPengisianController;
 use App\Http\Controllers\Api\InformasiPerusahaanController;
 use App\Http\Controllers\Api\ExportController;
+use App\Http\Controllers\Api\SatpamController;
 
 
 // Public routes (tanpa auth)
@@ -24,6 +25,8 @@ Route::prefix('supir')->group(function () {
     Route::post('validasi-barcode', [SupirController::class, 'validasiBarcode']);
     Route::post('daftar-antrean',   [SupirController::class, 'daftarAntrean']);
     Route::get('status-antrean/{kode}', [SupirController::class, 'statusAntrean']);
+    Route::get('daftar-perusahaan', [SupirController::class, 'daftarPerusahaan']); // NEW
+    Route::get('jenis-kendaraan',   [SupirController::class, 'jenisKendaraan']);     // NEW
 });
 
 // ✅ Public Laporan - Supir bisa membuat laporan tanpa login
@@ -42,6 +45,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Validasi Satpam
     Route::get('satpam/antrean-pending',        [AntreanController::class, 'antreanPending']);
     Route::post('satpam/validasi/{id}',         [AntreanController::class, 'validasiSatpam']);
+    Route::get('satpam/laporan-ketidaksesuaian',    [SatpamController::class, 'getLaporanKetidaksesuaian']);
+    Route::post('satpam/laporan-ketidaksesuaian',   [SatpamController::class, 'createLaporanKetidaksesuaian']);
+    Route::get('satpam/laporan-ketidaksesuaian/{id}', [SatpamController::class, 'getDetailLaporanKetidaksesuaian']);
+    Route::delete('satpam/laporan-ketidaksesuaian/{id}', [SatpamController::class, 'deleteLaporanKetidaksesuaian']);
 
     // Antrean
     Route::get('antrean',                    [AntreanController::class, 'index']);
@@ -71,9 +78,10 @@ Route::middleware('auth:sanctum')->group(function () {
   // ... route yang sudah ada ...
 
     // Antrean - tambahan
-    Route::put('antrean/{id}/estimasi',           [AntreanController::class, 'updateEstimasi']);
-    Route::put('antrean/{id}/prioritas',          [AntreanController::class, 'updatePrioritas']);
-    Route::post('antrean/{id}/selesai-pengisian', [AntreanController::class, 'selesaikanPengisian']);
+    Route::put('antrean/{id}/estimasi',                    [AntreanController::class, 'updateEstimasi']);
+    Route::post('antrean/{id}/estimasi-pengisian-operator', [AntreanController::class, 'setEstimasiPengisianOperator']);
+    Route::put('antrean/{id}/prioritas',                   [AntreanController::class, 'updatePrioritas']);
+    Route::post('antrean/{id}/selesai-pengisian',          [AntreanController::class, 'selesaikanPengisian']);
 
     // Laporan Pengisian
     Route::get('laporan-pengisian',           [LaporanPengisianController::class, 'index']);

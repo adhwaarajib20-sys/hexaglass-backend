@@ -40,9 +40,13 @@ class AntreanExport implements
         ]);
 
         if ($this->dari_tanggal && $this->sampai_tanggal) {
-            $query->whereBetween('tanggal', [
-                $this->dari_tanggal,
-                $this->sampai_tanggal,
+            // Convert Carbon objects to date strings untuk whereBetween
+            $dari = is_string($this->dari_tanggal) ? $this->dari_tanggal : $this->dari_tanggal->format('Y-m-d');
+            $sampai = is_string($this->sampai_tanggal) ? $this->sampai_tanggal : $this->sampai_tanggal->format('Y-m-d');
+            
+            $query->whereBetween('waktu_daftar', [
+                $dari . ' 00:00:00',
+                $sampai . ' 23:59:59',
             ]);
         }
 

@@ -63,9 +63,21 @@ class LaporanController extends Controller
 
     public function export(Request $request)
     {
-        $filename = 'laporan-ketidaksesuaian-' . now()->format('Y-m-d') . '.xlsx';
+        $dari = $request->dari_tanggal;
+        $sampai = $request->sampai_tanggal;
+
+        // Validasi harus ada kedua tanggal
+        if (!$dari || !$sampai) {
+            return back()->with('error', 'Pilih tanggal mulai dan tanggal akhir terlebih dahulu');
+        }
+
+        if ($dari > $sampai) {
+            return back()->with('error', 'Tanggal mulai tidak boleh lebih besar dari tanggal akhir');
+        }
+
+        $filename = 'laporan-ketidaksesuaian-' . $dari . '-sd-' . $sampai . '.xlsx';
         return Excel::download(
-            new LaporanExport($request->dari_tanggal, $request->sampai_tanggal),
+            new LaporanExport($dari, $sampai),
             $filename
         );
     }

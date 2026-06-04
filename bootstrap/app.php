@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Register CORS middleware
+        $middleware->append(\App\Http\Middleware\HandleCors::class);
+
         // Register middleware aliases for Laravel 13
         $middleware->alias([
             'auth' => \App\Http\Middleware\Authenticate::class,

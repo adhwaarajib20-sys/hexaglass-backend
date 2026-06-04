@@ -11,6 +11,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script>
         tailwind.config = {
             theme: {
@@ -19,10 +23,10 @@
                         sans: ['Inter', 'ui-sans-serif', 'system-ui']
                     },
                     colors: {
-                        primary:   { DEFAULT: '#0b3d91', dark: '#082b6a', light: '#eaf2ff' },
+                        primary:   { DEFAULT: '#1a7a2e', dark: '#145c22', light: '#e8f5ec' },
                         accent:    { DEFAULT: '#17a34a', light: '#eaf8ee' },
                         accent2:   { DEFAULT: '#e8650a', light: '#fff4e8' },
-                        sidebar:   { DEFAULT: '#071632', light: '#0b274a' },
+                        sidebar:   { DEFAULT: '#0f2318', light: '#172d21' },
                         surface:   { DEFAULT: '#ffffff', muted: '#f6f7fb' }
                     },
                     boxShadow: {
@@ -47,10 +51,10 @@
     <style>
         [x-cloak] { display: none !important; }
         :root {
-            --color-primary: #0b3d91;
-            --color-primary-dark: #082b6a;
+            --color-primary: #1a7a2e;
+            --color-primary-dark: #145c22;
             --color-surface: #ffffff;
-            --color-sidebar: #071632;
+            --color-sidebar: #0f2318;
             --color-accent: #17a34a;
             --shadow-soft: 0 6px 18px rgba(10,25,47,0.06);
         }
@@ -70,10 +74,10 @@
             transition: all 0.18s ease;
         }
         .sidebar-link svg { width: 1.25rem; height: 1.25rem; color: rgba(255,255,255,0.78); flex-shrink:0; }
-        .sidebar-link:hover { background: rgba(11,61,145,0.08); color: #fff; }
+        .sidebar-link:hover { background: rgba(26,122,46,0.08); color: #fff; }
         .sidebar-link:hover svg { color: rgba(255,255,255,0.95); }
         .sidebar-link.active {
-            background: linear-gradient(90deg, var(--color-primary), rgba(11,61,145,0.75));
+            background: linear-gradient(90deg, var(--color-primary), rgba(26,122,46,0.75));
             color: #fff;
             box-shadow: var(--shadow-soft);
             border-left: 4px solid var(--color-accent);
@@ -92,6 +96,8 @@
         /* Buttons */
         .btn-primary { background: var(--color-primary); color: #fff; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight:600; font-size:0.9rem; border: none; display:inline-flex; align-items:center; gap:0.5rem; }
         .btn-primary:hover { background: var(--color-primary-dark); }
+        .btn-secondary { background: rgba(26,122,46,0.08); color: var(--color-primary); padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight:600; border: 1px solid rgba(26,122,46,0.24); display:inline-flex; align-items:center; gap:0.5rem; }
+        .btn-secondary:hover { background: rgba(26,122,46,0.12); }
         .btn-accent { background: var(--color-accent); color:#fff; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:600; }
         .btn-outline { border:1px solid var(--color-primary); color:var(--color-primary); padding:0.5rem 1rem; border-radius:0.5rem; }
 
@@ -115,8 +121,8 @@
 
             {{-- Logo --}}
             <div class="flex items-center gap-3 p-5 border-b border-white/10">
-                <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span class="text-white font-bold text-sm">MQ</span>
+                <div class="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0">
+                    <img src="{{ asset('img/logo.png') }}" alt="MigasQueue Logo" class="h-9 w-9 object-contain" />
                 </div>
                 <div x-show="sidebarOpen" x-cloak>
                     <p class="text-white font-bold text-sm leading-none">MigasQueue</p>
@@ -179,6 +185,14 @@
                     <span x-show="sidebarOpen">Manajemen User</span>
                 </a>
 
+                <a href="{{ route('profile.edit') }}"
+                   class="sidebar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.48 0 4.8.675 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0zm7 8a8 8 0 10-16 0 8 8 0 0016 0z"/>
+                    </svg>
+                    <span x-show="sidebarOpen">Profil Saya</span>
+                </a>
+
                 @elseif(auth()->user()->hasRole('operator'))
                 {{-- OPERATOR MENU --}}
                 <p x-show="sidebarOpen" class="sidebar-section">Operator</p>
@@ -204,7 +218,7 @@
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
-                    <span x-show="sidebarOpen">Input Pengisian</span>
+                    <span x-show="sidebarOpen">Data Pengisian</span>
                 </a>
 
                 <a href="{{ route('operator.laporan.index') }}"
@@ -213,6 +227,30 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
                     <span x-show="sidebarOpen">Laporan</span>
+                </a>
+
+                <a href="{{ route('operator.perusahaan') }}"
+class="sidebar-link {{ request()->routeIs('operator.perusahaan') ? 'active' : '' }}">
+    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+    </svg>
+    <span x-show="sidebarOpen">Info Perusahaan</span>
+    {{-- Badge jumlah prioritas --}}
+    @php $jumlahPrioritas = \App\Models\InformasiPerusahaan::where('is_prioritas', true)->where('status', 'aktif')->count(); @endphp
+    @if($jumlahPrioritas > 0)
+    <span x-show="sidebarOpen"
+        class="ml-auto bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+        {{ $jumlahPrioritas }}
+    </span>
+    @endif
+</a>
+
+                <a href="{{ route('profile.edit') }}"
+                   class="sidebar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.48 0 4.8.675 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0zm7 8a8 8 0 10-16 0 8 8 0 0016 0z"/>
+                    </svg>
+                    <span x-show="sidebarOpen">Profil Saya</span>
                 </a>
                 @endif
 
@@ -248,36 +286,39 @@
         <div class="flex-1 flex flex-col overflow-hidden">
 
             {{-- TOPBAR --}}
-            <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <button @click="sidebarOpen = !sidebarOpen"
-                        class="text-gray-500 hover:text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
-                    <div>
-                        <h1 class="text-lg font-bold text-gray-800">{{ $title ?? 'Dashboard' }}</h1>
-                        <p class="text-xs text-gray-500">{{ now()->translatedFormat('l, d F Y') }}</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    {{-- Notifikasi --}}
-                    <button class="relative p-2 text-gray-500 hover:text-primary hover:bg-primary-light rounded-lg transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
-                    </button>
-                    {{-- Profile --}}
-                    <div class="flex items-center gap-2 pl-3 border-l border-gray-200">
-                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                            <span class="text-white text-sm font-bold">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                            </span>
+            <header class="bg-white border-b border-gray-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-4 min-w-0">
+                        <button @click="sidebarOpen = !sidebarOpen"
+                            class="text-gray-500 hover:text-gray-700 flex-shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+                        <div class="min-w-0">
+                            <h1 class="text-base sm:text-lg font-bold text-gray-800 truncate">{{ $title ?? 'Dashboard' }}</h1>
+                            <p class="text-xs text-gray-500 truncate">{{ now()->translatedFormat('l, d F Y') }}</p>
                         </div>
-                        <div class="hidden md:block">
-                            <p class="text-sm font-medium text-gray-700">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-gray-500 capitalize">{{ auth()->user()->role }}</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        {{-- Notifikasi --}}
+                        <button aria-label="Notifikasi" class="relative p-2 text-gray-500 hover:text-primary hover:bg-primary-light rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                        </button>
+                        {{-- Profile --}}
+                        <div class="flex items-center gap-2 pl-3 border-l border-gray-200">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white text-sm font-bold">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                </span>
+                            </div>
+                            <div class="hidden md:block max-w-[160px]">
+                                <p class="text-sm font-medium text-gray-700 truncate">{{ auth()->user()->name }}</p>
+                                <p class="text-xs text-gray-500 capitalize truncate">{{ auth()->user()->role }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -35,9 +35,13 @@ class LaporanExport implements
         $query = Laporan::with(['pelapor', 'verifikator', 'foto']);
 
         if ($this->dari_tanggal && $this->sampai_tanggal) {
+            // Convert Carbon objects to date strings untuk whereBetween
+            $dari = is_string($this->dari_tanggal) ? $this->dari_tanggal : $this->dari_tanggal->format('Y-m-d');
+            $sampai = is_string($this->sampai_tanggal) ? $this->sampai_tanggal : $this->sampai_tanggal->format('Y-m-d');
+            
             $query->whereBetween('tanggal_kejadian', [
-                $this->dari_tanggal,
-                $this->sampai_tanggal,
+                $dari,
+                $sampai,
             ]);
         }
 

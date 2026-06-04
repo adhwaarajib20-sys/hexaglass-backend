@@ -21,12 +21,12 @@
                             @php
                                 $icons = ['keselamatan'=>'⛑️','lingkungan'=>'🌿','kualitas'=>'🎯','prosedur'=>'📋','lainnya'=>'📌'];
                             @endphp
-                            {{ $icons[$laporan->klasifikasi] ?? '📌' }}
+                            {!! $icons[$laporan->klasifikasi] ?? '<i class="fas fa-thumbtack"></i>' !!}
                             {{ ucfirst($laporan->klasifikasi) }}
                         </h2>
                         <p class="text-sm text-gray-500 mt-1">
-                            📅 {{ \Carbon\Carbon::parse($laporan->tanggal_kejadian)->format('d F Y') }}
-                            🕐 {{ $laporan->waktu_kejadian }}
+                            <i class="fas fa-calendar"></i> {{ \Carbon\Carbon::parse($laporan->tanggal_kejadian)->format('d F Y') }}
+                            <i class="fas fa-clock"></i> {{ $laporan->waktu_kejadian }}
                         </p>
                     </div>
                     @switch($laporan->status)
@@ -47,7 +47,7 @@
                     </div>
                     <div class="col-span-2">
                         <p class="text-xs text-gray-500 mb-1">Lokasi Kejadian</p>
-                        <p class="font-medium text-gray-800">📍 {{ $laporan->lokasi }}</p>
+                        <p class="font-medium text-gray-800"><i class="fas fa-map-pin"></i> {{ $laporan->lokasi }}</p>
                     </div>
                 </div>
 
@@ -71,7 +71,7 @@
             {{-- Foto Bukti --}}
             @if($laporan->foto->count() > 0)
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-4">📷 Foto Bukti ({{ $laporan->foto->count() }})</h3>
+                <h3 class="font-bold text-gray-800 mb-4"><i class="fas fa-image"></i> Foto Bukti ({{ $laporan->foto->count() }})</h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                     @foreach($laporan->foto as $foto)
                     <div class="group relative aspect-square rounded-xl overflow-hidden bg-gray-100 cursor-pointer"
@@ -80,7 +80,7 @@
                              alt="Foto bukti"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                            <span class="text-white opacity-0 group-hover:opacity-100 text-2xl">🔍</span>
+                            <span class="text-white opacity-0 group-hover:opacity-100 text-2xl"><i class="fas fa-search"></i></span>
                         </div>
                         @if($foto->keterangan_foto)
                         <div class="absolute bottom-0 left-0 right-0 bg-black/50 p-2">
@@ -101,7 +101,7 @@
             {{-- Verifikasi --}}
             @if($laporan->status === 'terkirim')
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-4">⚡ Tindakan</h3>
+                <h3 class="font-bold text-gray-800 mb-4"><i class="fas fa-bolt"></i> Tindakan</h3>
 
                 {{-- Verifikasi --}}
                 <form action="{{ route('admin.laporan.verifikasi', $laporan->id) }}" method="POST" class="mb-3">
@@ -115,7 +115,7 @@
                     </div>
                     <button type="submit"
                         class="w-full bg-green-600 text-white py-2.5 rounded-xl font-medium text-sm hover:bg-green-700 transition-colors">
-                        ✅ Verifikasi Laporan
+                        <i class="fas fa-check-circle"></i> Verifikasi Laporan
                     </button>
                 </form>
 
@@ -131,7 +131,7 @@
                     </div>
                     <button type="submit"
                         class="w-full bg-red-500 text-white py-2.5 rounded-xl font-medium text-sm hover:bg-red-600 transition-colors">
-                        ❌ Tolak Laporan
+                        <i class="fas fa-circle-xmark"></i> Tolak Laporan
                     </button>
                 </form>
             </div>
@@ -139,7 +139,7 @@
 
             {{-- Info Pelapor --}}
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-4">👤 Info Pelapor</h3>
+                <h3 class="font-bold text-gray-800 mb-4"><i class="fas fa-user"></i> Info Pelapor</h3>
                 <div class="space-y-3">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
@@ -151,8 +151,8 @@
                         </div>
                     </div>
                     <div class="text-xs text-gray-500">
-                        <p>📧 {{ $laporan->pelapor?->email ?? '-' }}</p>
-                        <p class="mt-1">📱 {{ $laporan->pelapor?->no_hp ?? '-' }}</p>
+                        <p><i class="fas fa-envelope"></i> {{ $laporan->pelapor?->email ?? '-' }}</p>
+                        <p class="mt-1"><i class="fas fa-phone"></i> {{ $laporan->pelapor?->no_hp ?? '-' }}</p>
                     </div>
                 </div>
             </div>
@@ -160,7 +160,7 @@
             {{-- Riwayat Verifikasi --}}
             @if($laporan->status !== 'terkirim')
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-4">📋 Riwayat Verifikasi</h3>
+                <h3 class="font-bold text-gray-800 mb-4"><i class="fas fa-list"></i> Riwayat Verifikasi</h3>
                 <div class="space-y-2 text-sm">
                     <div class="flex justify-between">
                         <span class="text-gray-500">Status</span>

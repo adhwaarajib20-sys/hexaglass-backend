@@ -20,6 +20,7 @@ class Kendaraan extends Model
         'kapasitas_tangki',
         'perusahaan',
         'status_validasi',
+        'is_perusahaan_vip',
     ];
 
     // Relasi ke User (Supir)

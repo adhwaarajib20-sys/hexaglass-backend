@@ -12,7 +12,7 @@
     </div>
 
     <div class="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+        <x-card class="p-6">
             <div class="space-y-4">
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div class="rounded-3xl bg-slate-50 border border-slate-100 p-4">
@@ -68,10 +68,10 @@
                     <p class="mt-3 text-sm leading-6 text-slate-700">{{ $pengisian->catatan ?? 'Tidak ada catatan tambahan.' }}</p>
                 </div>
             </div>
-        </div>
+        </x-card>
 
         <div class="space-y-6">
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+            <x-card class="p-6">
                 <h3 class="text-base font-semibold text-gray-900 mb-4">Ringkasan Antrean</h3>
                 <dl class="grid gap-4">
                     <div class="rounded-3xl bg-slate-50 p-4">
@@ -87,12 +87,12 @@
                         <dd class="mt-2 text-sm text-slate-800">{{ $pengisian->alasan_prioritas ?? '-' }}</dd>
                     </div>
                 </dl>
-            </div>
+            </x-card>
 
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+            <x-card class="p-6">
                 <h3 class="text-base font-semibold text-gray-900 mb-4">Tindakan</h3>
                 <p class="text-sm text-slate-600">Gunakan tombol di atas untuk kembali atau mengelola antrean lainnya.</p>
-            </div>
+            </x-card>
         </div>
     </div>
 

@@ -99,12 +99,8 @@ class SesiAntreanController extends Controller
             'waktu_daftar'  => Carbon::now(),
         ]);
 
-        // Update status sesi
-        $sesi->update([
-            'status'       => 'digunakan',
-            'kendaraan_id' => $kendaraan->id,
-            'antrean_id'   => $antrean->id,
-        ]);
+        // Hapus QR code karena sudah digunakan (agar tidak ada penumpukan)
+        $sesi->delete();
 
         return response()->json([
             'status'  => true,

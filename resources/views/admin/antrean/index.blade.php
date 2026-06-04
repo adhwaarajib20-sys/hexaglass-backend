@@ -6,20 +6,34 @@
             <h2 class="text-xl font-bold text-gray-800">Data Antrean</h2>
             <p class="text-sm text-gray-500">Kelola semua data antrean kendaraan</p>
         </div>
-        <div class="flex gap-2">
-            <a href="{{ route('admin.export.antrean') }}"
-               class="btn-outline flex items-center gap-2">
-                📊 Export Excel
-            </a>
-        </div>
+        <form method="GET" action="{{ route('admin.export.antrean') }}" class="flex gap-2 items-end">
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Dari Tanggal</label>
+                <input type="date" name="dari_tanggal" required
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Sampai Tanggal</label>
+                <input type="date" name="sampai_tanggal" required
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <button type="submit" class="btn-outline flex items-center gap-2">
+                <i class="fas fa-chart-bar"></i> Export Excel
+            </button>
+        </form>
     </div>
 
     {{-- Filter --}}
     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-5">
         <form method="GET" class="flex flex-wrap gap-3 items-end">
             <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Tanggal</label>
-                <input type="date" name="tanggal" value="{{ request('tanggal', today()->format('Y-m-d')) }}"
+                <label class="block text-xs font-medium text-gray-600 mb-1">Dari Tanggal</label>
+                <input type="date" name="dari_tanggal" value="{{ request('dari_tanggal') }}"
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Sampai Tanggal</label>
+                <input type="date" name="sampai_tanggal" value="{{ request('sampai_tanggal') }}"
                     class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
             </div>
             <div>
@@ -98,7 +112,7 @@
                     @empty
                     <tr>
                         <td colspan="9" class="px-6 py-12 text-center text-gray-400">
-                            <p class="text-3xl mb-2">📋</p>
+                            <p class="text-3xl mb-2"><i class="fas fa-list"></i></p>
                             <p>Tidak ada data antrean</p>
                         </td>
                     </tr>
@@ -115,13 +129,16 @@
 
     <script>
         $(document).ready(function() {
-            $('#tabelAntrean').DataTable({
-                pageLength: 20,
-                searching: true,
-                paging: false,
-                info: false,
-                language: { search: 'Cari dalam tabel:' }
-            });
+            const hasEmptyMessage = $('#tabelAntrean tbody tr').find('td[colspan]').length > 0;
+            if (!hasEmptyMessage) {
+                $('#tabelAntrean').DataTable({
+                    pageLength: 20,
+                    searching: true,
+                    paging: false,
+                    info: false,
+                    language: { search: 'Cari dalam tabel:' }
+                });
+            }
         });
     </script>
 

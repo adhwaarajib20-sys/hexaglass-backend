@@ -134,18 +134,27 @@ class AntreanController extends Controller
     }
 
     /**
-     * Validasi satpam (setujui/tolak)
+     * Validasi satpam (setujui/tolak) + Estimasi validasi
      */
     public function validasiSatpam(Request $request, int $id): JsonResponse
     {
         $request->validate([
-            'status_validasi'  => 'required|in:disetujui,ditolak',
-            'alasan_penolakan' => 'nullable|string',
+            'status_validasi'           => 'required|in:disetujui,ditolak',
+            'alasan_penolakan'          => 'nullable|string',
+            'estimasi_validasi_satpam'  => 'nullable|integer|min:1|max:120', // Estimasi dalam menit
         ]);
 
         $antrean = Antrean::findOrFail($id);
         $antrean->status_validasi_satpam = $request->status_validasi;
         $antrean->satpam_id              = $request->user()->id;
+
+        // Simpan estimasi validasi jika disetujui
+        if ($request->status_validasi === 'disetujui') {
+            if ($request->estimasi_validasi_satpam) {
+                $antrean->estimasi_validasi_satpam = $request->estimasi_validasi_satpam;
+                $antrean->waktu_estimasi_validasi_dikirim = Carbon::now();
+            }
+        }
 
         if ($request->status_validasi === 'ditolak') {
             $antrean->alasan_penolakan = $request->alasan_penolakan;
@@ -179,6 +188,37 @@ class AntreanController extends Controller
             'status'  => true,
             'message' => 'Estimasi waktu berhasil diperbarui',
             'data'    => $antrean,
+        ]);
+    }
+
+    /**
+     * Set estimasi waktu pengisian operator (kirim ke supir)
+     */
+    public function setEstimasiPengisianOperator(Request $request, int $id): JsonResponse
+    {
+        $request->validate([
+            'estimasi_pengisian_operator' => 'required|integer|min:1|max:480', // Estimasi dalam menit
+        ]);
+
+        $antrean = Antrean::findOrFail($id);
+        
+        // Hanya bisa set jika sudah disetujui satpam dan status menunggu/dipanggil
+        if ($antrean->status_validasi_satpam !== 'disetujui') {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Antrean belum disetujui satpam',
+            ], 422);
+        }
+
+        $antrean->estimasi_pengisian_operator = $request->estimasi_pengisian_operator;
+        $antrean->waktu_estimasi_pengisian_dikirim = Carbon::now();
+        $antrean->operator_id = $request->user()->id;
+        $antrean->save();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Estimasi pengisian berhasil dikirim ke supir',
+            'data'    => $antrean->load(['kendaraan', 'operator']),
         ]);
     }
 

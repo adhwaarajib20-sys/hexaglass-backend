@@ -7,13 +7,13 @@
         </div>
         <button onclick="location.reload()"
             class="btn-outline flex items-center gap-2">
-            🔄 Refresh
+            <i class="fas fa-sync-alt"></i> Refresh
         </button>
     </div>
 
     @if($antrean->isEmpty())
     <div class="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
-        <p class="text-5xl mb-4">✅</p>
+        <p class="text-5xl mb-4"><i class="fas fa-check-circle text-green-500"></i></p>
         <p class="text-lg font-medium text-gray-600">Tidak ada antrean aktif</p>
         <p class="text-sm text-gray-400 mt-1">Semua antrean sudah selesai dilayani</p>
     </div>
@@ -29,9 +29,9 @@
                     {{ $item->is_prioritas ? 'bg-orange-100' : 'bg-primary-light' }}">
                     <div class="text-center">
                         @if($item->is_prioritas)
-                            <span class="text-xl">⚡</span>
+                            <i class="fas fa-bolt text-xl text-orange-500"></i>
                         @else
-                            <span class="text-xl">🚛</span>
+                            <i class="fas fa-truck text-xl text-primary"></i>
                         @endif
                     </div>
                 </div>
@@ -52,20 +52,20 @@
 
                     <p class="font-semibold text-gray-800">{{ $item->kendaraan?->nama_supir }}</p>
                     <p class="text-sm text-gray-500">
-                        🚗 {{ $item->kendaraan?->nomor_polisi }} •
+                        <i class="fas fa-car"></i> {{ $item->kendaraan?->nomor_polisi }} •
                         {{ $item->kendaraan?->jenis_kendaraan }} •
                         {{ $item->kendaraan?->kapasitas_tangki }}
                     </p>
                     <p class="text-sm text-gray-500">
-                        🏢 {{ $item->kendaraan?->perusahaan ?? '-' }} •
-                        📞 {{ $item->kendaraan?->no_hp_supir }}
+                        <i class="fas fa-building"></i> {{ $item->kendaraan?->perusahaan ?? '-' }} •
+                        <i class="fas fa-phone"></i> {{ $item->kendaraan?->no_hp_supir }}
                     </p>
 
                     @if($item->estimasi_menit)
-                    <p class="text-xs text-primary mt-1">⏱ Estimasi: {{ $item->estimasi_menit }} menit</p>
+                    <p class="text-xs text-primary mt-1"><i class="fas fa-stopwatch"></i> Estimasi: {{ $item->estimasi_menit }} menit</p>
                     @endif
                     @if($item->alasan_prioritas)
-                    <p class="text-xs text-orange-600 mt-1">⚡ {{ $item->alasan_prioritas }}</p>
+                    <p class="text-xs text-orange-600 mt-1"><i class="fas fa-bolt"></i> {{ $item->alasan_prioritas }}</p>
                     @endif
                 </div>
 
@@ -77,8 +77,8 @@
                     @if($item->status === 'menunggu')
                     <form action="{{ route('operator.antrean.panggil', $item->id) }}" method="POST">
                         @csrf
-                        <button type="submit" class="w-full bg-blue-500 text-white px-3 py-2 rounded-lg text-xs hover:bg-blue-600 transition-colors">
-                            📢 Panggil
+                        <button type="submit" class="w-full bg-blue-500 text-white px-3 py-2 rounded-lg text-xs hover:bg-blue-600 transition-colors flex items-center justify-center gap-1">
+                            <i class="fas fa-bullhorn"></i> Panggil
                         </button>
                     </form>
                     @endif
@@ -87,8 +87,8 @@
                     <form action="{{ route('operator.antrean.status', $item->id) }}" method="POST">
                         @csrf
                         <input type="hidden" name="status" value="dilayani">
-                        <button type="submit" class="w-full bg-purple-500 text-white px-3 py-2 rounded-lg text-xs hover:bg-purple-600 transition-colors">
-                            ⚙️ Mulai Layani
+                        <button type="submit" class="w-full bg-purple-500 text-white px-3 py-2 rounded-lg text-xs hover:bg-purple-600 transition-colors flex items-center justify-center gap-1">
+                            <i class="fas fa-cog"></i> Mulai Layani
                         </button>
                     </form>
                     @endif

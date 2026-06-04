@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <x-card class="overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-gray-50 text-gray-600 text-xs uppercase font-semibold">
@@ -60,6 +60,6 @@
         <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
             {{ $pengisian->withQueryString()->links() }}
         </div>
-    </div>
+    </x-card>
 
 </x-app-layout>

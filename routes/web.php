@@ -11,6 +11,13 @@ use App\Http\Controllers\Web\Operator\DashboardController as OperatorDashboard;
 use App\Http\Controllers\Web\Operator\AntreanController as OperatorAntrean;
 use App\Http\Controllers\Web\Operator\PengisianController as OperatorPengisian;
 use App\Http\Controllers\Web\Operator\LaporanController as OperatorLaporan;
+use App\Http\Controllers\ProfileController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 // Redirect root ke login
 Route::get('/', function () {
@@ -52,6 +59,14 @@ Route::middleware(['auth', 'role:operator'])
         Route::post('antrean/{id}/prioritas',[OperatorAntrean::class, 'updatePrioritas'])->name('antrean.prioritas');
         Route::resource('pengisian',      OperatorPengisian::class);
         Route::resource('laporan',        OperatorLaporan::class);
+        // Informasi Perusahaan (read only untuk operator)
+Route::get('perusahaan', function() {
+    $perusahaan = \App\Models\InformasiPerusahaan::where('status', 'aktif')
+        ->orderBy('is_prioritas', 'desc')
+        ->orderBy('nama_perusahaan', 'asc')
+        ->get();
+    return view('operator.perusahaan', compact('perusahaan'));
+})->name('perusahaan');
     });
 
 // Redirect generic dashboard route ke dashboard role yang tepat

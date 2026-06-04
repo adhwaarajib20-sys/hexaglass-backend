@@ -27,6 +27,10 @@ class Antrean extends Model
     'waktu_selesai',
     'estimasi_menit',
     'estimasi_selesai',
+    'estimasi_validasi_satpam',
+    'estimasi_pengisian_operator',
+    'waktu_estimasi_validasi_dikirim',
+    'waktu_estimasi_pengisian_dikirim',
     'jumlah_gas_liter',
     'catatan_pengisian',
     'keterangan',
@@ -40,6 +44,8 @@ protected $casts = [
     'waktu_dipanggil'  => 'datetime',
     'waktu_selesai'    => 'datetime',
     'estimasi_selesai' => 'datetime',
+    'waktu_estimasi_validasi_dikirim' => 'datetime',
+    'waktu_estimasi_pengisian_dikirim' => 'datetime',
     'is_prioritas'     => 'boolean',
 ];
 

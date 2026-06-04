@@ -1,7 +1,7 @@
 <x-app-layout title="Proses Antrean">
 
     <div class="flex items-center gap-3 mb-6">
-        <a href="{{ route('operator.antrean.index') }}" class="text-gray-400 hover:text-gray-600">← Kembali</a>
+        <a href="{{ route('operator.antrean.index') }}" class="text-gray-400 hover:text-gray-600"><i class="fas fa-arrow-left"></i> Kembali</a>
         <span class="text-gray-300">/</span>
         <span class="text-gray-600 text-sm">{{ $antrean->nomor_antrean }}</span>
     </div>
@@ -16,14 +16,14 @@
                     <div>
                         <span class="font-mono text-lg font-bold text-primary">{{ $antrean->nomor_antrean }}</span>
                         @if($antrean->is_prioritas)
-                            <span class="badge bg-orange-100 text-orange-600 ml-2">⚡ Prioritas</span>
+                            <span class="badge bg-orange-100 text-orange-600 ml-2"><i class="fas fa-bolt"></i> Prioritas</span>
                         @endif
                     </div>
                     @switch($antrean->status)
-                        @case('menunggu')  <span class="badge bg-yellow-100 text-yellow-700 text-sm">● Menunggu</span> @break
-                        @case('dipanggil') <span class="badge bg-blue-100 text-blue-700 text-sm">● Dipanggil</span> @break
-                        @case('dilayani')  <span class="badge bg-purple-100 text-purple-700 text-sm">● Dilayani</span> @break
-                        @case('selesai')   <span class="badge bg-green-100 text-green-700 text-sm">● Selesai</span> @break
+                        @case('menunggu')  <span class="badge bg-yellow-100 text-yellow-700 text-sm"><i class="fas fa-circle"></i> Menunggu</span> @break
+                        @case('dipanggil') <span class="badge bg-blue-100 text-blue-700 text-sm"><i class="fas fa-circle"></i> Dipanggil</span> @break
+                        @case('dilayani')  <span class="badge bg-purple-100 text-purple-700 text-sm"><i class="fas fa-circle"></i> Dilayani</span> @break
+                        @case('selesai')   <span class="badge bg-green-100 text-green-700 text-sm"><i class="fas fa-circle"></i> Selesai</span> @break
                     @endswitch
                 </div>
 
@@ -40,7 +40,7 @@
 
                 @if($antrean->alasan_prioritas)
                 <div class="mt-4 p-3 bg-orange-50 rounded-xl">
-                    <p class="text-xs text-orange-600 font-medium">⚡ Alasan Prioritas:</p>
+                    <p class="text-xs text-orange-600 font-medium"><i class="fas fa-bolt"></i> Alasan Prioritas:</p>
                     <p class="text-sm text-orange-700 mt-1">{{ $antrean->alasan_prioritas }}</p>
                 </div>
                 @endif
@@ -49,7 +49,7 @@
             {{-- Input Pengisian (hanya jika dilayani) --}}
             @if($antrean->status === 'dilayani' && !$antrean->laporanPengisian)
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-4">⛽ Input Hasil Pengisian</h3>
+                <h3 class="font-bold text-gray-800 mb-4"><i class="fas fa-gas-pump"></i> Input Hasil Pengisian</h3>
                 <form action="{{ route('operator.pengisian.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="antrean_id" value="{{ $antrean->id }}">
@@ -81,7 +81,7 @@
                     <div class="flex gap-3">
                         <button type="submit"
                             class="flex-1 bg-primary text-white py-3 rounded-xl font-semibold text-sm hover:bg-primary-dark transition-colors">
-                            ✅ Simpan & Selesaikan Pengisian
+                            <i class="fas fa-check"></i> Simpan & Selesaikan Pengisian
                         </button>
                     </div>
                 </form>
@@ -91,7 +91,7 @@
             {{-- Hasil Pengisian (jika sudah selesai) --}}
             @if($antrean->laporanPengisian)
             <div class="bg-green-50 border border-green-100 rounded-2xl p-6">
-                <h3 class="font-bold text-green-800 mb-4">✅ Hasil Pengisian</h3>
+                <h3 class="font-bold text-green-800 mb-4"><i class="fas fa-check-circle"></i> Hasil Pengisian</h3>
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     <div>
                         <p class="text-green-600 text-xs">Jumlah Gas</p>
@@ -103,7 +103,7 @@
                     </div>
                 </div>
                 @if($antrean->laporanPengisian->catatan)
-                <p class="text-sm text-green-700 mt-3">📝 {{ $antrean->laporanPengisian->catatan }}</p>
+                <p class="text-sm text-green-700 mt-3"><i class="fas fa-sticky-note"></i> {{ $antrean->laporanPengisian->catatan }}</p>
                 @endif
             </div>
             @endif
@@ -115,13 +115,13 @@
             {{-- Update Status --}}
             @if(!in_array($antrean->status, ['selesai','batal']))
             <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-4">⚡ Update Status</h3>
+                <h3 class="font-bold text-gray-800 mb-4"><i class="fas fa-bolt"></i> Update Status</h3>
                 <div class="space-y-2">
                     @if($antrean->status === 'menunggu')
                     <form action="{{ route('operator.antrean.panggil', $antrean->id) }}" method="POST">
                         @csrf
                         <button type="submit" class="w-full bg-blue-500 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-blue-600 transition-colors">
-                            📢 Panggil Antrean
+                            <i class="fas fa-bullhorn"></i> Panggil Antrean
                         </button>
                     </form>
                     @endif
@@ -131,7 +131,7 @@
                         @csrf
                         <input type="hidden" name="status" value="dilayani">
                         <button type="submit" class="w-full bg-purple-500 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-purple-600 transition-colors">
-                            ⚙️ Mulai Layani
+                            <i class="fas fa-cog"></i> Mulai Layani
                         </button>
                     </form>
                     @endif
@@ -141,7 +141,7 @@
                         @csrf
                         <input type="hidden" name="status" value="batal">
                         <button type="submit" class="w-full border border-red-300 text-red-500 py-2.5 rounded-xl text-sm font-medium hover:bg-red-50 transition-colors">
-                            ❌ Batalkan Antrean
+                            <i class="fas fa-times-circle"></i> Batalkan Antrean
                         </button>
                     </form>
                 </div>
@@ -151,7 +151,7 @@
             {{-- Set Prioritas & Estimasi --}}
             @if(!in_array($antrean->status, ['selesai','batal']))
             <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-4">⚙️ Prioritas & Estimasi</h3>
+                <h3 class="font-bold text-gray-800 mb-4"><i class="fas fa-cog"></i> Prioritas & Estimasi</h3>
                 <form action="{{ route('operator.antrean.prioritas', $antrean->id) }}" method="POST">
                     @csrf
 
@@ -178,6 +178,52 @@
                             class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                             placeholder="Alasan...">{{ $antrean->alasan_prioritas }}</textarea>
                     </div>
+
+                    {{-- Info Perusahaan --}}
+@php
+    $infoPrioritas = \App\Models\InformasiPerusahaan::where('status', 'aktif')
+        ->where('nama_perusahaan', 'like', '%'.($antrean->kendaraan?->perusahaan ?? '').'%')
+        ->first();
+@endphp
+
+@if($infoPrioritas)
+<div class="bg-orange-50 border border-orange-200 rounded-2xl p-5">
+    <h3 class="font-bold text-orange-800 mb-3 flex items-center gap-2">
+        <i class="fas fa-bolt"></i> Info Perusahaan
+    </h3>
+    <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+            <span class="text-orange-600">Nama</span>
+            <span class="font-bold text-orange-800">{{ $infoPrioritas->nama_perusahaan }}</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-orange-600">Status</span>
+            @if($infoPrioritas->is_prioritas)
+                <span class="badge bg-orange-100 text-orange-700"><i class="fas fa-bolt"></i> Prioritas</span>
+            @else
+                <span class="badge bg-gray-100 text-gray-600">Normal</span>
+            @endif
+        </div>
+        @if($infoPrioritas->volume)
+        <div class="flex justify-between">
+            <span class="text-orange-600">Volume</span>
+            <span class="font-medium">{{ number_format($infoPrioritas->volume, 0, ',', '.') }} L</span>
+        </div>
+        @endif
+        @if($infoPrioritas->rencana_pengisian_harian)
+        <div class="flex justify-between">
+            <span class="text-orange-600">Target Harian</span>
+            <span class="font-medium">{{ number_format($infoPrioritas->rencana_pengisian_harian, 0, ',', '.') }} L</span>
+        </div>
+        @endif
+        @if($infoPrioritas->keterangan)
+        <div class="mt-2 p-2 bg-orange-100 rounded-lg">
+            <p class="text-xs text-orange-700">{{ $infoPrioritas->keterangan }}</p>
+        </div>
+        @endif
+    </div>
+</div>
+@endif
 
                     <button type="submit" class="w-full btn-primary">Simpan</button>
                 </form>

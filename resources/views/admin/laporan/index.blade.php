@@ -5,10 +5,21 @@
             <h2 class="text-xl font-bold text-gray-800">Laporan Ketidaksesuaian</h2>
             <p class="text-sm text-gray-500">Kelola dan verifikasi laporan operasional</p>
         </div>
-        <a href="{{ route('admin.export.laporan', request()->query()) }}"
-           class="btn-outline flex items-center gap-2">
-            📊 Export Excel
-        </a>
+        <form method="GET" action="{{ route('admin.export.laporan') }}" class="flex gap-2 items-end">
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Dari Tanggal</label>
+                <input type="date" name="dari_tanggal" required
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Sampai Tanggal</label>
+                <input type="date" name="sampai_tanggal" required
+                    class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <button type="submit" class="btn-outline flex items-center gap-2">
+                <i class="fas fa-chart-bar"></i> Export Excel
+            </button>
+        </form>
     </div>
 
     {{-- Filter --}}
@@ -52,21 +63,27 @@
     {{-- Cards --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
         <div class="bg-yellow-50 border border-yellow-100 rounded-xl p-4 flex items-center gap-3">
-            <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center text-xl">⏳</div>
+            <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center text-lg">
+                <i class="fas fa-hourglass-end text-yellow-600"></i>
+            </div>
             <div>
                 <p class="text-2xl font-bold text-yellow-700">{{ $laporan->where('status','terkirim')->count() }}</p>
                 <p class="text-xs text-yellow-600">Menunggu Verifikasi</p>
             </div>
         </div>
         <div class="bg-green-50 border border-green-100 rounded-xl p-4 flex items-center gap-3">
-            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-xl">✅</div>
+            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-lg">
+                <i class="fas fa-check-circle text-green-600"></i>
+            </div>
             <div>
                 <p class="text-2xl font-bold text-green-700">{{ $laporan->where('status','diverifikasi')->count() }}</p>
                 <p class="text-xs text-green-600">Diverifikasi</p>
             </div>
         </div>
         <div class="bg-red-50 border border-red-100 rounded-xl p-4 flex items-center gap-3">
-            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center text-xl">❌</div>
+            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center text-lg">
+                <i class="fas fa-times-circle text-red-600"></i>
+            </div>
             <div>
                 <p class="text-2xl font-bold text-red-700">{{ $laporan->where('status','ditolak')->count() }}</p>
                 <p class="text-xs text-red-600">Ditolak</p>
@@ -98,10 +115,16 @@
                         </td>
                         <td class="px-6 py-4">
                             @php
-                                $icons = ['keselamatan'=>'⛑️','lingkungan'=>'🌿','kualitas'=>'🎯','prosedur'=>'📋','lainnya'=>'📌'];
+                                $icons = [
+                                    'keselamatan'=>'<i class="fas fa-hard-hat"></i>',
+                                    'lingkungan'=>'<i class="fas fa-leaf"></i>',
+                                    'kualitas'=>'<i class="fas fa-bullseye"></i>',
+                                    'prosedur'=>'<i class="fas fa-clipboard"></i>',
+                                    'lainnya'=>'<i class="fas fa-thumbtack"></i>'
+                                ];
                             @endphp
                             <span class="flex items-center gap-1.5">
-                                {{ $icons[$item->klasifikasi] ?? '📌' }}
+                                {!! $icons[$item->klasifikasi] ?? '<i class="fas fa-thumbtack"></i>' !!}
                                 <span class="text-gray-700">{{ ucfirst($item->klasifikasi) }}</span>
                             </span>
                         </td>
@@ -111,7 +134,7 @@
                         </td>
                         <td class="px-6 py-4">
                             <span class="badge bg-gray-100 text-gray-600">
-                                📷 {{ $item->foto->count() }}
+                                <i class="fas fa-camera"></i> {{ $item->foto->count() }}
                             </span>
                         </td>
                         <td class="px-6 py-4">
@@ -130,7 +153,7 @@
                     @empty
                     <tr>
                         <td colspan="7" class="px-6 py-12 text-center text-gray-400">
-                            <p class="text-3xl mb-2">📝</p>
+                            <p class="text-3xl mb-2"><i class="fas fa-file-alt"></i></p>
                             <p>Tidak ada laporan</p>
                         </td>
                     </tr>

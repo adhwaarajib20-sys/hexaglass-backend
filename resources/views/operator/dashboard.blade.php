@@ -37,7 +37,7 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <x-card class="p-6">
             <div class="flex items-center justify-between mb-5">
                 <div>
                     <h2 class="text-lg font-semibold text-gray-800">Antrean Aktif</h2>
@@ -57,7 +57,7 @@
                             <span class="text-xs text-gray-400">{{ $antrean->waktu_daftar ? \Carbon\Carbon::parse($antrean->waktu_daftar)->format('H:i') : '-' }}</span>
                         </div>
                         <div class="mt-3 flex flex-wrap gap-2 text-xs">
-                            <span class="badge bg-blue-100 text-blue-700">{{ ucfirst($antrean->status) }}</span>
+                            <span class="badge bg-primary-light text-primary">{{ ucfirst($antrean->status) }}</span>
                             @if($antrean->is_prioritas)
                                 <span class="badge bg-orange-100 text-orange-700">Prioritas</span>
                             @endif
@@ -67,9 +67,9 @@
                     <div class="p-6 text-center text-sm text-gray-500 bg-gray-50 rounded-2xl border border-gray-100">Tidak ada antrean aktif saat ini.</div>
                 @endforelse
             </div>
-        </div>
+        </x-card>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <x-card class="p-6">
             <div class="flex items-center justify-between mb-5">
                 <div>
                     <h2 class="text-lg font-semibold text-gray-800">Riwayat Pengisian</h2>
@@ -97,7 +97,45 @@
                     <div class="p-6 text-center text-sm text-gray-500 bg-gray-50 rounded-2xl border border-gray-100">Tidak ada riwayat pengisian hari ini.</div>
                 @endforelse
             </div>
-        </div>
+        </x-card>
     </div>
+
+    {{-- Widget Perusahaan Prioritas --}}
+@php
+    $perusahaanPrioritas = \App\Models\InformasiPerusahaan::where('is_prioritas', true)
+        ->where('status', 'aktif')
+        ->get();
+@endphp
+
+@if($perusahaanPrioritas->count() > 0)
+<div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-5 mb-6">
+    <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+            <span class="text-xl">⚡</span>
+            <div>
+                <h3 class="font-bold text-orange-800">Perusahaan Prioritas Aktif</h3>
+                <p class="text-xs text-orange-600">Dahulukan kendaraan dari perusahaan berikut</p>
+            </div>
+        </div>
+        <a href="{{ route('operator.perusahaan') }}"
+           class="text-xs text-orange-600 hover:underline font-medium">
+            Lihat semua →
+        </a>
+    </div>
+    <div class="flex flex-wrap gap-2">
+        @foreach($perusahaanPrioritas as $p)
+        <div class="bg-white border border-orange-200 rounded-xl px-4 py-2 flex items-center gap-2">
+            <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+            <span class="text-sm font-medium text-gray-800">{{ $p->nama_perusahaan }}</span>
+            @if($p->rencana_pengisian_harian)
+            <span class="text-xs text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
+                {{ number_format($p->rencana_pengisian_harian, 0, ',', '.') }} L/hari
+            </span>
+            @endif
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
 
 </x-app-layout>

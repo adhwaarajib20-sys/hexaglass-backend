@@ -104,7 +104,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
 
         {{-- Grafik --}}
-        <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <x-card class="lg:col-span-2 p-6">
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h3 class="font-bold text-gray-800">Aktivitas Pengisian</h3>
@@ -117,10 +117,10 @@
             </div>
             <div id="chartHarian"></div>
             <div id="grafik-data" data-json='@json($grafikHarian)' class="hidden"></div>
-        </div>
+        </x-card>
 
         {{-- Laporan Terbaru --}}
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <x-card class="p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-gray-800">Laporan Masuk</h3>
                 <a href="{{ route('admin.laporan.index') }}" class="text-xs text-primary hover:underline">Lihat semua</a>
@@ -130,11 +130,11 @@
                 <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
                     <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0 text-sm">
                         @switch($laporan->klasifikasi)
-                            @case('keselamatan') ⛑️ @break
-                            @case('lingkungan')  🌿 @break
-                            @case('kualitas')    🎯 @break
-                            @case('prosedur')    📋 @break
-                            @default             📌
+                            @case('keselamatan') <i class="fas fa-hard-hat text-red-600"></i> @break
+                            @case('lingkungan')  <i class="fas fa-leaf text-green-600"></i> @break
+                            @case('kualitas')    <i class="fas fa-bullseye text-blue-600"></i> @break
+                            @case('prosedur')    <i class="fas fa-clipboard text-purple-600"></i> @break
+                            @default             <i class="fas fa-thumbtack text-gray-600"></i>
                         @endswitch
                     </div>
                     <div class="min-w-0">
@@ -147,24 +147,34 @@
                 <p class="text-sm text-gray-400 text-center py-4">Tidak ada laporan baru</p>
                 @endforelse
             </div>
-        </div>
+        </x-card>
     </div>
 
     {{-- Tabel Antrean Hari Ini --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <x-card class="overflow-hidden">
         <div class="flex items-center justify-between p-6 border-b border-gray-100">
             <div>
                 <h3 class="font-bold text-gray-800">Antrean Hari Ini</h3>
                 <p class="text-sm text-gray-500">{{ now()->format('d F Y') }}</p>
             </div>
             <div class="flex gap-2">
-                <a href="{{ route('admin.export.antrean') }}"
-                   class="btn-outline flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    Export Excel
-                </a>
+                <form method="GET" action="{{ route('admin.export.antrean') }}" class="flex gap-2 items-end">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Periode Export</label>
+                        <select name="period" class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Pilih Periode</option>
+                            <option value="hari">Hari Ini</option>
+                            <option value="minggu">Minggu Ini</option>
+                            <option value="bulan">Bulan Ini</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-outline flex items-center gap-2 h-fit">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Export Excel
+                    </button>
+                </form>
                 <a href="{{ route('admin.antrean.index') }}" class="btn-primary">Lihat Semua</a>
             </div>
         </div>
@@ -202,7 +212,7 @@
                         <td class="px-6 py-4 text-gray-600">{{ $antrean->kendaraan?->perusahaan ?? '-' }}</td>
                         <td class="px-6 py-4">
                             @if($antrean->is_prioritas)
-                                <span class="badge bg-orange-100 text-orange-700">⚡ Prioritas</span>
+                                <span class="badge bg-orange-100 text-orange-700"><i class="fas fa-bolt"></i> Prioritas</span>
                             @else
                                 <span class="badge bg-gray-100 text-gray-600">Normal</span>
                             @endif
@@ -234,7 +244,7 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </x-card>
 
     {{-- Script Grafik --}}
     <script>
