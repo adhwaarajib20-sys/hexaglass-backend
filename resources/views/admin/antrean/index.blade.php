@@ -63,7 +63,7 @@
                         <th class="px-6 py-3 text-left">Perusahaan</th>
                         <th class="px-6 py-3 text-left">Prioritas</th>
                         <th class="px-6 py-3 text-left">Estimasi</th>
-                        <th class="px-6 py-3 text-left">Gas (Liter)</th>
+                        <th class="px-6 py-3 text-left">Gas (m³)</th>
                         <th class="px-6 py-3 text-left">Status</th>
                         <th class="px-6 py-3 text-left">Operator</th>
                         <th class="px-6 py-3 text-left">Aksi</th>
@@ -92,7 +92,7 @@
                             {{ $item->estimasi_menit ? $item->estimasi_menit . ' menit' : '-' }}
                         </td>
                         <td class="px-6 py-4 font-medium text-gray-800">
-                            {{ $item->jumlah_gas_liter ? number_format($item->jumlah_gas_liter, 0, ',', '.') . ' L' : '-' }}
+                            {{ $item->jumlah_gas_liter ? number_format($item->jumlah_gas_liter, 0, ',', '.') . ' m³' : '-' }}
                         </td>
                         <td class="px-6 py-4">
                             @switch($item->status)

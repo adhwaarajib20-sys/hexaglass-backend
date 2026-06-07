@@ -70,7 +70,7 @@ class AntreanExport implements
             'Prioritas',
             'Alasan Prioritas',
             'Estimasi (Menit)',
-            'Jumlah Gas (Liter)',
+            'Jumlah Gas (m³)',
             'Durasi Pengisian (Menit)',
             'Operator',
             'Waktu Daftar',
@@ -100,7 +100,9 @@ class AntreanExport implements
             $antrean->is_prioritas ? 'Ya' : 'Tidak',
             $antrean->alasan_prioritas ?? '-',
             $antrean->estimasi_menit ?? '-',
-            $antrean->jumlah_gas_liter ?? '-',
+            is_numeric($antrean->jumlah_gas_liter)
+                ? number_format(($antrean->jumlah_gas_liter / 1000), 3, ',', '.')
+                : '-',
             $antrean->laporanPengisian?->durasi_menit ?? '-',
             $antrean->operator?->name ?? '-',
             $antrean->waktu_daftar

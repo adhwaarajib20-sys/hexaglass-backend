@@ -49,7 +49,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
                 </div>
-                <span class="text-xs text-gray-500">Liter</span>
+                <span class="text-xs text-gray-500">m³</span>
             </div>
                 <p class="mt-2 text-2xl font-bold text-gray-800">{{ number_format($stats['total_liter'], 0, ',', '.') }}</p>
             <p class="text-sm text-gray-500 mt-1">Total Gas Tersalurkan</p>
@@ -112,7 +112,7 @@
                 </div>
                 <div class="flex gap-2">
                     <span class="badge bg-primary-light text-primary">● Antrean</span>
-                    <span class="badge bg-accent-light text-accent">● Liter Gas</span>
+                    <span class="badge bg-accent-light text-accent">● Gas (m³)</span>
                 </div>
             </div>
             <div id="chartHarian"></div>
@@ -260,7 +260,7 @@
                     data: grafikData.map(d => d.antrean)
                 },
                 {
-                    name: 'Liter Gas',
+                    name: 'Gas (m³)',
                     type: 'line',
                     data: grafikData.map(d => d.liter)
                 }
@@ -284,7 +284,7 @@
             },
             yaxis: [
                 { title: { text: 'Antrean', style: { fontSize: '11px' } } },
-                { opposite: true, title: { text: 'Liter', style: { fontSize: '11px' } } }
+                { opposite: true, title: { text: 'm³', style: { fontSize: '11px' } } }
             ],
             grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
             legend: { position: 'top', horizontalAlign: 'right' },

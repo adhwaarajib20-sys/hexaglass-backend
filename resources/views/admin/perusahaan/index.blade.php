@@ -15,7 +15,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left">Nama Perusahaan</th>
                         <th class="px-6 py-3 text-left">Prioritas</th>
-                        <th class="px-6 py-3 text-left">Volume (L)</th>
+                        <th class=\"px-6 py-3 text-left\">Volume (m³)</th>
                         <th class="px-6 py-3 text-left">Rencana Harian (L)</th>
                         <th class="px-6 py-3 text-left">Status</th>
                         <th class="px-6 py-3 text-left">Keterangan</th>

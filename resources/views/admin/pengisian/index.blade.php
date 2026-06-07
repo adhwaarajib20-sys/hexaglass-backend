@@ -28,13 +28,13 @@
         </div>
         <div class="stat-card">
             <p class="text-xs text-gray-500 mb-1">Total Gas Tersalurkan</p>
-            <p class="text-3xl font-bold text-primary">{{ number_format($totalLiter, 0, ',', '.') }} <span class="text-base font-normal text-gray-400">L</span></p>
+            <p class="text-3xl font-bold text-primary">{{ number_format($totalLiter, 0, ',', '.') }} <span class="text-base font-normal text-gray-400">m³</span></p>
         </div>
         <div class="stat-card">
             <p class="text-xs text-gray-500 mb-1">Rata-rata per Pengisian</p>
             <p class="text-3xl font-bold text-primary">
                 {{ $pengisian->total() > 0 ? number_format($totalLiter / $pengisian->total(), 0, ',', '.') : 0 }}
-                <span class="text-base font-normal text-gray-400">L</span>
+                <span class="text-base font-normal text-gray-400">m³</span>
             </p>
         </div>
     </div>
@@ -78,7 +78,7 @@
                         <th class="px-6 py-3 text-left">No. Antrean</th>
                         <th class="px-6 py-3 text-left">Kendaraan & Supir</th>
                         <th class="px-6 py-3 text-left">Perusahaan</th>
-                        <th class="px-6 py-3 text-right">Gas (Liter)</th>
+                        <th class="px-6 py-3 text-right">Gas (m³)</th>
                         <th class="px-6 py-3 text-left">Durasi</th>
                         <th class="px-6 py-3 text-left">Prioritas</th>
                         <th class="px-6 py-3 text-left">Operator</th>
@@ -109,7 +109,7 @@
                             <span class="font-bold text-primary text-base">
                                 {{ number_format($item->jumlah_gas_liter, 0, ',', '.') }}
                             </span>
-                            <span class="text-xs text-gray-400"> L</span>
+                            <span class=\"text-xs text-gray-400\"> m³</span>
                         </td>
                         <td class="px-6 py-4 text-gray-600 text-xs">
                             {{ $item->durasi_menit ? $item->durasi_menit . ' mnt' : '-' }}

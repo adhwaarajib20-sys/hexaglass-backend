@@ -43,7 +43,7 @@
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div class="rounded-3xl bg-slate-50 border border-slate-100 p-4">
                         <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Jumlah Gas</p>
-                        <p class="mt-2 text-3xl font-semibold text-slate-900">{{ number_format($pengisian->jumlah_gas_liter, 0, ',', '.') }} L</p>
+                        <p class="mt-2 text-3xl font-semibold text-slate-900">{{ number_format($pengisian->jumlah_gas_liter, 0, ',', '.') }} m³</p>
                     </div>
                     <div class="rounded-3xl bg-slate-50 border border-slate-100 p-4">
                         <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Durasi</p>

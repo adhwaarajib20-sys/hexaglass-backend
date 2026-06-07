@@ -60,7 +60,7 @@ class PengisianController extends Controller
         ]);
 
         return redirect()->route('operator.antrean.index')
-            ->with('success', 'Pengisian berhasil disimpan! ' . number_format($request->jumlah_gas_liter, 0, ',', '.') . ' liter');
+            ->with('success', 'Pengisian berhasil disimpan! ' . number_format($request->jumlah_gas_liter, 0, ',', '.') . ' m³');
     }
 
     public function show($id)

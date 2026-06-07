@@ -93,8 +93,8 @@
                 <p class="font-medium text-gray-800">{{ $antrean->waktu_selesai?->format('d F Y H:i') ?? '-' }}</p>
             </div>
             <div>
-                <p class="text-xs text-gray-500">Jumlah Gas Liter</p>
-                <p class="font-medium text-gray-800">{{ $antrean->jumlah_gas_liter ? number_format($antrean->jumlah_gas_liter, 0, ',', '.') . ' L' : '-' }}</p>
+                <p class="text-xs text-gray-500">Jumlah Gas (m³)</p>
+                <p class="font-medium text-gray-800">{{ $antrean->jumlah_gas_liter ? number_format($antrean->jumlah_gas_liter, 0, ',', '.') . ' m³' : '-' }}</p>
             </div>
             <div>
                 <p class="text-xs text-gray-500">Catatan</p>

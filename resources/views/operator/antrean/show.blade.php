@@ -57,11 +57,11 @@
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                                Jumlah Gas (Liter) <span class="text-red-500">*</span>
+                                Jumlah Gas (m³) <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="jumlah_gas_liter" step="0.01" required
                                 class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                placeholder="Contoh: 5000">
+                                placeholder="Contoh: 5">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Estimasi (Menit)</label>
@@ -95,7 +95,7 @@
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     <div>
                         <p class="text-green-600 text-xs">Jumlah Gas</p>
-                        <p class="font-bold text-green-800 text-xl">{{ number_format($antrean->laporanPengisian->jumlah_gas_liter, 0, ',', '.') }} L</p>
+                        <p class="font-bold text-green-800 text-xl">{{ number_format($antrean->laporanPengisian->jumlah_gas_liter, 0, ',', '.') }} m³</p>
                     </div>
                     <div>
                         <p class="text-green-600 text-xs">Durasi</p>

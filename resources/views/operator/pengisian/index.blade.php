@@ -18,7 +18,7 @@
                         <th class="px-6 py-3 text-left">Tanggal</th>
                         <th class="px-6 py-3 text-left">Antrean</th>
                         <th class="px-6 py-3 text-left">Kendaraan</th>
-                        <th class="px-6 py-3 text-left">Jumlah (L)</th>
+                        <th class="px-6 py-3 text-left">Jumlah (m³)</th>
                         <th class="px-6 py-3 text-left">Durasi</th>
                         <th class="px-6 py-3 text-left">Status</th>
                         <th class="px-6 py-3 text-left">Aksi</th>

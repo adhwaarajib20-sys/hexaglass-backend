@@ -192,9 +192,9 @@ class SupirController extends Controller
     public function jenisKendaraan()
     {
         $jenis = [
-            ['id' => 'truk_kecil', 'label' => 'Truk Kecil'],
-            ['id' => 'truk_sedang', 'label' => 'Truk Sedang'],
-            ['id' => 'truk_besar', 'label' => 'Truk Besar'],
+            ['id' => '5fit_kecil', 'label' => '5fit (Kecil)', 'kapasitas' => 5],
+            ['id' => '10fit_sedang', 'label' => '10fit (Sedang)', 'kapasitas' => 10],
+            ['id' => '20fit_besar', 'label' => '20fit (Besar)', 'kapasitas' => 20],
         ];
 
         return response()->json([

@@ -36,7 +36,7 @@
                 @endif
                 @if($item->rencana_pengisian_harian)
                 <p class="text-xs text-gray-500">
-                    📅 Target Harian: <strong>{{ number_format($item->rencana_pengisian_harian, 0, ',', '.') }} L</strong>
+                    📅 Target Harian: <strong>{{ number_format($item->rencana_pengisian_harian, 0, ',', '.') }} m³</strong>
                 </p>
                 @endif
                 @if($item->keterangan)

@@ -29,7 +29,7 @@
         </div>
         <div class="stat-card">
             <div class="flex items-center justify-between mb-3">
-                <div class="text-sm font-medium text-gray-500">Total Liter</div>
+                <div class="text-sm font-medium text-gray-500">Total m³</div>
                 <div class="text-xs text-gray-400">Hari ini</div>
             </div>
             <p class="text-3xl font-bold text-gray-900">{{ number_format($stats['total_liter'], 0, ',', '.') }}</p>
@@ -89,7 +89,7 @@
                             <span class="text-xs text-gray-400">{{ $pengisian->tanggal?->format('H:i') ?? '-' }}</span>
                         </div>
                         <div class="mt-3 flex flex-wrap gap-2 text-xs">
-                            <span class="badge bg-green-100 text-green-700">{{ number_format($pengisian->jumlah_gas_liter, 0, ',', '.') }} L</span>
+                            <span class="badge bg-green-100 text-green-700">{{ number_format($pengisian->jumlah_gas_liter, 0, ',', '.') }} m³</span>
                             <span class="badge bg-gray-100 text-gray-600">{{ ucfirst($pengisian->status ?? 'terkirim') }}</span>
                         </div>
                     </div>
@@ -129,7 +129,7 @@
             <span class="text-sm font-medium text-gray-800">{{ $p->nama_perusahaan }}</span>
             @if($p->rencana_pengisian_harian)
             <span class="text-xs text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">
-                {{ number_format($p->rencana_pengisian_harian, 0, ',', '.') }} L/hari
+                {{ number_format($p->rencana_pengisian_harian, 0, ',', '.') }} m³/hari
             </span>
             @endif
         </div>
