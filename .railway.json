@@ -1,0 +1,6 @@
+{
+  "$schema": "https://railway.app/schema/config.json",
+  "build": {
+    "builder": "nixpacks"
+  }
+}
