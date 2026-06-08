@@ -27,6 +27,24 @@ if (isset($_GET['test']) && $_GET['test'] === 'echo') {
          "DB connection test will follow...");
 }
 
+// TEST: Cache file status
+if ($_SERVER['REQUEST_URI'] === '/cache-status') {
+    http_response_code(200);
+    header('Content-Type: application/json; charset=utf-8');
+    $cachePath = __DIR__.'/../bootstrap/cache';
+    $files = [];
+    if (is_dir($cachePath)) {
+        $files = scandir($cachePath);
+    }
+    echo json_encode([
+        'cache_dir_exists' => is_dir($cachePath),
+        'cache_files' => $files,
+        'env_file' => file_exists(__DIR__.'/../.env') ? 'EXISTS' : 'MISSING',
+        'env_content_preview' => file_exists(__DIR__.'/../.env') ? substr(file_get_contents(__DIR__.'/../.env'), 0, 200) : null,
+    ], JSON_PRETTY_PRINT);
+    exit(0);
+}
+
 // CRITICAL: Delete all cached files to force fresh .env read
 $cachePath = __DIR__.'/../bootstrap/cache';
 $cacheFiles = [
