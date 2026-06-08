@@ -5,9 +5,13 @@
  * Ensures environment variables are loaded and PHP server starts correctly
  */
 
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { execSync, spawnSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 8080;
 
@@ -97,12 +101,10 @@ console.log('✅ Starting PHP server on port ' + PORT + '...');
 console.log('');
 
 // Start PHP server
-try {
-  execSync('php -S 0.0.0.0:' + PORT + ' -t public/', {
-    cwd: __dirname,
-    stdio: 'inherit',
-  });
-} catch (error) {
-  console.error('❌ ERROR: Failed to start PHP server');
-  process.exit(1);
-}
+const result = spawnSync('php', ['-S', '0.0.0.0:' + PORT, '-t', 'public/'], {
+  cwd: __dirname,
+  stdio: 'inherit',
+  shell: true,
+});
+
+process.exit(result.status || 0);
