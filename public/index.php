@@ -9,14 +9,26 @@ define('LARAVEL_START', microtime(true));
 error_log("REQUEST: " . $_SERVER['REQUEST_URI'] . " at " . date('Y-m-d H:i:s'));
 
 // === ULTRA SIMPLE TEST ===
-if ($_SERVER['REQUEST_URI'] === '/ping') {
+if (strpos($_SERVER['REQUEST_URI'], '/ping') !== false) {
     header('Content-Type: text/plain; charset=UTF-8');
     echo "PONG";
     error_log("PING endpoint executed");
     exit(0);
 }
 
-// === BEFORE ANYTHING ELSE ===
+if (strpos($_SERVER['REQUEST_URI'], '/debug') !== false) {
+    $output = "OK at " . date('Y-m-d H:i:s');
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo $output;
+    exit(0);
+}
+
+if (strpos($_SERVER['REQUEST_URI'], '/test') !== false) {
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo "TEST OK";
+    exit(0);
+}
+
 // Delete cache files
 $cachePath = __DIR__.'/../bootstrap/cache';
 foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'events.php.gz'] as $file) {
