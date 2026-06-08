@@ -67,26 +67,6 @@ if (!file_exists($envPath)) {
     file_put_contents($envPath, $content);
 }
 
-// === LOAD .env into $_SERVER ===
-if (file_exists($envPath)) {
-    $envContent = file_get_contents($envPath);
-    $lines = explode("\n", $envContent);
-    foreach ($lines as $line) {
-        $line = trim($line);
-        if (empty($line) || strpos($line, '#') === 0) continue;
-        if (strpos($line, '=') === false) continue;
-        
-        list($key, $value) = explode('=', $line, 2);
-        $key = trim($key);
-        $value = trim($value);
-        
-        // Set in both $_SERVER and $_ENV for compatibility
-        $_SERVER[$key] = $value;
-        $_ENV[$key] = $value;
-        if (!isset($_SERVER['DB_HOST']) && $key === 'DB_HOST') $_SERVER['DB_HOST'] = $value;
-    }
-}
-
 // === TEST ENDPOINTS ===
 if ($_SERVER['REQUEST_URI'] === '/dump-all-env') {
     header('Content-Type: text/plain; charset=UTF-8');
@@ -202,7 +182,7 @@ if ($_SERVER['REQUEST_URI'] === '/env-status') {
 }
 
 // === MIGRATION ENDPOINT (ONE-TIME SETUP) ===
-if (strpos($_SERVER['REQUEST_URI'], '/run-migrations') === 0) {
+if ($_SERVER['REQUEST_URI'] === '/run-migrations') {
     header('Content-Type: text/plain; charset=UTF-8');
     
     ob_start();
@@ -240,140 +220,46 @@ if (strpos($_SERVER['REQUEST_URI'], '/run-migrations') === 0) {
     exit(0);
 }
 
-// === CHECK DATABASE CONNECTION ===
-if (strpos($_SERVER['REQUEST_URI'], '/check-db') === 0) {
-    header('Content-Type: text/plain; charset=UTF-8');
-    
-    try {
-        require __DIR__.'/../vendor/autoload.php';
-        $app = require_once __DIR__.'/../bootstrap/app.php';
-        
-        $host = $_SERVER['DB_HOST'] ?? 'mysql.railway.internal';
-        $port = $_SERVER['DB_PORT'] ?? 3306;
-        $database = $_SERVER['DB_DATABASE'] ?? 'railway';
-        $username = $_SERVER['DB_USERNAME'] ?? 'railway';
-        $password = $_SERVER['DB_PASSWORD'] ?? '';
-        
-        echo "Attempting connection with:\n";
-        echo "  Host: $host\n";
-        echo "  Port: $port\n";
-        echo "  Database: $database\n";
-        echo "  Username: $username\n";
-        echo "  Password: " . (empty($password) ? '(empty)' : '(set)') . "\n\n";
-        
-        // Test basic PDO connection
-        $dsn = "mysql:host=$host;port=$port;dbname=$database";
-        $pdo = new \PDO($dsn, $username, $password);
-        
-        echo "✓ Database connection successful\n\n";
-        
-        // Check tables
-        $stmt = $pdo->query("SHOW TABLES");
-        $tables = $stmt->fetchAll(\PDO::FETCH_COLUMN);
-        
-        echo "Tables in database: " . count($tables) . "\n";
-        foreach ($tables as $table) {
-            echo "  - $table\n";
-        }
-        
-        echo "\n";
-        
-        // Check if migrations table exists
-        if (in_array('migrations', $tables)) {
-            echo "✓ Migrations table exists\n\n";
-            $stmt = $pdo->query("SELECT * FROM migrations ORDER BY batch, migration");
-            $migrations = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            echo "Migrations run: " . count($migrations) . "\n";
-            foreach ($migrations as $m) {
-                echo "  Batch {$m['batch']}: {$m['migration']}\n";
-            }
-        } else {
-            echo "✗ No migrations table - database is empty\n";
-        }
-        
-    } catch (\Exception $e) {
-        echo "✗ Database Error: " . $e->getMessage() . "\n";
-        echo "Code: " . $e->getCode() . "\n";
-    }
-    flush();
-    exit(0);
-}
-
-// === RESET DATABASE ===
-if (strpos($_SERVER['REQUEST_URI'], '/reset-db') === 0) {
+// === FRESH MIGRATIONS (RESET AND REBUILD) ===
+if ($_SERVER['REQUEST_URI'] === '/run-migrations-fresh') {
     header('Content-Type: text/plain; charset=UTF-8');
     
     ob_start();
     
     try {
+        // Bootstrap Laravel
         require __DIR__.'/../vendor/autoload.php';
         $app = require_once __DIR__.'/../bootstrap/app.php';
         
         $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
         
-        echo "Running migrate:refresh (drops all tables and re-runs migrations)...\n\n";
-        
-        $status = $kernel->call('migrate:refresh', ['--force' => true, '--verbose' => true]);
+        // Run fresh migrations (drop all and recreate)
+        $status = $kernel->call('migrate:fresh', ['--force' => true, '--verbose' => true]);
         
         $output = ob_get_clean();
         
         if ($status === 0) {
-            echo "✓ Database reset and migrations completed!\n\n";
+            echo "✓ Fresh migrations completed successfully!\n\n";
+            echo "Output:\n";
             echo $output;
         } else {
-            echo "✗ Reset failed with status: $status\n\n";
+            echo "✗ Fresh migration failed with status code: $status\n\n";
+            echo "Output:\n";
             echo $output;
         }
     } catch (\Exception $e) {
         $output = ob_get_clean();
-        echo "✗ Error: " . $e->getMessage() . "\n\n";
-        echo $output;
+        echo "✗ Error running fresh migrations:\n";
+        echo $e->getMessage() . "\n\n";
+        if (!empty($output)) {
+            echo "Partial output:\n" . $output;
+        }
     }
     flush();
     exit(0);
 }
 
-// === COMPREHENSIVE ENVIRONMENT DIAGNOSTIC ===
-if (strpos($_SERVER['REQUEST_URI'], '/diagnose-env') === 0) {
-    header('Content-Type: text/plain; charset=UTF-8');
-    
-    echo "=== PROC/SELF/ENVIRON ===\n";
-    if (file_exists('/proc/self/environ')) {
-        $environ = file_get_contents('/proc/self/environ');
-        $vars = explode("\0", $environ);
-        $db_vars = array_filter($vars, function($v) {
-            return strpos($v, 'DB_') === 0;
-        });
-        foreach ($db_vars as $var) {
-            echo "  $var\n";
-        }
-    } else {
-        echo "  /proc/self/environ NOT FOUND\n";
-    }
-    
-    echo "\n=== .env FILE ===\n";
-    $envPath = __DIR__.'/../.env';
-    if (file_exists($envPath)) {
-        $lines = explode("\n", file_get_contents($envPath));
-        foreach ($lines as $line) {
-            if (strpos($line, 'DB_') === 0) {
-                echo "  $line\n";
-            }
-        }
-    } else {
-        echo "  .env NOT FOUND\n";
-    }
-    
-    echo "\n=== \$_SERVER VARIABLES ===\n";
-    echo "  DB_HOST=" . ($_SERVER['DB_HOST'] ?? 'NOT_SET') . "\n";
-    echo "  DB_PORT=" . ($_SERVER['DB_PORT'] ?? 'NOT_SET') . "\n";
-    echo "  DB_DATABASE=" . ($_SERVER['DB_DATABASE'] ?? 'NOT_SET') . "\n";
-    echo "  DB_USERNAME=" . ($_SERVER['DB_USERNAME'] ?? 'NOT_SET') . "\n";
-    echo "  DB_PASSWORD=" . (isset($_SERVER['DB_PASSWORD']) ? (empty($_SERVER['DB_PASSWORD']) ? '(EMPTY)' : '(SET)') : 'NOT_SET') . "\n";
-    
-    flush();
-    exit(0);
-}
+// === MAINTENANCE ===
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
 }
