@@ -1,1 +1,19 @@
-(printf 'APP_NAME=MigasQueue\nAPP_ENV=production\nAPP_KEY=%s\nAPP_DEBUG=true\nDB_CONNECTION=mysql\nDB_HOST=%s\nDB_PORT=%s\nDB_DATABASE=%s\nDB_USERNAME=%s\nDB_PASSWORD=%s\nLOG_LEVEL=debug\nLOG_CHANNEL=single\nSESSION_DRIVER=database\nQUEUE_CONNECTION=database\nCACHE_STORE=database\n' "$APP_KEY" "$MYSQL_HOST" "$MYSQL_PORT" "$MYSQL_NAME" "$MYSQL_USER" "$MYSQL_PASSWORD" > .env) && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan optimize
+(cat > .env << EOF
+APP_NAME=MigasQueue
+APP_ENV=production
+APP_KEY=$APP_KEY
+APP_DEBUG=true
+APP_URL=https://web-production-fc4fb.up.railway.app
+
+DB_CONNECTION=mysql
+DB_HOST=$MYSQL_HOST
+DB_PORT=${MYSQL_PORT:-3306}
+DB_DATABASE=$MYSQL_NAME
+DB_USERNAME=$MYSQL_USER
+DB_PASSWORD=$MYSQL_PASSWORD
+
+SESSION_DRIVER=database
+QUEUE_CONNECTION=database
+CACHE_STORE=database
+EOF
+) && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan optimize
