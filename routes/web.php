@@ -13,6 +13,11 @@ use App\Http\Controllers\Web\Operator\PengisianController as OperatorPengisian;
 use App\Http\Controllers\Web\Operator\LaporanController as OperatorLaporan;
 use App\Http\Controllers\ProfileController;
 
+// Ultra-simple test
+Route::get('/test', function () {
+    return 'TEST OK';
+});
+
 // Diagnostic route
 Route::get('/diagnostic', function () {
     return response()->json([
