@@ -65,4 +65,12 @@ composer install --no-dev --optimize-autoloader --quiet 2>&1 | tail -1 || compos
 echo "⚡ Caching config..."
 php artisan config:cache --quiet 2>&1 || php artisan config:cache
 
-echo "✅ Build complete - migrations will run in release phase"
+# Try to run migrations (non-blocking)
+echo "🗄️  Running database migrations..."
+php artisan migrate --force --quiet 2>&1 | tail -1 || echo "⚠️  Migrations will retry on startup"
+
+# Cache routes
+echo "🛣️  Caching routes..."
+php artisan route:cache --quiet 2>&1 || php artisan route:cache
+
+echo "✅ Build complete"
