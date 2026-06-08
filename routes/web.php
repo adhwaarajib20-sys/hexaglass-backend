@@ -15,7 +15,8 @@ use App\Http\Controllers\ProfileController;
 
 // Ultra-simple test
 Route::get('/test', function () {
-    return 'TEST OK';
+    return response('TEST OK', 200)
+        ->header('Content-Type', 'text/plain; charset=UTF-8');
 });
 
 // Diagnostic route
