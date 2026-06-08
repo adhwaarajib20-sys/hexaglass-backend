@@ -1,1 +1,1 @@
-web: bash start-server.sh
+web: (printf 'APP_NAME=MigasQueue\nAPP_ENV=production\nAPP_KEY=%s\nAPP_DEBUG=true\nDB_CONNECTION=mysql\nDB_HOST=%s\nDB_PORT=%s\nDB_DATABASE=%s\nDB_USERNAME=%s\nDB_PASSWORD=%s\nLOG_LEVEL=debug\nLOG_CHANNEL=single\nSESSION_DRIVER=database\nQUEUE_CONNECTION=database\nCACHE_STORE=database\n' "$APP_KEY" "$DB_HOST" "$DB_PORT" "$DB_DATABASE" "$DB_USERNAME" "$DB_PASSWORD" > .env) && rm -rf bootstrap/cache/* 2>/dev/null ; php -S 0.0.0.0:${PORT:-8080} -t public/
