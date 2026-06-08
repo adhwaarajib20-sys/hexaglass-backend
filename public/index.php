@@ -5,7 +5,50 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-// TEST: Super simple debug endpoint before any Laravel loading
+// TEST: Debug endpoint
+if ($_SERVER['REQUEST_URI'] === '/debug') {
+    header('Content-Type: text/plain; charset=utf-8');
+    echo "DEBUG: PHP is running\n";
+    echo "Time: " . date('Y-m-d H:i:s') . "\n";
+    exit(0);
+}
+
+// TEST: Check if .env exists
+if ($_SERVER['REQUEST_URI'] === '/env-status') {
+    header('Content-Type: application/json; charset=utf-8');
+    $envPath = __DIR__.'/../.env';
+    echo json_encode([
+        'env_exists' => file_exists($envPath) ? 'YES' : 'NO',
+        'env_size' => file_exists($envPath) ? filesize($envPath) : 0,
+    ]);
+    exit(0);
+}
+
+// Delete all cached files to force fresh reads
+$cachePath = __DIR__.'/../bootstrap/cache';
+foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'events.php.gz'] as $file) {
+    $path = $cachePath . '/' . $file;
+    if (file_exists($path)) {
+        @unlink($path);
+    }
+}
+
+// Generate .env from Railway environment variables
+require __DIR__.'/../bootstrap/railway-env-generator.php';
+
+// Maintenance mode
+if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+    require $maintenance;
+}
+
+// Composer autoloader
+require __DIR__.'/../vendor/autoload.php';
+
+// Bootstrap Laravel
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+$app->handleRequest(Request::capture());
+
 if ($_SERVER['REQUEST_URI'] === '/debug') {
     http_response_code(200);
     header('Content-Type: text/plain; charset=utf-8');
@@ -14,7 +57,18 @@ if ($_SERVER['REQUEST_URI'] === '/debug') {
     echo "PHP Version: " . phpversion() . "\n";
     echo "Memory: " . (memory_get_usage(true) / 1024 / 1024) . " MB\n";
     echo "CWD: " . getcwd() . "\n";
-    echo "Laravel Start Time: " . microtime(true) . "\n";
+    exit(0);
+}
+
+// TEST: Check .env file status
+if ($_SERVER['REQUEST_URI'] === '/env-status') {
+    header('Content-Type: application/json; charset=utf-8');
+    $envPath = __DIR__.'/../.env';
+    echo json_encode([
+        'env_exists' => file_exists($envPath) ? 'YES' : 'NO',
+        'env_size' => file_exists($envPath) ? filesize($envPath) : 0,
+        'env_readable' => file_exists($envPath) && is_readable($envPath) ? 'YES' : 'NO',
+    ]);
     exit(0);
 }
 
