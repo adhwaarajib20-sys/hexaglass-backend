@@ -220,35 +220,49 @@ if (strpos($_SERVER['REQUEST_URI'], '/run-migrations') === 0) {
     exit(0);
 }
 
-// === CHECK WHICH MIGRATIONS HAVE RUN ===
-if (strpos($_SERVER['REQUEST_URI'], '/check-migrations-table') === 0) {
+// === CHECK DATABASE CONNECTION ===
+if (strpos($_SERVER['REQUEST_URI'], '/check-db') === 0) {
     header('Content-Type: text/plain; charset=UTF-8');
     
     try {
         require __DIR__.'/../vendor/autoload.php';
         $app = require_once __DIR__.'/../bootstrap/app.php';
         
-        // Use DB facade
-        $db = \Illuminate\Support\Facades\DB::connection();
+        // Test basic PDO connection
+        $pdo = new \PDO(
+            'mysql:host=' . ($_SERVER['DB_HOST'] ?? 'mysql.railway.internal') . ';port=' . ($_SERVER['DB_PORT'] ?? 3306) . ';dbname=' . ($_SERVER['DB_DATABASE'] ?? 'railway'),
+            $_SERVER['DB_USERNAME'] ?? 'railway',
+            $_SERVER['DB_PASSWORD'] ?? ''
+        );
+        
+        echo "✓ Database connection successful\n\n";
+        
+        // Check tables
+        $stmt = $pdo->query("SHOW TABLES");
+        $tables = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        
+        echo "Tables in database: " . count($tables) . "\n";
+        foreach ($tables as $table) {
+            echo "  - $table\n";
+        }
+        
+        echo "\n";
         
         // Check if migrations table exists
-        $tables = $db->select("SHOW TABLES LIKE 'migrations'");
-        
-        if (empty($tables)) {
-            echo "✗ No migrations table found in database\n";
-        } else {
+        if (in_array('migrations', $tables)) {
             echo "✓ Migrations table exists\n\n";
-            
-            // Show which migrations have been run
-            $migrations = $db->select("SELECT * FROM migrations ORDER BY batch, migration");
-            
-            echo "Migrations run so far: " . count($migrations) . "\n\n";
+            $stmt = $pdo->query("SELECT * FROM migrations ORDER BY batch, migration");
+            $migrations = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            echo "Migrations run: " . count($migrations) . "\n";
             foreach ($migrations as $m) {
-                echo "Batch {$m->batch}: {$m->migration}\n";
+                echo "  Batch {$m['batch']}: {$m['migration']}\n";
             }
+        } else {
+            echo "✗ No migrations table - database is empty\n";
         }
+        
     } catch (\Exception $e) {
-        echo "✗ Error: " . $e->getMessage() . "\n";
+        echo "✗ Database Error: " . $e->getMessage() . "\n";
     }
     flush();
     exit(0);
