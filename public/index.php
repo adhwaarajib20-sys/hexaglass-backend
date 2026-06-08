@@ -50,6 +50,41 @@ if ($_SERVER['REQUEST_URI'] === '/json-test') {
     die();
 }
 
+// TEST: Check for any .env or env files in common locations
+if ($_SERVER['REQUEST_URI'] === '/find-env') {
+    header('Content-Type: application/json; charset=utf-8');
+    $response = [];
+    $locations = [
+        '/app/.env',
+        '/app/.env.production',
+        '/app/app/.env',
+        '/.env',
+        '/home/.env',
+        '/root/.env',
+        getcwd() . '/.env',
+    ];
+    
+    foreach ($locations as $loc) {
+        $response[$loc] = file_exists($loc) ? 'EXISTS (' . filesize($loc) . ' bytes)' : 'NOT FOUND';
+    }
+    
+    // Also try to read /proc/self/environ
+    if (file_exists('/proc/self/environ')) {
+        $environ = file_get_contents('/proc/self/environ');
+        $vars = explode("\0", $environ);
+        $mysql_vars = [];
+        foreach ($vars as $var) {
+            if (strpos($var, 'MYSQL') !== false || strpos($var, 'DB') !== false || strpos($var, 'DATABASE') !== false) {
+                $mysql_vars[] = explode('=', $var)[0];
+            }
+        }
+        $response['proc_environ_mysql_keys'] = $mysql_vars ?: [];
+    }
+    
+    echo json_encode($response, JSON_PRETTY_PRINT);
+    die();
+}
+
 // TEST: Environment check - includes $_SERVER and $_ENV
 if ($_SERVER['REQUEST_URI'] === '/env-check') {
     header('Content-Type: application/json; charset=utf-8');
