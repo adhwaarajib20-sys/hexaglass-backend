@@ -463,7 +463,77 @@ if ($_SERVER['REQUEST_URI'] === '/session-config') {
     exit(0);
 }
 
-// === CSRF DEBUG ===
+// === SESSION STORAGE DEBUG ===
+if ($_SERVER['REQUEST_URI'] === '/session-storage') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    echo "=== SESSION STORAGE DEBUG ===\n\n";
+    
+    // Get DB credentials
+    $dbHost = $_SERVER['DB_HOST'] ?? 'mysql.railway.internal';
+    $dbPort = $_SERVER['DB_PORT'] ?? '3306';
+    $dbDatabase = $_SERVER['DB_DATABASE'] ?? 'railway';
+    $dbUsername = $_SERVER['DB_USERNAME'] ?? 'root';
+    $dbPassword = $_SERVER['DB_PASSWORD'] ?? '';
+    
+    try {
+        $dsn = "mysql:host=$dbHost;port=$dbPort;dbname=$dbDatabase";
+        $pdo = new \PDO($dsn, $dbUsername, $dbPassword);
+        
+        echo "=== DATABASE CONNECTION ===\n";
+        echo "✓ Connected to $dbDatabase\n\n";
+        
+        // Check if sessions table exists
+        $stmt = $pdo->query("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA='$dbDatabase' AND TABLE_NAME='sessions'");
+        $exists = $stmt->fetchColumn();
+        
+        echo "=== SESSIONS TABLE ===\n";
+        if ($exists) {
+            echo "✓ Sessions table EXISTS\n";
+            
+            // Get session count
+            $stmt = $pdo->query("SELECT COUNT(*) FROM sessions");
+            $count = $stmt->fetchColumn();
+            echo "  Current sessions in database: $count\n\n";
+            
+            // Show recent sessions
+            $stmt = $pdo->query("SELECT id, user_id, payload, created_at, last_activity FROM sessions ORDER BY last_activity DESC LIMIT 5");
+            $sessions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            if (!empty($sessions)) {
+                echo "  Recent sessions:\n";
+                foreach ($sessions as $session) {
+                    $userId = $session['user_id'] ? "User: " . $session['user_id'] : "No user";
+                    $id = substr($session['id'], 0, 20) . '...';
+                    $activity = $session['last_activity'];
+                    echo "  - ID: $id ($userId, activity: $activity)\n";
+                }
+            } else {
+                echo "  NO SESSIONS IN DATABASE\n";
+            }
+        } else {
+            echo "✗ Sessions table DOES NOT EXIST\n";
+            echo "  Need to run migrations\n";
+        }
+        
+        echo "\n=== REQUEST COOKIES ===\n";
+        if (!empty($_COOKIE)) {
+            foreach ($_COOKIE as $name => $value) {
+                if (strpos($name, 'SESSION') !== false || strpos($name, 'LARAVEL') !== false) {
+                    echo "- $name = " . substr($value, 0, 30) . "...\n";
+                }
+            }
+        } else {
+            echo "NO COOKIES\n";
+        }
+        
+    } catch (\Exception $e) {
+        echo "✗ Error: " . $e->getMessage() . "\n";
+    }
+    
+    flush();
+    exit(0);
+}
 if ($_SERVER['REQUEST_URI'] === '/csrf-test') {
     header('Content-Type: text/plain; charset=UTF-8');
     
