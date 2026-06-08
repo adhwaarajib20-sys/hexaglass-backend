@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_URI'] === '/env-status') {
 }
 
 // === MIGRATION ENDPOINT (ONE-TIME SETUP) ===
-if ($_SERVER['REQUEST_URI'] === '/run-migrations') {
+if (strpos($_SERVER['REQUEST_URI'], '/run-migrations') === 0) {
     header('Content-Type: text/plain; charset=UTF-8');
     
     ob_start();
@@ -215,6 +215,73 @@ if ($_SERVER['REQUEST_URI'] === '/run-migrations') {
         if (!empty($output)) {
             echo "Partial output:\n" . $output;
         }
+    }
+    flush();
+    exit(0);
+}
+
+// === CHECK WHICH MIGRATIONS HAVE RUN ===
+if (strpos($_SERVER['REQUEST_URI'], '/check-migrations-table') === 0) {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    try {
+        require __DIR__.'/../vendor/autoload.php';
+        $app = require_once __DIR__.'/../bootstrap/app.php';
+        
+        $db = $app->make('db');
+        
+        // Check if migrations table exists
+        $tables = $db->select("SHOW TABLES LIKE 'migrations'");
+        
+        if (empty($tables)) {
+            echo "✗ No migrations table found in database\n";
+        } else {
+            echo "✓ Migrations table exists\n\n";
+            
+            // Show which migrations have been run
+            $migrations = $db->select("SELECT * FROM migrations ORDER BY batch, migration");
+            
+            echo "Migrations run so far: " . count($migrations) . "\n\n";
+            foreach ($migrations as $m) {
+                echo "Batch {$m->batch}: {$m->migration}\n";
+            }
+        }
+    } catch (\Exception $e) {
+        echo "✗ Error: " . $e->getMessage();
+    }
+    flush();
+    exit(0);
+}
+
+// === RESET DATABASE ===
+if (strpos($_SERVER['REQUEST_URI'], '/reset-db') === 0) {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    ob_start();
+    
+    try {
+        require __DIR__.'/../vendor/autoload.php';
+        $app = require_once __DIR__.'/../bootstrap/app.php';
+        
+        $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
+        
+        echo "Running migrate:refresh (drops all tables and re-runs migrations)...\n\n";
+        
+        $status = $kernel->call('migrate:refresh', ['--force' => true, '--verbose' => true]);
+        
+        $output = ob_get_clean();
+        
+        if ($status === 0) {
+            echo "✓ Database reset and migrations completed!\n\n";
+            echo $output;
+        } else {
+            echo "✗ Reset failed with status: $status\n\n";
+            echo $output;
+        }
+    } catch (\Exception $e) {
+        $output = ob_get_clean();
+        echo "✗ Error: " . $e->getMessage() . "\n\n";
+        echo $output;
     }
     flush();
     exit(0);
