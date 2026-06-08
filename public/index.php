@@ -5,6 +5,23 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// CRITICAL: Delete all cached files to force fresh .env read
+$cachePath = __DIR__.'/../bootstrap/cache';
+$cacheFiles = [
+    'config.php',
+    'routes-v7.php', 
+    'routes-v7.php.gz',
+    'events.php',
+    'events.php.gz',
+];
+
+foreach ($cacheFiles as $cacheFile) {
+    $file = $cachePath . '/' . $cacheFile;
+    if (file_exists($file)) {
+        @unlink($file);
+    }
+}
+
 // Generate .env from Railway environment variables before Laravel boots
 // Always attempt to generate - it validates and exits if not on Railway
 require __DIR__.'/../bootstrap/railway-env-generator.php';

@@ -8,14 +8,9 @@
 $mysqlHost = getenv('MYSQL_HOST');
 $appKey = getenv('APP_KEY');
 
-// If not on Railway AND .env already exists, skip generator
-if (!$mysqlHost && file_exists(dirname(__DIR__) . '/.env')) {
-    return; // Local development, .env exists
-}
-
-// If not on Railway AND no .env exists, error
+// If not on Railway, skip (local .env will be used)
 if (!$mysqlHost) {
-    error_log("⚠️ Warning: Not on Railway (MYSQL_HOST not set) and no .env file exists");
+    error_log("⚠️  Not on Railway - skipping .env generation (local .env will be used)");
     return;
 }
 
@@ -113,9 +108,19 @@ if (file_put_contents($envPath, $envContent) === false) {
 }
 
 // Log success
-error_log("✅ .env file generated successfully");
+$envSize = filesize($envPath);
+error_log("✅ .env file generated successfully at $envPath (size: $envSize bytes)");
 error_log("   DB_HOST: " . $railwayVars['MYSQL_HOST']);
+error_log("   DB_PORT: " . $railwayVars['MYSQL_PORT']);
 error_log("   DB_DATABASE: " . $railwayVars['MYSQL_NAME']);
+error_log("   DB_USERNAME: " . $railwayVars['MYSQL_USER']);
+
+// Verify the file was written correctly by reading it back
+$written = file_get_contents($envPath);
+if (strpos($written, $railwayVars['MYSQL_HOST']) === false) {
+    error_log("❌ ERROR: .env file was written but MySQL host not found in content!");
+    exit(1);
+}
 
 // Define constant to prevent regeneration
 if (!defined('RAILWAY_ENV_GENERATED')) {
