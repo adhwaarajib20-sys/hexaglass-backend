@@ -333,7 +333,47 @@ if (strpos($_SERVER['REQUEST_URI'], '/reset-db') === 0) {
     exit(0);
 }
 
-// === MAINTENANCE ===
+// === COMPREHENSIVE ENVIRONMENT DIAGNOSTIC ===
+if (strpos($_SERVER['REQUEST_URI'], '/diagnose-env') === 0) {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    echo "=== PROC/SELF/ENVIRON ===\n";
+    if (file_exists('/proc/self/environ')) {
+        $environ = file_get_contents('/proc/self/environ');
+        $vars = explode("\0", $environ);
+        $db_vars = array_filter($vars, function($v) {
+            return strpos($v, 'DB_') === 0;
+        });
+        foreach ($db_vars as $var) {
+            echo "  $var\n";
+        }
+    } else {
+        echo "  /proc/self/environ NOT FOUND\n";
+    }
+    
+    echo "\n=== .env FILE ===\n";
+    $envPath = __DIR__.'/../.env';
+    if (file_exists($envPath)) {
+        $lines = explode("\n", file_get_contents($envPath));
+        foreach ($lines as $line) {
+            if (strpos($line, 'DB_') === 0) {
+                echo "  $line\n";
+            }
+        }
+    } else {
+        echo "  .env NOT FOUND\n";
+    }
+    
+    echo "\n=== \$_SERVER VARIABLES ===\n";
+    echo "  DB_HOST=" . ($_SERVER['DB_HOST'] ?? 'NOT_SET') . "\n";
+    echo "  DB_PORT=" . ($_SERVER['DB_PORT'] ?? 'NOT_SET') . "\n";
+    echo "  DB_DATABASE=" . ($_SERVER['DB_DATABASE'] ?? 'NOT_SET') . "\n";
+    echo "  DB_USERNAME=" . ($_SERVER['DB_USERNAME'] ?? 'NOT_SET') . "\n";
+    echo "  DB_PASSWORD=" . (isset($_SERVER['DB_PASSWORD']) ? (empty($_SERVER['DB_PASSWORD']) ? '(EMPTY)' : '(SET)') : 'NOT_SET') . "\n";
+    
+    flush();
+    exit(0);
+}
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
 }
