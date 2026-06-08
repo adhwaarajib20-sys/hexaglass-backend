@@ -68,6 +68,33 @@ if (!file_exists($envPath)) {
 }
 
 // === TEST ENDPOINTS ===
+if ($_SERVER['REQUEST_URI'] === '/dump-all-env') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    if (file_exists('/proc/self/environ')) {
+        $environ = file_get_contents('/proc/self/environ');
+        $vars = explode("\0", $environ);
+        
+        $output = "=== ALL /proc/self/environ VARIABLES ===\n";
+        $output .= "Total count: " . count($vars) . "\n\n";
+        
+        // Sort for readability
+        sort($vars);
+        
+        foreach ($vars as $var) {
+            if (!empty($var)) {
+                $output .= "$var\n";
+            }
+        }
+        
+        echo $output;
+    } else {
+        echo "/proc/self/environ NOT FOUND";
+    }
+    flush();
+    exit(0);
+}
+
 if ($_SERVER['REQUEST_URI'] === '/check-db-password') {
     header('Content-Type: text/plain; charset=UTF-8');
     
