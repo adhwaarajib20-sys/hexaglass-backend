@@ -13,6 +13,19 @@ use App\Http\Controllers\Web\Operator\PengisianController as OperatorPengisian;
 use App\Http\Controllers\Web\Operator\LaporanController as OperatorLaporan;
 use App\Http\Controllers\ProfileController;
 
+// Diagnostic route
+Route::get('/diagnostic', function () {
+    return response()->json([
+        'status' => 'working',
+        'time' => now(),
+        'env' => config('app.env'),
+        'debug' => config('app.debug'),
+        'routes_count' => count(\Route::getRoutes()),
+        'db_connection' => config('database.default'),
+        'db_host' => config('database.connections.mysql.host'),
+    ], 200, ['Content-Type' => 'application/json; charset=UTF-8']);
+});
+
 // Health check
 Route::get('/health', function () {
     return response()->json(['status' => 'ok', 'time' => now()]);
