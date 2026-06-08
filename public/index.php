@@ -5,6 +5,18 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// CRITICAL: Generate .env BEFORE any test endpoints run
+require __DIR__.'/../bootstrap/railway-env-generator.php';
+
+// Delete all cached files to force fresh reads
+$cachePath = __DIR__.'/../bootstrap/cache';
+foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'events.php.gz'] as $file) {
+    $path = $cachePath . '/' . $file;
+    if (file_exists($path)) {
+        @unlink($path);
+    }
+}
+
 // TEST: Debug endpoint
 if ($_SERVER['REQUEST_URI'] === '/debug') {
     header('Content-Type: text/plain; charset=utf-8');
@@ -22,43 +34,6 @@ if ($_SERVER['REQUEST_URI'] === '/env-status') {
         'env_size' => file_exists($envPath) ? filesize($envPath) : 0,
     ]);
     exit(0);
-}
-
-// TEST: Test env generator manually
-if ($_SERVER['REQUEST_URI'] === '/test-env-gen') {
-    header('Content-Type: text/plain; charset=utf-8');
-    
-    // Check what's in /proc/self/environ
-    echo "=== Checking /proc/self/environ ===\n";
-    if (file_exists('/proc/self/environ')) {
-        $environ = file_get_contents('/proc/self/environ');
-        $vars = explode("\0", $environ);
-        $found = 0;
-        foreach ($vars as $var) {
-            if (strpos($var, 'DB_HOST') === 0 || strpos($var, 'DB_DATABASE') === 0) {
-                echo $var . "\n";
-                $found++;
-            }
-        }
-        if ($found == 0) echo "NO DB_* vars found!\n";
-    } else {
-        echo "/proc/self/environ NOT FOUND\n";
-    }
-    
-    echo "\n=== .env before generation ===\n";
-    $envPath = __DIR__.'/../.env';
-    echo "exists: " . (file_exists($envPath) ? 'YES' : 'NO') . "\n";
-    
-    exit(0);
-}
-
-// Delete all cached files to force fresh reads
-$cachePath = __DIR__.'/../bootstrap/cache';
-foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'events.php.gz'] as $file) {
-    $path = $cachePath . '/' . $file;
-    if (file_exists($path)) {
-        @unlink($path);
-    }
 }
 
 // Generate .env from Railway environment variables
