@@ -1,1 +1,1 @@
-rm -rf bootstrap/cache/* && php artisan config:clear && php artisan cache:clear
+rm -rf bootstrap/cache/* && php artisan config:clear && php artisan cache:clear && php artisan migrate --force
