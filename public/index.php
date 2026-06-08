@@ -24,6 +24,42 @@ if ($_SERVER['REQUEST_URI'] === '/status') {
     exit(0);
 }
 
+// === DIAGNOSTIC: Check users in database ===
+if ($_SERVER['REQUEST_URI'] === '/check-users') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    try {
+        require __DIR__.'/../vendor/autoload.php';
+        $app = require_once __DIR__.'/../bootstrap/app.php';
+        
+        // Check if users table exists and has data
+        $users = \DB::table('users')->select('id', 'name', 'email', 'status')->get();
+        
+        echo "✓ Users table accessible\n";
+        echo "Total users: " . count($users) . "\n\n";
+        
+        foreach ($users as $user) {
+            echo "- ID: {$user->id}, Email: {$user->email}, Name: {$user->name}, Status: {$user->status}\n";
+        }
+        
+        // Check admin user specifically
+        $admin = \DB::table('users')->where('email', 'admin@hexaglass.com')->first();
+        echo "\n=== Admin User Details ===\n";
+        if ($admin) {
+            echo "Found: " . $admin->email . "\n";
+            echo "Name: " . $admin->name . "\n";
+            echo "ID: " . $admin->id . "\n";
+            echo "Status: " . $admin->status . "\n";
+        } else {
+            echo "NOT FOUND\n";
+        }
+    } catch (\Exception $e) {
+        echo "✗ Error: " . $e->getMessage();
+    }
+    flush();
+    exit(0);
+}
+
 // === BEFORE ANYTHING ELSE ===
 // Delete cache files
 $cachePath = __DIR__.'/../bootstrap/cache';
