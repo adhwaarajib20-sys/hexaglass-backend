@@ -5,10 +5,15 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Log all requests for debugging
+error_log("REQUEST: " . $_SERVER['REQUEST_URI'] . " at " . date('Y-m-d H:i:s'));
+
 // === ULTRA SIMPLE TEST ===
 if ($_SERVER['REQUEST_URI'] === '/ping') {
     header('Content-Type: text/plain; charset=UTF-8');
-    exit("PONG");
+    echo "PONG";
+    error_log("PING endpoint executed");
+    exit(0);
 }
 
 // === BEFORE ANYTHING ELSE ===
@@ -56,11 +61,20 @@ if (!file_exists($envPath)) {
 
 // === TEST ENDPOINTS ===
 if ($_SERVER['REQUEST_URI'] === '/debug') {
-    exit("OK");
+    $output = "OK at " . date('Y-m-d H:i:s') . "\n";
+    @file_put_contents(__DIR__.'/../storage/logs/debug.txt', $output, FILE_APPEND);
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo $output;
+    exit(0);
 }
 
 if ($_SERVER['REQUEST_URI'] === '/env-status') {
-    exit(file_exists($envPath) ? "YES" : "NO");
+    $status = file_exists($envPath) ? "YES" : "NO";
+    $output = $status . " at " . date('Y-m-d H:i:s') . "\n";
+    @file_put_contents(__DIR__.'/../storage/logs/env-status.txt', $output, FILE_APPEND);
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo $output;
+    exit(0);
 }
 
 // === MAINTENANCE ===
