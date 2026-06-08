@@ -1,25 +1,42 @@
 #!/bin/bash
 
-# Railway start script
+# Railway start script - Hexaglass Backend
 PORT=${PORT:-8080}
 
 echo "🌐 Starting Hexaglass Laravel on 0.0.0.0:$PORT"
 echo "📂 Document root: $(pwd)/public"
 
-# Generate .env if it doesn't exist (Railway injects environment variables at runtime)
+# Validate required environment variables
+if [ -z "$APP_KEY" ]; then
+  echo "❌ ERROR: APP_KEY not set in Railway environment!"
+  exit 1
+fi
+
+if [ -z "$DB_HOST" ]; then
+  echo "❌ ERROR: DB_HOST not set by Railway MySQL plugin!"
+  exit 1
+fi
+
+if [ -z "$DB_USERNAME" ]; then
+  echo "❌ ERROR: DB_USERNAME not set by Railway MySQL plugin!"
+  exit 1
+fi
+
+if [ -z "$DB_PASSWORD" ]; then
+  echo "❌ ERROR: DB_PASSWORD not set by Railway MySQL plugin!"
+  exit 1
+fi
+
+if [ -z "$DB_DATABASE" ]; then
+  echo "❌ ERROR: DB_DATABASE not set by Railway MySQL plugin!"
+  exit 1
+fi
+
+echo "✅ All required environment variables are set"
+
+# Generate .env from .env.production template
 if [ ! -f .env ]; then
-  echo "📝 Generating .env from environment variables..."
-  
-  # Validate required variables
-  if [ -z "$APP_KEY" ]; then
-    echo "⚠️  APP_KEY not set, generating one..."
-    APP_KEY="base64:$(head -c 32 /dev/urandom | base64)"
-  fi
-  
-  if [ -z "$DB_HOST" ]; then
-    echo "❌ ERROR: DB_HOST not set by Railway!"
-    exit 1
-  fi
+  echo "📝 Generating .env from .env.production template..."
   
   cat > .env << EOF
 APP_NAME=${APP_NAME:-MigasQueue}
