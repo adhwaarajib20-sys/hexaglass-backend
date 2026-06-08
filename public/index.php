@@ -32,8 +32,12 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
         require __DIR__.'/../vendor/autoload.php';
         $app = require_once __DIR__.'/../bootstrap/app.php';
         
-        // Check if users table exists and has data
-        $users = \DB::table('users')->select('id', 'name', 'email', 'status')->get();
+        // Make sure the service providers are booted
+        $app->boot();
+        
+        // Get the database manager
+        $db = $app->make('db');
+        $users = $db->table('users')->select('id', 'name', 'email', 'status')->get();
         
         echo "✓ Users table accessible\n";
         echo "Total users: " . count($users) . "\n\n";
@@ -43,7 +47,7 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
         }
         
         // Check admin user specifically
-        $admin = \DB::table('users')->where('email', 'admin@hexaglass.com')->first();
+        $admin = $db->table('users')->where('email', 'admin@hexaglass.com')->first();
         echo "\n=== Admin User Details ===\n";
         if ($admin) {
             echo "Found: " . $admin->email . "\n";
@@ -54,7 +58,8 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
             echo "NOT FOUND\n";
         }
     } catch (\Exception $e) {
-        echo "✗ Error: " . $e->getMessage();
+        echo "✗ Error: " . $e->getMessage() . "\n";
+        echo "Trace: " . $e->getTraceAsString();
     }
     flush();
     exit(0);
