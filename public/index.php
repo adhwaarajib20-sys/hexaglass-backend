@@ -61,8 +61,7 @@ if (!file_exists($envPath)) {
 
 // === TEST ENDPOINTS ===
 if ($_SERVER['REQUEST_URI'] === '/debug') {
-    $output = "OK at " . date('Y-m-d H:i:s') . "\n";
-    @file_put_contents(__DIR__.'/../storage/logs/debug.txt', $output, FILE_APPEND);
+    $output = "OK at " . date('Y-m-d H:i:s');
     header('Content-Type: text/plain; charset=UTF-8');
     echo $output;
     exit(0);
@@ -70,8 +69,7 @@ if ($_SERVER['REQUEST_URI'] === '/debug') {
 
 if ($_SERVER['REQUEST_URI'] === '/env-status') {
     $status = file_exists($envPath) ? "YES" : "NO";
-    $output = $status . " at " . date('Y-m-d H:i:s') . "\n";
-    @file_put_contents(__DIR__.'/../storage/logs/env-status.txt', $output, FILE_APPEND);
+    $output = $status . " at " . date('Y-m-d H:i:s');
     header('Content-Type: text/plain; charset=UTF-8');
     echo $output;
     exit(0);
