@@ -70,7 +70,11 @@ if ($_SERVER['REQUEST_URI'] === '/debug') {
 }
 
 if ($_SERVER['REQUEST_URI'] === '/env-status') {
-    exit(file_exists($envPath) ? "YES" : "NO");
+    header('Content-Type: text/plain; charset=UTF-8');
+    $status = file_exists($envPath) ? "ENV_EXISTS" : "NO_ENV";
+    echo $status;
+    flush();
+    exit(0);
 }
 
 // === MAINTENANCE ===

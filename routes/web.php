@@ -22,15 +22,11 @@ Route::get('/test', function () {
 
 // Diagnostic route
 Route::get('/diagnostic', function () {
-    return response()->json([
+    return response()->make(json_encode([
         'status' => 'working',
-        'time' => now(),
         'env' => config('app.env'),
         'debug' => config('app.debug'),
-        'routes_count' => count(\Route::getRoutes()),
-        'db_connection' => config('database.default'),
-        'db_host' => config('database.connections.mysql.host'),
-    ], 200, ['Content-Type' => 'application/json; charset=UTF-8']);
+    ]), 200, ['Content-Type' => 'application/json']);
 });
 
 // Health check
