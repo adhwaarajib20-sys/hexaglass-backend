@@ -8,9 +8,13 @@ define('LARAVEL_START', microtime(true));
 // Quick debug - ensure PHP is working
 error_log("🚀 public/index.php loaded at " . date('Y-m-d H:i:s'));
 
-// TEST: See if we can output anything
-if (strpos($_SERVER['REQUEST_URI'] ?? '', '/test-echo') === 0) {
-    die("TEST-ECHO WORKS AT " . date('Y-m-d H:i:s'));
+// TEST: Simple text output to verify PHP works
+if (isset($_GET['test']) && $_GET['test'] === 'echo') {
+    http_response_code(200);
+    header('Content-Type: text/plain; charset=utf-8');
+    exit("SUCCESS: PHP is working! Time: " . date('Y-m-d H:i:s GMT\\+7') . "\n" .
+         "Memory: " . memory_get_usage(true) / 1024 / 1024 . " MB\n" .
+         "DB connection test will follow...");
 }
 
 // CRITICAL: Delete all cached files to force fresh .env read
