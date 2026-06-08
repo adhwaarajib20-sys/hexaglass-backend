@@ -5,11 +5,8 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-// Load custom env() helper FIRST - must be before anything else
+// Custom env() helper to ensure Railway environment variables are accessible
 require __DIR__.'/../bootstrap/env-helper.php';
-
-// Load environment variables from Railway
-require __DIR__.'/../bootstrap/env-loader.php';
 
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
