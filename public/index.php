@@ -5,7 +5,10 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-// Load environment variables before bootstrapping
+// Load custom env() helper FIRST - must be before anything else
+require __DIR__.'/../bootstrap/env-helper.php';
+
+// Load environment variables from Railway
 require __DIR__.'/../bootstrap/env-loader.php';
 
 // Determine if the application is in maintenance mode...
