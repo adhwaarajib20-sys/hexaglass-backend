@@ -68,6 +68,37 @@ if (!file_exists($envPath)) {
 }
 
 // === TEST ENDPOINTS ===
+if ($_SERVER['REQUEST_URI'] === '/debug-env-gen') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    $output = "=== PROC ENVIRONMENT DEBUG ===\n\n";
+    
+    if (file_exists('/proc/self/environ')) {
+        $environ = file_get_contents('/proc/self/environ');
+        $vars = explode("\0", $environ);
+        
+        $db_vars = array_filter($vars, function($v) {
+            return strpos($v, 'DB_') === 0 || strpos($v, 'MYSQL_') === 0 || strpos($v, 'APP_KEY') === 0;
+        });
+        
+        $output .= "Found " . count($db_vars) . " database/app variables:\n";
+        foreach ($db_vars as $var) {
+            $parts = explode('=', $var, 2);
+            if (isset($parts[0])) {
+                $key = $parts[0];
+                $val = isset($parts[1]) ? substr($parts[1], 0, 20) . (strlen($parts[1]) > 20 ? '...' : '') : '';
+                $output .= "  $key = $val\n";
+            }
+        }
+    } else {
+        $output .= "/proc/self/environ not accessible\n";
+    }
+    
+    echo $output;
+    flush();
+    exit(0);
+}
+
 if ($_SERVER['REQUEST_URI'] === '/debug') {
     @file_put_contents('php://stderr', "DEBUG endpoint hit\n");
     header('Content-Type: text/plain; charset=UTF-8');
