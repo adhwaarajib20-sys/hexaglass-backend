@@ -8,6 +8,41 @@ define('LARAVEL_START', microtime(true));
 // === WRITE TO LOG FILE ===
 @file_put_contents('/tmp/php_request.log', '[' . date('Y-m-d H:i:s') . '] URI: ' . $_SERVER['REQUEST_URI'] . "\n", FILE_APPEND);
 
+// === ENVIRONMENT SETUP - MUST RUN FIRST ===
+// Delete cache files
+$cachePath = __DIR__.'/../bootstrap/cache';
+foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'events.php.gz'] as $file) {
+    $path = $cachePath . '/' . $file;
+    if (file_exists($path)) {
+        @unlink($path);
+    }
+}
+
+// Generate .env from Railway environment
+require __DIR__.'/../bootstrap/railway-env-generator.php';
+
+// Load .env into $_SERVER and $_ENV superglobals for Laravel to access
+$envPath = __DIR__.'/../.env';
+if (file_exists($envPath)) {
+    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
+            [$key, $value] = explode('=', $line, 2);
+            $key = trim($key);
+            $value = trim($value);
+            
+            // Remove quotes if present
+            if (($value[0] ?? '') === '"' && ($value[-1] ?? '') === '"') {
+                $value = substr($value, 1, -1);
+            }
+            
+            $_SERVER[$key] = $value;
+            $_ENV[$key] = $value;
+            putenv("$key=$value");
+        }
+    }
+}
+
 // === ULTRA SIMPLE TEST ===
 if ($_SERVER['REQUEST_URI'] === '/ping') {
     header('Content-Type: text/plain; charset=UTF-8');
@@ -36,7 +71,7 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
         $dbUsername = $_SERVER['DB_USERNAME'] ?? 'root';
         $dbPassword = $_SERVER['DB_PASSWORD'] ?? '';
         
-        echo "Connecting to: $dbHost:$dbPort/$dbDatabase\n";
+        echo "Connecting to: $dbHost:$dbPort/$dbDatabase as $dbUsername\n";
         
         // Test raw PDO connection
         $dsn = "mysql:host=$dbHost;port=$dbPort;dbname=$dbDatabase";
@@ -71,41 +106,6 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
     }
     flush();
     exit(0);
-}
-
-// === BEFORE ANYTHING ELSE ===
-// Delete cache files
-$cachePath = __DIR__.'/../bootstrap/cache';
-foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'events.php.gz'] as $file) {
-    $path = $cachePath . '/' . $file;
-    if (file_exists($path)) {
-        @unlink($path);
-    }
-}
-
-// Generate .env from Railway environment
-require __DIR__.'/../bootstrap/railway-env-generator.php';
-
-// Load .env into $_SERVER and $_ENV superglobals for Laravel to access
-$envPath = __DIR__.'/../.env';
-if (file_exists($envPath)) {
-    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
-            [$key, $value] = explode('=', $line, 2);
-            $key = trim($key);
-            $value = trim($value);
-            
-            // Remove quotes if present
-            if (($value[0] ?? '') === '"' && ($value[-1] ?? '') === '"') {
-                $value = substr($value, 1, -1);
-            }
-            
-            $_SERVER[$key] = $value;
-            $_ENV[$key] = $value;
-            putenv("$key=$value");
-        }
-    }
 }
 
 // === TEST ENDPOINTS ===
