@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_URI'] === '/json-test') {
     die();
 }
 
-// TEST: Environment check
+// TEST: Environment check - includes $_SERVER and $_ENV
 if ($_SERVER['REQUEST_URI'] === '/env-check') {
     header('Content-Type: application/json; charset=utf-8');
     $envFile = __DIR__.'/../.env';
@@ -65,9 +65,26 @@ if ($_SERVER['REQUEST_URI'] === '/env-check') {
         $response['env_lines'] = count(explode("\n", $content));
         $response['env_preview'] = implode("\n", array_slice(explode("\n", $content), 0, 5));
     } else {
-        $response['mysql_host'] = getenv('MYSQL_HOST') ?: 'NOT SET';
-        $response['mysql_port'] = getenv('MYSQL_PORT') ?: 'NOT SET';
-        $response['mysql_name'] = getenv('MYSQL_NAME') ?: 'NOT SET';
+        // Check getenv()
+        $response['getenv_mysql_host'] = getenv('MYSQL_HOST') ?: 'NOT SET';
+        $response['getenv_mysql_port'] = getenv('MYSQL_PORT') ?: 'NOT SET';
+        
+        // Check $_SERVER
+        $response['server_mysql_host'] = $_SERVER['MYSQL_HOST'] ?? 'NOT SET';
+        $response['server_mysql_port'] = $_SERVER['MYSQL_PORT'] ?? 'NOT SET';
+        
+        // Check $_ENV
+        $response['env_mysql_host'] = $_ENV['MYSQL_HOST'] ?? 'NOT SET';
+        $response['env_mysql_port'] = $_ENV['MYSQL_PORT'] ?? 'NOT SET';
+        
+        // List first 10 MYSQL* keys in $_SERVER
+        $mysqlVars = [];
+        foreach ($_SERVER as $key => $val) {
+            if (strpos($key, 'MYSQL') !== false || strpos($key, 'DB') !== false) {
+                $mysqlVars[$key] = (strlen($val) > 50) ? substr($val, 0, 50) . '...' : $val;
+            }
+        }
+        $response['mysql_vars_in_server'] = $mysqlVars ?: 'NONE FOUND';
     }
     
     echo json_encode($response, JSON_PRETTY_PRINT);
