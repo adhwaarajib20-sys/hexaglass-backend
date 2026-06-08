@@ -50,6 +50,35 @@ if ($_SERVER['REQUEST_URI'] === '/json-test') {
     die();
 }
 
+// TEST: Read /proc env directly (no generator call)
+if ($_SERVER['REQUEST_URI'] === '/proc-test') {
+    header('Content-Type: text/plain; charset=utf-8');
+    echo "=== Reading /proc/self/environ directly ===\n\n";
+    
+    if (!file_exists('/proc/self/environ')) {
+        echo "/proc/self/environ not found!\n";
+        die();
+    }
+    
+    $environ = file_get_contents('/proc/self/environ');
+    $vars = explode("\0", $environ);
+    
+    $dbVars = [];
+    foreach ($vars as $var) {
+        if (!empty($var) && (strpos($var, 'DB_') !== false || strpos($var, 'APP_') !== false)) {
+            list($key, $value) = explode('=', $var, 2);
+            $dbVars[$key] = $value;
+        }
+    }
+    
+    echo count($dbVars) . " DB/APP environment variables found:\n\n";
+    foreach ($dbVars as $key => $value) {
+        $val = (strlen($value) > 80) ? substr($value, 0, 80) . '...' : $value;
+        echo "$key = $val\n";
+    }
+    die();
+}
+
 // TEST: Simple env generator test
 if ($_SERVER['REQUEST_URI'] === '/simple-gen') {
     header('Content-Type: text/plain; charset=utf-8');
