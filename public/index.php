@@ -259,6 +259,49 @@ if ($_SERVER['REQUEST_URI'] === '/run-migrations-fresh') {
     exit(0);
 }
 
+// === SEEDER ENDPOINT (CREATE TEST USERS) ===
+if ($_SERVER['REQUEST_URI'] === '/run-seeders') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    ob_start();
+    
+    try {
+        // Bootstrap Laravel
+        require __DIR__.'/../vendor/autoload.php';
+        $app = require_once __DIR__.'/../bootstrap/app.php';
+        
+        $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
+        
+        // Run seeders
+        $status = $kernel->call('db:seed', ['--force' => true, '--verbose' => true]);
+        
+        $output = ob_get_clean();
+        
+        if ($status === 0) {
+            echo "✓ Seeders completed successfully!\n\n";
+            echo "Test users created:\n";
+            echo "- admin@hexaglass.com / Admin@123\n";
+            echo "- operator@hexaglass.com / Operator@123\n";
+            echo "- satpam@hexaglass.com / Satpam@123\n\n";
+            echo "Output:\n";
+            echo $output;
+        } else {
+            echo "✗ Seeder failed with status code: $status\n\n";
+            echo "Output:\n";
+            echo $output;
+        }
+    } catch (\Exception $e) {
+        $output = ob_get_clean();
+        echo "✗ Error running seeders:\n";
+        echo $e->getMessage() . "\n\n";
+        if (!empty($output)) {
+            echo "Partial output:\n" . $output;
+        }
+    }
+    flush();
+    exit(0);
+}
+
 // === MAINTENANCE ===
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
