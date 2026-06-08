@@ -37,34 +37,26 @@ foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'even
 // Generate .env from Railway environment
 require __DIR__.'/../bootstrap/railway-env-generator.php';
 
-// Backup: Create .env manually if generator failed
+// Load .env into $_SERVER and $_ENV superglobals for Laravel to access
 $envPath = __DIR__.'/../.env';
-if (!file_exists($envPath)) {
-    function readFromProc($varName) {
-        if (file_exists('/proc/self/environ')) {
-            $environ = file_get_contents('/proc/self/environ');
-            $vars = explode("\0", $environ);
-            foreach ($vars as $var) {
-                if (strpos($var, $varName . '=') === 0) {
-                    return substr($var, strlen($varName) + 1);
-                }
+if (file_exists($envPath)) {
+    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
+            [$key, $value] = explode('=', $line, 2);
+            $key = trim($key);
+            $value = trim($value);
+            
+            // Remove quotes if present
+            if (($value[0] ?? '') === '"' && ($value[-1] ?? '') === '"') {
+                $value = substr($value, 1, -1);
             }
+            
+            $_SERVER[$key] = $value;
+            $_ENV[$key] = $value;
+            putenv("$key=$value");
         }
-        return '';
     }
-    
-    $host = readFromProc('DB_HOST') ?: 'mysql.railway.internal';
-    $port = readFromProc('DB_PORT') ?: '3306';
-    $database = readFromProc('DB_DATABASE') ?: 'hexaglass_db';
-    $username = readFromProc('DB_USERNAME') ?: 'railway';
-    $password = readFromProc('DB_PASSWORD') ?: '';
-    $appKey = readFromProc('APP_KEY') ?: 'base64:TcjCW1iHmMeebYhqRReWOWRR2NXX6buMQVWY68LuwEQ=';
-    
-    $content = "APP_NAME=MigasQueue\nAPP_ENV=production\nAPP_DEBUG=true\nAPP_KEY=$appKey\n";
-    $content .= "DB_CONNECTION=mysql\nDB_HOST=$host\nDB_PORT=$port\nDB_DATABASE=$database\n";
-    $content .= "DB_USERNAME=$username\nDB_PASSWORD=$password\n";
-    
-    file_put_contents($envPath, $content);
 }
 
 // === TEST ENDPOINTS ===
