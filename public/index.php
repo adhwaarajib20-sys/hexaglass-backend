@@ -5,6 +5,9 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Quick debug - ensure PHP is working
+error_log("🚀 public/index.php loaded at " . date('Y-m-d H:i:s'));
+
 // CRITICAL: Delete all cached files to force fresh .env read
 $cachePath = __DIR__.'/../bootstrap/cache';
 $cacheFiles = [
