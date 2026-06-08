@@ -5,35 +5,50 @@
  * Can be executed as: php bootstrap/railway-env-generator.php
  */
 
-// Get all Railway MySQL variables
-$mysqlHost = getenv('MYSQL_HOST');
-$mysqlPort = getenv('MYSQL_PORT') ?: '3306';
-$mysqlName = getenv('MYSQL_NAME');
-$mysqlUser = getenv('MYSQL_USER');
-$mysqlPassword = getenv('MYSQL_PASSWORD');
-$appKey = getenv('APP_KEY');
+// Railway doesn't pass env vars to getenv(), but they ARE in /proc/self/environ
+// Let's read them from there instead
+function getEnvFromProc($varName) {
+    if (file_exists('/proc/self/environ')) {
+        $environ = file_get_contents('/proc/self/environ');
+        $vars = explode("\0", $environ);
+        foreach ($vars as $var) {
+            if (strpos($var, $varName . '=') === 0) {
+                return substr($var, strlen($varName) + 1);
+            }
+        }
+    }
+    return getenv($varName); // Fallback
+}
 
-error_log("🔧 Env Generator: Checking for Railway environment variables...");
+// Get Database variables from Railway (using DB_* format, not MYSQL_*)
+$dbHost = getEnvFromProc('DB_HOST');
+$dbPort = getEnvFromProc('DB_PORT') ?: '3306';
+$dbDatabase = getEnvFromProc('DB_DATABASE');
+$dbUsername = getEnvFromProc('DB_USERNAME');
+$dbPassword = getEnvFromProc('DB_PASSWORD');
+$appKey = getEnvFromProc('APP_KEY');
+
+error_log("🔧 Env Generator: Checking Railway environment variables from /proc/self/environ...");
 
 // If not on Railway, skip (local .env will be used)
-if (!$mysqlHost) {
-    error_log("⚠️  Not on Railway (MYSQL_HOST empty) - using local .env");
+if (!$dbHost) {
+    error_log("⚠️  Not on Railway (DB_HOST empty) - using local .env");
     exit(0);
 }
 
 error_log("✅ Railway detected - will generate .env");
-error_log("   MYSQL_HOST: " . ($mysqlHost ? '✓' : '✗'));
-error_log("   MYSQL_NAME: " . ($mysqlName ? '✓' : '✗'));
-error_log("   MYSQL_USER: " . ($mysqlUser ? '✓' : '✗'));
-error_log("   MYSQL_PASSWORD: " . ($mysqlPassword ? '✓ (hidden)' : '✗'));
+error_log("   DB_HOST: " . ($dbHost ? '✓' : '✗'));
+error_log("   DB_DATABASE: " . ($dbDatabase ? '✓' : '✗'));
+error_log("   DB_USERNAME: " . ($dbUsername ? '✓' : '✗'));
+error_log("   DB_PASSWORD: " . ($dbPassword ? '✓ (hidden)' : '✗'));
 error_log("   APP_KEY: " . ($appKey ? '✓' : '✗'));
 
 // Validate required variables
 $missing = [];
-if (!$mysqlHost) $missing[] = 'MYSQL_HOST';
-if (!$mysqlName) $missing[] = 'MYSQL_NAME';
-if (!$mysqlUser) $missing[] = 'MYSQL_USER';
-if (!$mysqlPassword) $missing[] = 'MYSQL_PASSWORD';
+if (!$dbHost) $missing[] = 'DB_HOST';
+if (!$dbDatabase) $missing[] = 'DB_DATABASE';
+if (!$dbUsername) $missing[] = 'DB_USERNAME';
+if (!$dbPassword) $missing[] = 'DB_PASSWORD';
 
 if (!empty($missing)) {
     error_log("❌ FATAL: Missing Railway environment variables: " . implode(', ', $missing));
@@ -60,11 +75,11 @@ LOG_STACK=single
 LOG_LEVEL=debug
 
 DB_CONNECTION=mysql
-DB_HOST=%MYSQL_HOST%
-DB_PORT=%MYSQL_PORT%
-DB_DATABASE=%MYSQL_NAME%
-DB_USERNAME=%MYSQL_USER%
-DB_PASSWORD=%MYSQL_PASSWORD%
+DB_HOST=%DB_HOST%
+DB_PORT=%DB_PORT%
+DB_DATABASE=%DB_DATABASE%
+DB_USERNAME=%DB_USERNAME%
+DB_PASSWORD=%DB_PASSWORD%
 
 SESSION_DRIVER=database
 SESSION_LIFETIME=120
@@ -88,11 +103,11 @@ EOF;
 
 // Replace placeholders with actual values
 $envContent = str_replace('%APP_KEY%', $appKey, $envContent);
-$envContent = str_replace('%MYSQL_HOST%', $mysqlHost, $envContent);
-$envContent = str_replace('%MYSQL_PORT%', $mysqlPort, $envContent);
-$envContent = str_replace('%MYSQL_NAME%', $mysqlName, $envContent);
-$envContent = str_replace('%MYSQL_USER%', $mysqlUser, $envContent);
-$envContent = str_replace('%MYSQL_PASSWORD%', $mysqlPassword, $envContent);
+$envContent = str_replace('%DB_HOST%', $dbHost, $envContent);
+$envContent = str_replace('%DB_PORT%', $dbPort, $envContent);
+$envContent = str_replace('%DB_DATABASE%', $dbDatabase, $envContent);
+$envContent = str_replace('%DB_USERNAME%', $dbUsername, $envContent);
+$envContent = str_replace('%DB_PASSWORD%', $dbPassword, $envContent);
 
 // Write .env file
 if (file_put_contents($envPath, $envContent) === false) {
@@ -103,15 +118,15 @@ if (file_put_contents($envPath, $envContent) === false) {
 // Log success
 $envSize = filesize($envPath);
 error_log("✅ .env file generated successfully at $envPath (size: $envSize bytes)");
-error_log("   DB_HOST: " . $mysqlHost);
-error_log("   DB_PORT: " . $mysqlPort);
-error_log("   DB_DATABASE: " . $mysqlName);
-error_log("   DB_USERNAME: " . $mysqlUser);
+error_log("   DB_HOST: " . $dbHost);
+error_log("   DB_PORT: " . $dbPort);
+error_log("   DB_DATABASE: " . $dbDatabase);
+error_log("   DB_USERNAME: " . $dbUsername);
 
 // Verify the file was written correctly by reading it back
 $written = file_get_contents($envPath);
-if (strpos($written, $mysqlHost) === false) {
-    error_log("❌ ERROR: .env file was written but MySQL host not found in content!");
+if (strpos($written, $dbHost) === false) {
+    error_log("❌ ERROR: .env file was written but DB host not found in content!");
     exit(1);
 }
 
