@@ -5,6 +5,12 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// === ULTRA SIMPLE TEST ===
+if ($_SERVER['REQUEST_URI'] === '/ping') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    exit("PONG");
+}
+
 // === BEFORE ANYTHING ELSE ===
 // Delete cache files
 $cachePath = __DIR__.'/../bootstrap/cache';
@@ -39,8 +45,9 @@ if (!file_exists($envPath)) {
     $database = readFromProc('DB_DATABASE') ?: 'hexaglass_db';
     $username = readFromProc('DB_USERNAME') ?: 'railway';
     $password = readFromProc('DB_PASSWORD') ?: '';
+    $appKey = readFromProc('APP_KEY') ?: 'base64:TcjCW1iHmMeebYhqRReWOWRR2NXX6buMQVWY68LuwEQ=';
     
-    $content = "APP_NAME=MigasQueue\nAPP_ENV=production\nAPP_DEBUG=true\n";
+    $content = "APP_NAME=MigasQueue\nAPP_ENV=production\nAPP_DEBUG=true\nAPP_KEY=$appKey\n";
     $content .= "DB_CONNECTION=mysql\nDB_HOST=$host\nDB_PORT=$port\nDB_DATABASE=$database\n";
     $content .= "DB_USERNAME=$username\nDB_PASSWORD=$password\n";
     
