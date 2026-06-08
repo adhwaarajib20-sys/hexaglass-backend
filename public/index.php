@@ -32,12 +32,22 @@ if ($_SERVER['REQUEST_URI'] === '/cache-status') {
     http_response_code(200);
     header('Content-Type: application/json; charset=utf-8');
     $cachePath = __DIR__.'/../bootstrap/cache';
-    echo json_encode([
+    $output = json_encode([
         'config_cached' => file_exists($cachePath . '/config.php') ? 'YES' : 'NO',
         'routes_cached' => file_exists($cachePath . '/routes-v7.php') ? 'YES' : 'NO',
         'env_exists' => file_exists(__DIR__.'/../.env') ? 'YES' : 'NO',
     ], JSON_PRETTY_PRINT);
-    exit(0);
+    echo $output;
+    ob_flush();
+    flush();
+    die();
+}
+
+// TEST: Simple JSON test
+if ($_SERVER['REQUEST_URI'] === '/json-test') {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['message' => 'JSON test works', 'time' => date('Y-m-d H:i:s')]);
+    die();
 }
 
 // CRITICAL: Delete all cached files to force fresh .env read
