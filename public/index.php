@@ -50,6 +50,30 @@ if ($_SERVER['REQUEST_URI'] === '/json-test') {
     die();
 }
 
+// TEST: Environment check
+if ($_SERVER['REQUEST_URI'] === '/env-check') {
+    header('Content-Type: application/json; charset=utf-8');
+    $envFile = __DIR__.'/../.env';
+    $response = [
+        'env_exists' => file_exists($envFile) ? 'YES' : 'NO',
+        'env_readable' => is_readable($envFile) ? 'YES' : 'NO',
+    ];
+    
+    if (file_exists($envFile)) {
+        $content = file_get_contents($envFile);
+        $response['env_size'] = strlen($content) . ' bytes';
+        $response['env_lines'] = count(explode("\n", $content));
+        $response['env_preview'] = implode("\n", array_slice(explode("\n", $content), 0, 5));
+    } else {
+        $response['mysql_host'] = getenv('MYSQL_HOST') ?: 'NOT SET';
+        $response['mysql_port'] = getenv('MYSQL_PORT') ?: 'NOT SET';
+        $response['mysql_name'] = getenv('MYSQL_NAME') ?: 'NOT SET';
+    }
+    
+    echo json_encode($response, JSON_PRETTY_PRINT);
+    die();
+}
+
 // CRITICAL: Delete all cached files to force fresh .env read
 $cachePath = __DIR__.'/../bootstrap/cache';
 $cacheFiles = [
