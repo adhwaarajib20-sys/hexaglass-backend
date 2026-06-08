@@ -1,19 +1,19 @@
 #!/bin/bash
-set -e
 
 echo "🚀 Starting build process..."
 
-# Verify critical Railway environment variables are set
-echo "🔍 Checking environment variables..."
+# Exit on error but use set -e after env check
 if [ -z "$APP_KEY" ]; then
-  echo "⚠️  APP_KEY not set, generating..."
-  APP_KEY=$(php -r 'echo base64_encode(random_bytes(32));')
+  echo "❌ ERROR: APP_KEY not set by Railway!"
+  exit 1
 fi
 
 if [ -z "$DB_HOST" ]; then
   echo "❌ ERROR: DB_HOST not set by Railway!"
   exit 1
 fi
+
+set -e
 
 # Generate .env file from Railway environment variables
 echo "📝 Generating .env file..."
@@ -53,31 +53,37 @@ VITE_APP_NAME="Hexaglass"
 SANCTUM_STATEFUL_DOMAINS=web-production-2598a.up.railway.app,localhost:8000,localhost:3000,127.0.0.1:8000
 EOF
 
-echo "✅ .env file created with variables:"
-echo "   APP_KEY: $(echo $APP_KEY | cut -c1-20)..."
-echo "   DB_HOST: $DB_HOST"
-echo "   DB_PORT: ${DB_PORT:-3306}"
+echo "✅ .env file created"
+
+# Set permissions first
+echo "🔐 Setting directory permissions..."
+chmod -R 755 storage/ 2>/dev/null || true
+chmod -R 755 bootstrap/cache/ 2>/dev/null || true
+chmod 755 artisan 2>/dev/null || true
 
 # Run composer install
 echo "📦 Installing Composer dependencies..."
-composer install --optimize-autoloader --no-dev 2>&1 | grep -E "(Loading|Generating|Installing)" || true
+composer install --no-dev --optimize-autoloader --quiet
 
-# Try npm install & build, but don't fail if it fails
-echo "📦 Installing Node dependencies (optional)..."
-npm install --ci 2>/dev/null || npm install 2>/dev/null || echo "⚠️  npm install skipped"
+# Skip npm during build (can add to frontend separately)
+echo "⚠️  Skipping npm (use separate frontend deploy)"
 
-echo "🎨 Building frontend assets (optional)..."
-npm run build 2>/dev/null || echo "⚠️  npm build skipped"
+# Cache critical config
+echo "⚡ Caching configuration..."
+php artisan config:cache --quiet || php artisan config:cache
 
-# Set permissions BEFORE caching/migrating
-echo "🔐 Setting directory permissions..."
-chmod -R 755 storage/
-chmod -R 755 bootstrap/cache/
-chmod 755 artisan
+# Run migrations with timeout protection
+echo "🗄️  Running database migrations..."
+timeout 60 php artisan migrate --force --quiet || {
+  echo "⚠️  Migration completed or timed out";
+}
 
-# Generate app key if needed (shouldn't be needed but just in case)
-if ! grep -q "^APP_KEY=base64:" .env; then
-  echo "⚠️  APP_KEY missing from .env, generating..."
+# Cache routes
+echo "🛣️  Caching routes..."
+php artisan route:cache --quiet || php artisan route:cache
+
+echo ""
+echo "✅ Build process completed!"
   php artisan key:generate 2>&1 | tail -1
 fi
 

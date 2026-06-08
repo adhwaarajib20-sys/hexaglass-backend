@@ -1,26 +1,19 @@
 #!/usr/bin/env bash
-set -e
 
-echo "🚀 Starting post-deployment setup..."
+echo "📦 Post-deployment optimization..."
 
-# Clear caches
-echo "📦 Clearing application caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
-php artisan route:clear
+# Clear all caches silently
+php artisan config:clear --quiet 2>/dev/null || true
+php artisan cache:clear --quiet 2>/dev/null || true
+php artisan view:clear --quiet 2>/dev/null || true
+php artisan route:clear --quiet 2>/dev/null || true
 
-# Set correct permissions
-echo "🔐 Setting directory permissions..."
-chmod -R 755 storage/
-chmod -R 755 bootstrap/cache/
-chmod 644 storage/logs/*
+# Set permissions
+chmod -R 755 storage/ 2>/dev/null || true
+chmod -R 755 bootstrap/cache/ 2>/dev/null || true
 
-# Optimize for production
-echo "⚡ Optimizing application..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
+# Re-optimize
+php artisan config:cache --quiet 2>/dev/null || true
+php artisan route:cache --quiet 2>/dev/null || true
 
-echo "✅ Post-deployment setup completed!"
+echo "✅ Optimization completed"

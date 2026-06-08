@@ -3,7 +3,7 @@
   "build": {
     "builder": "nixpacks",
     "buildCommand": "bash build.sh",
-    "nixPackages": ["php83", "nodejs_20", "composer"]
+    "nixPackages": ["php83", "composer"]
   },
   "start": "bash start.sh"
 }
