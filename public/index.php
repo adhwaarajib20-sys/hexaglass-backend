@@ -5,8 +5,18 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-// Quick debug - ensure PHP is working
-error_log("🚀 public/index.php loaded at " . date('Y-m-d H:i:s'));
+// TEST: Super simple debug endpoint before any Laravel loading
+if ($_SERVER['REQUEST_URI'] === '/debug') {
+    http_response_code(200);
+    header('Content-Type: text/plain; charset=utf-8');
+    echo "DEBUG ENDPOINT WORKS!\n";
+    echo "Time: " . date('Y-m-d H:i:s GMT+7') . "\n";
+    echo "PHP Version: " . phpversion() . "\n";
+    echo "Memory: " . (memory_get_usage(true) / 1024 / 1024) . " MB\n";
+    echo "CWD: " . getcwd() . "\n";
+    echo "Laravel Start Time: " . microtime(true) . "\n";
+    exit(0);
+}
 
 // TEST: Simple text output to verify PHP works
 if (isset($_GET['test']) && $_GET['test'] === 'echo') {
