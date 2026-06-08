@@ -29,12 +29,18 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
     header('Content-Type: text/plain; charset=UTF-8');
     
     try {
-        require __DIR__.'/../vendor/autoload.php';
-        $app = require_once __DIR__.'/../bootstrap/app.php';
+        // Get database credentials from environment
+        $dbHost = $_SERVER['DB_HOST'] ?? 'mysql.railway.internal';
+        $dbPort = $_SERVER['DB_PORT'] ?? '3306';
+        $dbDatabase = $_SERVER['DB_DATABASE'] ?? 'railway';
+        $dbUsername = $_SERVER['DB_USERNAME'] ?? 'root';
+        $dbPassword = $_SERVER['DB_PASSWORD'] ?? '';
+        
+        echo "Connecting to: $dbHost:$dbPort/$dbDatabase\n";
         
         // Test raw PDO connection
-        $dsn = "mysql:host=" . $_ENV['DB_HOST'] . ";port=" . $_ENV['DB_PORT'] . ";dbname=" . $_ENV['DB_DATABASE'];
-        $pdo = new \PDO($dsn, $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
+        $dsn = "mysql:host=$dbHost;port=$dbPort;dbname=$dbDatabase";
+        $pdo = new \PDO($dsn, $dbUsername, $dbPassword);
         
         $stmt = $pdo->query("SELECT id, name, email, status FROM users LIMIT 10");
         $users = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -58,11 +64,10 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
             echo "ID: " . $admin['id'] . "\n";
             echo "Status: " . $admin['status'] . "\n";
         } else {
-            echo "NOT FOUND\n";
+            echo "NOT FOUND - Need to run seeders!\n";
         }
     } catch (\Exception $e) {
         echo "✗ Error: " . $e->getMessage() . "\n";
-        echo "Trace: " . $e->getTraceAsString();
     }
     flush();
     exit(0);
