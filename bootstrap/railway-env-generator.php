@@ -4,23 +4,52 @@
  * This runs before Laravel boots to ensure environment is properly configured
  */
 
+// Only proceed if running on Railway (has MYSQL_HOST set)
+$mysqlHost = getenv('MYSQL_HOST');
+$appKey = getenv('APP_KEY');
+
+// If not on Railway AND .env already exists, skip generator
+if (!$mysqlHost && file_exists(dirname(__DIR__) . '/.env')) {
+    return; // Local development, .env exists
+}
+
+// If not on Railway AND no .env exists, error
+if (!$mysqlHost) {
+    error_log("⚠️ Warning: Not on Railway (MYSQL_HOST not set) and no .env file exists");
+    return;
+}
+
 // Get Railway MySQL variables
 $railwayVars = [
-    'APP_KEY' => getenv('APP_KEY'),
-    'MYSQL_HOST' => getenv('MYSQL_HOST'),
+    'APP_KEY' => $appKey,
+    'MYSQL_HOST' => $mysqlHost,
     'MYSQL_PORT' => getenv('MYSQL_PORT') ?: '3306',
     'MYSQL_NAME' => getenv('MYSQL_NAME'),
     'MYSQL_USER' => getenv('MYSQL_USER'),
     'MYSQL_PASSWORD' => getenv('MYSQL_PASSWORD'),
 ];
 
+// Output what we're reading (for debugging)
+error_log("🔧 Railway Env Generator: Checking environment variables...");
+error_log("   MYSQL_HOST: " . ($railwayVars['MYSQL_HOST'] ? '✓ set' : '✗ empty'));
+error_log("   MYSQL_PORT: " . ($railwayVars['MYSQL_PORT'] ? '✓ set' : '✗ empty'));
+error_log("   MYSQL_NAME: " . ($railwayVars['MYSQL_NAME'] ? '✓ set' : '✗ empty'));
+error_log("   MYSQL_USER: " . ($railwayVars['MYSQL_USER'] ? '✓ set' : '✗ empty'));
+error_log("   MYSQL_PASSWORD: " . ($railwayVars['MYSQL_PASSWORD'] ? '✓ set (***hidden***)' : '✗ empty'));
+error_log("   APP_KEY: " . ($railwayVars['APP_KEY'] ? '✓ set' : '✗ empty'));
+
 // Validate required variables
-$required = ['APP_KEY', 'MYSQL_HOST', 'MYSQL_NAME', 'MYSQL_USER', 'MYSQL_PASSWORD'];
+$required = ['MYSQL_HOST', 'MYSQL_NAME', 'MYSQL_USER', 'MYSQL_PASSWORD'];
+$missing = [];
 foreach ($required as $var) {
     if (empty($railwayVars[$var])) {
-        error_log("❌ FATAL: Railway environment variable '$var' is empty or not set!");
-        exit(1);
+        $missing[] = $var;
     }
+}
+
+if (!empty($missing)) {
+    error_log("❌ FATAL: Missing required Railway environment variables: " . implode(', ', $missing));
+    exit(1);
 }
 
 // Generate .env file
