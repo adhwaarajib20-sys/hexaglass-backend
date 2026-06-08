@@ -50,31 +50,6 @@ if ($_SERVER['REQUEST_URI'] === '/json-test') {
     die();
 }
 
-// TEST: Read /proc env directly (no generator call) - VERBOSE
-if ($_SERVER['REQUEST_URI'] === '/proc-verbose') {
-    header('Content-Type: text/plain; charset=utf-8');
-    echo "=== Full DB/APP variables ===\n\n";
-    
-    if (!file_exists('/proc/self/environ')) {
-        echo "/proc/self/environ not found!\n";
-        die();
-    }
-    
-    $environ = file_get_contents('/proc/self/environ');
-    $vars = explode("\0", $environ);
-    
-    foreach ($vars as $var) {
-        if (!empty($var)) {
-            if (strpos($var, 'DB_HOST=') === 0) echo "FOUND: $var\n";
-            if (strpos($var, 'DB_PORT=') === 0) echo "FOUND: $var\n";
-            if (strpos($var, 'DB_DATABASE=') === 0) echo "FOUND: $var\n";
-            if (strpos($var, 'DB_USERNAME=') === 0) echo "FOUND: $var\n";
-            if (strpos($var, 'DB_PASSWORD=') === 0) echo "FOUND: $var\n";
-        }
-    }
-    die();
-}
-
 // TEST: Read /proc env directly (no generator call)
 if ($_SERVER['REQUEST_URI'] === '/proc-test') {
     header('Content-Type: text/plain; charset=utf-8');
