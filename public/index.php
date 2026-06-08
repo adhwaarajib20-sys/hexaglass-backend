@@ -71,8 +71,7 @@ if ($_SERVER['REQUEST_URI'] === '/debug') {
 
 if ($_SERVER['REQUEST_URI'] === '/env-status') {
     header('Content-Type: text/plain; charset=UTF-8');
-    $env_check = file_exists(__DIR__.'/../.env');
-    echo $env_check ? "ENV_EXISTS" : "NO_ENV";
+    echo "TESTING_ENV_ENDPOINT";
     flush();
     exit(0);
 }
