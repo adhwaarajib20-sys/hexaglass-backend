@@ -463,6 +463,37 @@ if ($_SERVER['REQUEST_URI'] === '/session-config') {
     exit(0);
 }
 
+// === CSRF DEBUG ===
+if ($_SERVER['REQUEST_URI'] === '/csrf-test') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    echo "=== CSRF / SESSION DEBUG ===\n\n";
+    
+    echo "=== SESSION CONFIGURATION ===\n";
+    echo "driver: " . ($_SERVER['SESSION_DRIVER'] ?? 'NOT SET') . "\n";
+    echo "table: " . ($_SERVER['SESSION_TABLE'] ?? 'NOT SET') . "\n\n";
+    
+    echo "=== SESSION FILES/DATA ===\n";
+    echo "PHP session_id(): " . (session_id() ?: 'NOT SET') . "\n";
+    echo "PHPSESSID cookie: " . ($_COOKIE['PHPSESSID'] ?? 'NOT SET') . "\n";
+    echo "LARAVEL_SESSION cookie: " . ($_COOKIE['LARAVEL_SESSION'] ?? 'NOT SET') . "\n\n";
+    
+    echo "=== REQUEST COOKIES ===\n";
+    if (empty($_COOKIE)) {
+        echo "NO COOKIES\n";
+    } else {
+        foreach ($_COOKIE as $name => $value) {
+            echo "- $name = " . substr($value, 0, 30) . "...\n";
+        }
+    }
+    
+    echo "\n=== HTTP HEADERS ===\n";
+    echo "Cookie header: " . ($_SERVER['HTTP_COOKIE'] ?? 'NOT SET') . "\n";
+    
+    flush();
+    exit(0);
+}
+
 // === DEBUG LOGIN ENDPOINT ===
 if ($_SERVER['REQUEST_URI'] === '/login-debug' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: text/plain; charset=UTF-8');
