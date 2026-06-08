@@ -8,7 +8,44 @@ define('LARAVEL_START', microtime(true));
 // CRITICAL: Generate .env BEFORE any test endpoints run
 require __DIR__.'/../bootstrap/railway-env-generator.php';
 
-// Delete all cached files to force fresh reads
+// BACKUP: If .env still doesn't exist after generator, create it manually
+$envPath = __DIR__.'/../.env';
+if (!file_exists($envPath)) {
+    error_log("⚠️  .env not created by generator, attempting direct creation...");
+    
+    // Read from /proc/self/environ directly
+    function readFromProc($varName) {
+        if (file_exists('/proc/self/environ')) {
+            $environ = file_get_contents('/proc/self/environ');
+            $vars = explode("\0", $environ);
+            foreach ($vars as $var) {
+                if (strpos($var, $varName . '=') === 0) {
+                    return substr($var, strlen($varName) + 1);
+                }
+            }
+        }
+        return '';
+    }
+    
+    $host = readFromProc('DB_HOST') ?: 'mysql.railway.internal';
+    $port = readFromProc('DB_PORT') ?: '3306';
+    $database = readFromProc('DB_DATABASE') ?: 'hexaglass_db';
+    $username = readFromProc('DB_USERNAME') ?: 'railway';
+    $password = readFromProc('DB_PASSWORD') ?: '';
+    
+    error_log("Backup creation: DB_HOST=$host, DB_DATABASE=$database, DB_USERNAME=$username");
+    
+    $content = "APP_NAME=MigasQueue\nAPP_ENV=production\nAPP_DEBUG=true\n";
+    $content .= "DB_CONNECTION=mysql\nDB_HOST=$host\nDB_PORT=$port\nDB_DATABASE=$database\n";
+    $content .= "DB_USERNAME=$username\nDB_PASSWORD=$password\n";
+    
+    if (file_put_contents($envPath, $content) !== false) {
+        error_log("✅ Backup .env created successfully");
+    } else {
+        error_log("❌ Failed to create backup .env");
+    }
+}
+
 $cachePath = __DIR__.'/../bootstrap/cache';
 foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'events.php.gz'] as $file) {
     $path = $cachePath . '/' . $file;
