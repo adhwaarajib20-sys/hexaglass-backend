@@ -459,15 +459,40 @@ if ($_SERVER['REQUEST_URI'] === '/session-config') {
     echo "\n=== RESPONSE HEADERS TO BE SET ===\n";
     echo "This page will include Set-Cookie headers (check network tab)\n";
     
-    // Force set a test cookie to see if it works
-    setcookie('test-cookie', 'test-value-' . time(), [
-        'expires' => time() + 3600,
-        'path' => '/',
-        'domain' => '.railway.app',
-        'secure' => true,
-        'httponly' => true,
-        'samesite' => 'Lax'
-    ]);
+    flush();
+    exit(0);
+}
+
+// === DEBUG LOGIN ENDPOINT ===
+if ($_SERVER['REQUEST_URI'] === '/login-debug' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    echo "=== POST /login-debug RECEIVED ===\n";
+    echo "Method: " . $_SERVER['REQUEST_METHOD'] . "\n";
+    echo "Content-Type: " . ($_SERVER['CONTENT_TYPE'] ?? 'NOT SET') . "\n";
+    echo "Content-Length: " . ($_SERVER['CONTENT_LENGTH'] ?? '0') . "\n\n";
+    
+    echo "=== REQUEST BODY ===\n";
+    $body = file_get_contents('php://input');
+    echo "Raw body length: " . strlen($body) . " bytes\n";
+    echo "Body preview: " . substr($body, 0, 200) . "...\n\n";
+    
+    echo "=== PARSED POST DATA ===\n";
+    echo "POST fields: " . count($_POST) . "\n";
+    foreach ($_POST as $key => $value) {
+        if ($key === '_token') {
+            echo "- $key = " . substr($value, 0, 20) . "...\n";
+        } else if ($key === 'password') {
+            echo "- $key = ***\n";
+        } else {
+            echo "- $key = $value\n";
+        }
+    }
+    
+    echo "\n=== INCOMING COOKIES ===\n";
+    foreach ($_COOKIE as $name => $value) {
+        echo "- $name = " . substr($value, 0, 20) . "...\n";
+    }
     
     flush();
     exit(0);
