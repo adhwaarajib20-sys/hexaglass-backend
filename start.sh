@@ -5,6 +5,17 @@ PORT=${PORT:-8080}
 
 echo "🌐 Starting Hexaglass Laravel on 0.0.0.0:$PORT"
 echo "📂 Document root: $(pwd)/public"
+echo ""
+
+# Show environment variables (for debugging)
+echo "📋 Environment variables set:"
+echo "  APP_KEY=${APP_KEY:-(empty)}"
+echo "  DB_HOST=${DB_HOST:-(empty)}"
+echo "  DB_PORT=${DB_PORT:-(empty)}"
+echo "  DB_DATABASE=${DB_DATABASE:-(empty)}"
+echo "  DB_USERNAME=${DB_USERNAME:-(empty)}"
+echo "  DB_PASSWORD=${DB_PASSWORD:-(empty)}"
+echo ""
 
 # Validate required environment variables
 if [ -z "$APP_KEY" ]; then
@@ -33,6 +44,7 @@ if [ -z "$DB_DATABASE" ]; then
 fi
 
 echo "✅ All required environment variables are set"
+echo ""
 
 # Generate .env from .env.production template
 if [ ! -f .env ]; then
@@ -42,7 +54,7 @@ if [ ! -f .env ]; then
 APP_NAME=${APP_NAME:-MigasQueue}
 APP_ENV=${APP_ENV:-production}
 APP_KEY=${APP_KEY}
-APP_DEBUG=${APP_DEBUG:-false}
+APP_DEBUG=${APP_DEBUG:-true}
 APP_URL=${APP_URL:-https://web-production-fc4fb.up.railway.app}
 APP_TIMEZONE=${APP_TIMEZONE:-Asia/Jakarta}
 
@@ -58,7 +70,7 @@ LOG_LEVEL=${LOG_LEVEL:-warning}
 DB_CONNECTION=mysql
 DB_HOST=${DB_HOST}
 DB_PORT=${DB_PORT:-3306}
-DB_DATABASE=${DB_DATABASE:-railway}
+DB_DATABASE=${DB_DATABASE}
 DB_USERNAME=${DB_USERNAME}
 DB_PASSWORD=${DB_PASSWORD}
 
@@ -82,10 +94,18 @@ VITE_APP_NAME=${VITE_APP_NAME:-MigasQueue}
 SANCTUM_STATEFUL_DOMAINS=${SANCTUM_STATEFUL_DOMAINS:-web-production-fc4fb.up.railway.app,localhost:8000,localhost:3000,127.0.0.1:8000}
 EOF
 
-  echo "✅ .env created at runtime"
+  if [ $? -eq 0 ]; then
+    echo "✅ .env created at runtime"
+    echo "   Database: ${DB_USERNAME}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}"
+  else
+    echo "❌ ERROR: Failed to create .env file"
+    exit 1
+  fi
 else
   echo "🔍 .env file already exists"
 fi
+
+echo ""
 
 # Show config
 echo "🔍 Configuration loaded from .env"
