@@ -51,8 +51,8 @@ if ($dbHost && $dbDatabase && $dbUsername && $dbPassword) {
         $dbUsername = $dbUsername ?: 'railway';
     }
     if (!$dbPassword) {
-        error_log("   DB_PASSWORD is missing, skipping generation");
-        exit(1);
+        error_log("   DB_PASSWORD is missing, using empty string");
+        $dbPassword = '';
     }
 }
 
