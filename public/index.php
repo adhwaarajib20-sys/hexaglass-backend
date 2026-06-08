@@ -64,6 +64,14 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
     header('Content-Type: text/plain; charset=UTF-8');
     
     try {
+        // Debug: Show what's in $_SERVER
+        echo "=== DEBUG: Environment Vars ===\n";
+        echo "DB_HOST: " . ($_SERVER['DB_HOST'] ?? 'NOT SET') . "\n";
+        echo "DB_PORT: " . ($_SERVER['DB_PORT'] ?? 'NOT SET') . "\n";
+        echo "DB_DATABASE: " . ($_SERVER['DB_DATABASE'] ?? 'NOT SET') . "\n";
+        echo "DB_USERNAME: " . ($_SERVER['DB_USERNAME'] ?? 'NOT SET') . "\n";
+        echo "DB_PASSWORD: " . (isset($_SERVER['DB_PASSWORD']) ? '***SET***' : 'NOT SET') . "\n\n";
+        
         // Get database credentials from environment
         $dbHost = $_SERVER['DB_HOST'] ?? 'mysql.railway.internal';
         $dbPort = $_SERVER['DB_PORT'] ?? '3306';
@@ -71,7 +79,7 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
         $dbUsername = $_SERVER['DB_USERNAME'] ?? 'root';
         $dbPassword = $_SERVER['DB_PASSWORD'] ?? '';
         
-        echo "Connecting to: $dbHost:$dbPort/$dbDatabase as $dbUsername\n";
+        echo "Using: $dbHost:$dbPort/$dbDatabase as $dbUsername\n";
         
         // Test raw PDO connection
         $dsn = "mysql:host=$dbHost;port=$dbPort;dbname=$dbDatabase";
