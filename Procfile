@@ -1,1 +1,2 @@
-web: php -S 0.0.0.0:${PORT:-8080} -t public/ 2>&1
+release: bash -c "echo '🗄️  Running migrations...' && php artisan migrate --force --quiet && echo '✅ Migrations complete'"
+web: bash start.sh

@@ -1,22 +1,22 @@
 #!/bin/bash
 
-echo "🚀 Starting build process..."
+echo "🚀 Build: Preparing Laravel application..."
 
-# Exit on error but use set -e after env check
+# Validate environment variables
 if [ -z "$APP_KEY" ]; then
-  echo "❌ ERROR: APP_KEY not set by Railway!"
+  echo "❌ ERROR: APP_KEY not set!"
   exit 1
 fi
 
 if [ -z "$DB_HOST" ]; then
-  echo "❌ ERROR: DB_HOST not set by Railway!"
+  echo "❌ ERROR: DB_HOST not set!"
   exit 1
 fi
 
 set -e
 
-# Generate .env file from Railway environment variables
-echo "📝 Generating .env file..."
+# Generate .env file
+echo "📝 Generating .env..."
 cat > .env << EOF
 APP_NAME=Hexaglass
 APP_ENV=production
@@ -26,7 +26,6 @@ APP_URL=https://web-production-2598a.up.railway.app
 
 APP_LOCALE=id
 APP_FALLBACK_LOCALE=en
-
 BCRYPT_ROUNDS=12
 
 LOG_CHANNEL=stack
@@ -53,59 +52,17 @@ VITE_APP_NAME="Hexaglass"
 SANCTUM_STATEFUL_DOMAINS=web-production-2598a.up.railway.app,localhost:8000,localhost:3000,127.0.0.1:8000
 EOF
 
-echo "✅ .env file created"
+echo "✅ .env created"
 
-# Set permissions first
-echo "🔐 Setting directory permissions..."
-chmod -R 755 storage/ 2>/dev/null || true
-chmod -R 755 bootstrap/cache/ 2>/dev/null || true
-chmod 755 artisan 2>/dev/null || true
+# Set permissions
+chmod -R 755 storage/ bootstrap/cache/ 2>/dev/null || true
 
-# Run composer install
-echo "📦 Installing Composer dependencies..."
-composer install --no-dev --optimize-autoloader --quiet
+# Install composer dependencies
+echo "📦 Installing dependencies..."
+composer install --no-dev --optimize-autoloader --quiet 2>&1 | tail -1 || composer install --no-dev --optimize-autoloader
 
-# Skip npm during build (can add to frontend separately)
-echo "⚠️  Skipping npm (use separate frontend deploy)"
+# Cache Laravel config
+echo "⚡ Caching config..."
+php artisan config:cache --quiet 2>&1 || php artisan config:cache
 
-# Cache critical config
-echo "⚡ Caching configuration..."
-php artisan config:cache --quiet || php artisan config:cache
-
-# Run migrations with timeout protection
-echo "🗄️  Running database migrations..."
-timeout 60 php artisan migrate --force --quiet || {
-  echo "⚠️  Migration completed or timed out";
-}
-
-# Cache routes
-echo "🛣️  Caching routes..."
-php artisan route:cache --quiet || php artisan route:cache
-
-echo ""
-echo "✅ Build process completed!"
-  php artisan key:generate 2>&1 | tail -1
-fi
-
-# Cache config
-echo "⚡ Caching configuration..."
-php artisan config:cache 2>&1 | tail -1
-
-# Clear view cache first (prevents permission issues)
-php artisan view:clear 2>/dev/null || true
-
-# Run migrations
-echo "🗄️  Running database migrations..."
-php artisan migrate --force 2>&1 | tail -5 || {
-  echo "⚠️  Migration warning (continuing)...";
-}
-
-# Cache routes
-echo "🛣️  Caching routes..."
-php artisan route:cache 2>&1 | tail -1 || {
-  echo "⚠️  Route cache warning (continuing)...";
-}
-
-echo ""
-echo "✅ Build process completed!"
-echo "🚀 Application ready!"
+echo "✅ Build complete - migrations will run in release phase"
