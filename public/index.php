@@ -24,6 +24,34 @@ if ($_SERVER['REQUEST_URI'] === '/env-status') {
     exit(0);
 }
 
+// TEST: Test env generator manually
+if ($_SERVER['REQUEST_URI'] === '/test-env-gen') {
+    header('Content-Type: text/plain; charset=utf-8');
+    
+    // Check what's in /proc/self/environ
+    echo "=== Checking /proc/self/environ ===\n";
+    if (file_exists('/proc/self/environ')) {
+        $environ = file_get_contents('/proc/self/environ');
+        $vars = explode("\0", $environ);
+        $found = 0;
+        foreach ($vars as $var) {
+            if (strpos($var, 'DB_HOST') === 0 || strpos($var, 'DB_DATABASE') === 0) {
+                echo $var . "\n";
+                $found++;
+            }
+        }
+        if ($found == 0) echo "NO DB_* vars found!\n";
+    } else {
+        echo "/proc/self/environ NOT FOUND\n";
+    }
+    
+    echo "\n=== .env before generation ===\n";
+    $envPath = __DIR__.'/../.env';
+    echo "exists: " . (file_exists($envPath) ? 'YES' : 'NO') . "\n";
+    
+    exit(0);
+}
+
 // Delete all cached files to force fresh reads
 $cachePath = __DIR__.'/../bootstrap/cache';
 foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'events.php.gz'] as $file) {
