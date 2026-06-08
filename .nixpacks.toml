@@ -1,0 +1,13 @@
+[php]
+version = "8.3"
+
+[phases.setup]
+dependsOn = ["base"]
+cmds = [
+  "apt-get update",
+  "apt-get install -y php83-mysql php83-pdo-mysql",
+  "phpenmod mysql pdo_mysql"
+]
+
+[phases.build]
+dependsOn = ["setup"]

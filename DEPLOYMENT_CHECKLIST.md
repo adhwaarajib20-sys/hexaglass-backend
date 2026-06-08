@@ -1,254 +1,259 @@
-# Hexaglass Backend - Railway Deployment Checklist
+# ✅ Railway Deployment Checklist untuk Hexaglass Backend
 
-## ✅ Pre-Deployment Checklist
+## Pre-Deployment Checklist
 
-### 1. **Code Preparation**
-- [ ] Semua code di-commit ke Git
-- [ ] Tidak ada local environment variables di code
-- [ ] Tidak ada hardcoded database credentials
-- [ ] Tidak ada hardcoded API keys atau secrets
-- [ ] Semua `.env` files di `.gitignore`
-- [ ] Clean commit history (tanpa sensitive data)
+### 1. Local Testing
+- [ ] Run `composer install`
+- [ ] Run `npm install`
+- [ ] Run `npm run build`
+- [ ] Test dengan `php artisan serve`
+- [ ] Verify all API endpoints berjalan
+- [ ] Check database migrations: `php artisan migrate:fresh --seed`
 
-### 2. **Configuration Files**
-- [ ] ✅ `.env.example` updated dengan default yang benar
-- [ ] ✅ `.env.production` dibuat dengan Railway variables
-- [ ] ✅ `Procfile` dibuat untuk web process
-- [ ] ✅ `railway.json` dibuat untuk build config
-- [ ] ✅ `build.sh` script dibuat
-- [ ] ✅ Directory `.gitkeep` files ditambahkan untuk storage/framework/logs
+### 2. Code Preparation
+- [ ] Update `.env.example` dengan konfigurasi terbaru ✅
+- [ ] Create `Procfile` untuk Railway ✅
+- [ ] Create `.railway.json` untuk Railway config ✅
+- [ ] Verify `.gitignore` sudah benar ✅
+- [ ] Check `composer.json` scripts sudah lengkap ✅
+- [ ] Ensure no sensitive credentials di code
 
-### 3. **Dependencies**
-- [ ] Run `composer install` lokal untuk verify tidak ada errors
-- [ ] Run `npm install` lokal untuk verify tidak ada errors
-- [ ] Run `npm run build` lokal untuk verify front-end builds
-- [ ] Semua dependencies memiliki locked versions
-- [ ] Tidak ada conflicting package versions
-
-### 4. **Database & Migrations**
-- [ ] Semua migrations dibuat
-- [ ] Migrations bisa dijalankan dengan `php artisan migrate --force`
-- [ ] Database seeders siap (jika diperlukan)
-- [ ] Foreign key constraints properly configured
-- [ ] Database character set adalah UTF-8
-
-### 5. **Laravel Configuration**
-- [ ] ✅ `APP_NAME` set ke "MigasQueue"
-- [ ] ✅ `APP_LOCALE` set ke "id" (Indonesian)
-- [ ] ✅ Timezone correctly configured
-- [ ] ✅ Cache driver set ke `database` untuk production
-- [ ] ✅ Session driver set ke `database`
-- [ ] ✅ Queue driver set ke `database`
-
-### 6. **Application Functionality**
-- [ ] Login/authentication bekerja
-- [ ] Admin dashboard menampilkan dengan benar
-- [ ] Data exports bekerja (Excel)
-- [ ] File uploads bekerja dengan benar
-- [ ] Permissions dan roles properly configured
-- [ ] Semua API endpoints respond dengan benar
-- [ ] Tidak ada 404 atau 500 errors di halaman kritis
-
-### 7. **Security**
-- [ ] `APP_DEBUG=false` di production
-- [ ] `APP_ENV=production` di production
-- [ ] Semua sensitive data di environment variables
-- [ ] CORS properly configured jika diperlukan
-- [ ] CSRF protection enabled
-- [ ] SQL injection prevention implemented
-- [ ] XSS protection enabled
-
-### 8. **Assets & Front-End**
-- [ ] CSS compiles tanpa errors
-- [ ] JavaScript bundles tanpa errors
-- [ ] Semua images dioptimasi
-- [ ] Tidak ada broken image/font links
-- [ ] Responsive design bekerja di mobile
-- [ ] Semua icons load dengan benar
-- [ ] DataTables menampilkan dengan benar
-
-### 9. **Logging & Monitoring**
-- [ ] Log channel dikonfigurasi
-- [ ] Log level appropriate untuk production (warning)
-- [ ] Logs directory writable
-- [ ] Tidak ada sensitive data di logs
-- [ ] Error tracking siap (jika applicable)
-
-### 10. **Documentation**
-- [ ] ✅ `README.md` up-to-date
-- [ ] ✅ `RAILWAY_DEPLOYMENT.md` dibuat
-- [ ] Database schema documented
-- [ ] API endpoints documented
-- [ ] Setup instructions clear
+### 3. Git Repository
+- [ ] Initialize git jika belum: `git init`
+- [ ] Add all files: `git add .`
+- [ ] Commit changes: `git commit -m "Prepare for Railway deployment"`
+- [ ] Push ke GitHub: `git push -u origin main`
 
 ---
 
-## 🚀 Deployment Steps
+## Railway Setup Checklist
 
-### Step 1: Push Code ke Repository
-```bash
-git add .
-git commit -m "Prepare untuk Railway deployment"
-git push origin main
+### 1. Railway Account & Project
+- [ ] Buat akun di https://railway.app
+- [ ] Create new project di Railway dashboard
+- [ ] Connect GitHub repository
+- [ ] Select `hexaglass-backend` as root directory
+
+### 2. Database Setup
+- [ ] Add MySQL plugin di Railway
+- [ ] Copy database credentials yang di-generate Railway
+- [ ] Catat DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD
+
+### 3. Environment Variables (Critical!)
+Tambahkan di Railway dashboard → Environment Variables:
+
 ```
-
-### Step 2: Create Railway Project
-1. Buka https://railway.app
-2. Klik "New Project" → "Deploy from GitHub"
-3. Pilih repository ini
-4. Tunggu Railway untuk mendeteksi project
-
-### Step 3: Add MySQL Database
-1. Di Railway, klik "+ Add Plugin"
-2. Pilih "MySQL"
-3. Railway akan otomatis configure DB variables
-
-### Step 4: Set Environment Variables
-Di Railway dashboard, set variables ini:
-```
-APP_NAME=MigasQueue
+# Application
+APP_NAME=Hexaglass
 APP_ENV=production
+APP_KEY=base64:bQ8PDS7l2rj2Eqy4YWRZnilopk4x+29l/0TEyrWCvl0=
 APP_DEBUG=false
-APP_URL=https://your-domain.railway.app
+APP_URL=https://your-domain.up.railway.app
 
-APP_LOCALE=id
-APP_FALLBACK_LOCALE=id
+# Database (dari Railway MySQL)
+DB_HOST=<railway-mysql-host>
+DB_PORT=3306
+DB_DATABASE=railway
+DB_USERNAME=root
+DB_PASSWORD=<your-generated-password>
 
-LOG_LEVEL=warning
+# Cache
+CACHE_STORE=database
 
-SANCTUM_STATEFUL_DOMAINS=your-domain.railway.app
-SESSION_DOMAIN=your-domain.railway.app
+# Session
+SESSION_DRIVER=database
+
+# Queue
+QUEUE_CONNECTION=database
+
+# Filesystem
+FILESYSTEM_DISK=local
+
+# Optional: Redis (jika ingin pakai)
+REDIS_HOST=<railway-redis-host>
+REDIS_PASSWORD=<password>
+REDIS_PORT=6379
+
+# Optional: Mail Configuration
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_FROM_ADDRESS=noreply@hexaglass.com
 ```
 
-MySQL variables akan otomatis terisi:
-- `DB_HOST`
-- `DB_PORT`
-- `DB_DATABASE`
-- `DB_USERNAME`
-- `DB_PASSWORD`
+### 4. Build Configuration
+- [ ] Railway auto-detect Laravel ✅
+- [ ] Procfile sudah ada ✅
+- [ ] Build script di composer.json sudah benar ✅
 
-### Step 5: Deploy
-1. Railway otomatis memulai deployment saat Anda push code
-2. Monitor deployment di Railway dashboard
-3. Cek logs untuk errors
+---
 
-### Step 6: Verify Deployment
+## Deployment Process
+
+### Step 1: Initial Deploy
+1. Go to Railway dashboard
+2. Click "Deploy"
+3. Watch logs untuk ensure build berjalan:
+   - `composer install`
+   - `npm install`
+   - `npm run build`
+   - `php artisan migrate --force`
+
+### Step 2: Monitor Deployment
+- [ ] Check "Deployments" tab
+- [ ] Lihat build logs real-time
+- [ ] Tunggu hingga status "Success"
+- [ ] Note the deployment URL
+
+### Step 3: Post-Deployment Verification
+- [ ] Check app logs di Railway dashboard
+- [ ] Test API endpoints:
+  ```bash
+  curl https://your-domain.up.railway.app/api/auth/login -X POST
+  ```
+- [ ] Verify database migrations berhasil
+- [ ] Check storage directories permission
+
+---
+
+## Troubleshooting Guide
+
+### Issue: Deploy gagal dengan error "composer install failed"
+**Solution:**
+- Check PHP version di Procfile
+- Verify composer.json syntax
+- Check disk space di Railway
+- Try manual redeploy
+
+### Issue: Database migration error
+**Solution:**
+- SSH ke Railway: `railway exec bash`
+- Check connection: `php artisan tinker`
+- Manual migrate: `php artisan migrate --force`
+- Check table exists: `php artisan db:table`
+
+### Issue: "Permission denied" pada storage
+**Solution:**
+- SSH: `railway exec bash`
+- Fix permissions: `chmod -R 755 storage/ bootstrap/cache/`
+- Restart app
+
+### Issue: Assets not loading (CSS/JS error)
+**Solution:**
+- Verify `npm run build` completed
+- Check `public/build/` exists
+- Verify `APP_URL` environment variable benar
+- Clear view cache: `php artisan view:clear`
+
+### Issue: CORS error dari frontend
+**Solution:**
+- Update `config/cors.php`
+- Add Railway domain ke allowed origins
+- Or set `ALLOWED_ORIGINS` environment variable
+
+### Issue: Mail tidak terkirim
+**Solution:**
+- Verify MAIL_* environment variables
+- Test dengan: `php artisan tinker` → `Mail::to('test@example.com')->send(new TestMail())`
+- Check mail logs di Railway
+- Verify SMTP credentials
+
+---
+
+## Post-Deployment Maintenance
+
+### Daily Tasks
+- [ ] Monitor application logs
+- [ ] Check error rate
+- [ ] Verify API response times
+
+### Weekly Tasks
+- [ ] Review database size
+- [ ] Check storage usage
+- [ ] Backup database jika perlu
+
+### Monthly Tasks
+- [ ] Review security updates
+- [ ] Update Laravel & dependencies
+- [ ] Check for deprecated features
+- [ ] Review access logs
+
+---
+
+## Rollback Plan
+
+Jika ada issue critical:
+
+1. Go to Railway → Deployments
+2. Pilih previous working deployment
+3. Click "Redeploy"
+4. Monitor logs
+5. Verify API endpoints
+
+---
+
+## Important Notes
+
+⚠️ **SECURITY**
+- Never commit `.env` file
+- Always use strong passwords
+- Enable HTTPS (Railway otomatis)
+- Regularly update dependencies
+- Use Railway's secret management
+
+⚠️ **DATABASE**
+- Regular backups
+- Test restore procedure
+- Monitor disk space
+- Optimize slow queries
+
+⚠️ **MONITORING**
+- Setup error tracking (Sentry, etc)
+- Monitor API performance
+- Setup alerts untuk critical errors
+- Keep audit logs
+
+---
+
+## Useful Commands
+
 ```bash
-# Lihat logs
+# SSH ke Railway
+railway exec bash
+
+# Check environment variables
+railway env list
+
+# View logs
 railway logs
 
-# Cek application health
-curl https://your-domain.railway.app
+# Manual database migration
+php artisan migrate --force
 
-# Test API
-curl https://your-domain.railway.app/api/auth/login
+# Clear caches
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+
+# Generate app key
+php artisan key:generate
+
+# Check storage permissions
+ls -la storage/
+ls -la bootstrap/cache/
 ```
 
 ---
 
-## ⚠️ Common Issues & Solutions
+## Support Resources
 
-### Issue: 500 Error on First Load
-**Solution:**
-```bash
-railway run php artisan key:generate --force
-railway run php artisan migrate --force
-railway run php artisan storage:link
-```
-
-### Issue: Database Connection Failed
-**Solution:**
-- Verify MySQL plugin ditambahkan
-- Cek DB_* variables di Railway dashboard
-- Jalankan: `railway run php artisan migrate --force`
-
-### Issue: Assets Return 404
-**Solution:**
-```bash
-railway run npm run build
-railway run php artisan storage:link
-```
-
-### Issue: File Uploads Tidak Bekerja
-**Solution:**
-```bash
-railway run php artisan storage:link
-railway run chmod -R 775 storage bootstrap/cache
-```
-
-### Issue: Permission Denied on Storage
-**Solution:**
-```bash
-railway run chmod -R 775 storage bootstrap/cache
-railway run chown -R nobody:nogroup storage bootstrap/cache
-```
+- Railway Docs: https://docs.railway.app
+- Laravel Docs: https://laravel.com/docs
+- Troubleshooting: Check Railway logs first!
 
 ---
 
-## 📊 Post-Deployment Verification
-
-- [ ] Homepage loads tanpa errors
-- [ ] Login page accessible
-- [ ] Bisa login dengan test credentials
-- [ ] Admin dashboard menampilkan data
-- [ ] Semua menu items bekerja
-- [ ] Data tables menampilkan dengan benar
-- [ ] Export Excel functionality bekerja
-- [ ] File uploads succeed
-- [ ] Tidak ada console errors
-- [ ] Tidak ada network 404 errors
-- [ ] Database dipopulasi dengan data
-- [ ] Logs tidak menunjukkan errors
-- [ ] Response times acceptable
-- [ ] API endpoints respond dengan benar
-
----
-
-## 🔄 Continuous Deployment
-
-Setelah setup awal, Railway akan otomatis:
-1. Detect pushes ke main branch Anda
-2. Rebuild aplikasi
-3. Jalankan migrations
-4. Deploy versi baru
-
-Untuk manually trigger deployment:
-1. Buka Railway dashboard
-2. Pilih project Anda
-3. Klik "Redeploy"
-
----
-
-## 📝 Maintenance Tasks
-
-### Daily
-- Monitor logs untuk errors
-- Cek application health
-- Verify database connectivity
-
-### Weekly
-- Review error logs
-- Cek performance metrics
-- Update dependencies (jika diperlukan)
-
-### Monthly
-- Backup database
-- Review security logs
-- Update Laravel packages
-- Test disaster recovery plan
-
----
-
-## 🆘 Support & Resources
-
-- **Project Lead**: [Your Name]
-- **Slack Channel**: #hexaglass-deployment
-- **Documentation**: `/docs` folder
-- **Emergency Hotline**: [Contact Info]
-- **Railway Support**: https://railway.app/support
-
----
-
-**Status**: ✅ Ready untuk Deployment  
-**Last Updated**: June 4, 2026  
-**Version**: 1.0.0
+**Last Updated:** June 2024
+**Status:** Ready for Production Deployment ✅

@@ -1,43 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-echo "🚀 Starting Railway Deployment for Hexaglass Backend"
-echo ""
+echo "📦 Post-deployment optimization..."
 
-# Step 1: Clear caches
-echo "📦 Clearing caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
+# Clear all caches silently
+php artisan config:clear --quiet 2>/dev/null || true
+php artisan cache:clear --quiet 2>/dev/null || true
+php artisan view:clear --quiet 2>/dev/null || true
+php artisan route:clear --quiet 2>/dev/null || true
 
-# Step 2: Optimize for production
-echo "⚡ Optimizing application for production..."
-php artisan optimize
-php artisan config:cache
+# Set permissions
+chmod -R 755 storage/ 2>/dev/null || true
+chmod -R 755 bootstrap/cache/ 2>/dev/null || true
 
-# Step 3: Generate application key if not set
-if [ -z "$APP_KEY" ]; then
-    echo "🔑 Generating application key..."
-    php artisan key:generate --force
-fi
+# Re-optimize
+php artisan config:cache --quiet 2>/dev/null || true
+php artisan route:cache --quiet 2>/dev/null || true
 
-# Step 4: Run database migrations
-echo "🗄️  Running database migrations..."
-php artisan migrate --force
-
-# Step 5: Cache routes
-echo "🛣️  Caching routes..."
-php artisan route:cache
-
-# Step 6: Cache permission and roles if spatie permission is used
-echo "📋 Caching permissions..."
-php artisan permission:cache-reset || true
-
-# Step 7: Build front-end assets
-if [ -f "package.json" ]; then
-    echo "🎨 Building front-end assets..."
-    npm install --no-save --prefer-offline
-    npm run build
-fi
-
-echo ""
-echo "✅ Deployment preparation complete!"
+echo "✅ Optimization completed"

@@ -13,6 +13,19 @@ use App\Http\Controllers\Api\InformasiPerusahaanController;
 use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\SatpamController;
 
+// 🔍 Health check - for testing API is online
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'timestamp' => now(),
+        'app_env' => env('APP_ENV'),
+        'app_debug' => env('APP_DEBUG'),
+        'db' => [
+            'host' => env('DB_HOST'),
+            'database' => env('DB_DATABASE'),
+        ],
+    ]);
+});
 
 // Public routes (tanpa auth)
 Route::prefix('auth')->group(function () {

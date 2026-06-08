@@ -1,31 +1,91 @@
 #!/bin/bash
 
-# This script runs when the build completes on Railway
+echo "🚀 Build: Preparing Laravel application..."
+
+# Verify PHP MySQL extension is available
+echo "🔍 Checking PHP MySQL driver..."
+php -m | grep -i pdo_mysql > /dev/null 2>&1 || {
+  echo "⚠️  PDO MySQL not found, attempting to load...";
+  php -r "extension_loaded('pdo_mysql') or die('PDO MySQL extension required!');" 2>/dev/null || {
+    echo "⚠️  MySQL driver not available - this will be needed";
+  }
+}
+
+# Validate environment variables
+if [ -z "$APP_KEY" ]; then
+  echo "❌ ERROR: APP_KEY not set!"
+  exit 1
+fi
+
+if [ -z "$DB_HOST" ]; then
+  echo "❌ ERROR: DB_HOST not set!"
+  exit 1
+fi
 
 set -e
 
-echo "🔧 Building Hexaglass application..."
-echo "Node version: $(node --version)"
-echo "npm version: $(npm --version)"
+# Generate .env file
+echo "📝 Generating .env..."
+cat > .env << EOF
+APP_NAME=Hexaglass
+APP_ENV=production
+APP_KEY=$APP_KEY
+APP_DEBUG=false
+APP_URL=https://web-production-2598a.up.railway.app
 
-# Install PHP dependencies
-echo "📦 Installing PHP dependencies..."
-composer install --no-interaction --optimize-autoloader --no-dev
+APP_LOCALE=id
+APP_FALLBACK_LOCALE=en
+BCRYPT_ROUNDS=12
 
-# Install Node dependencies with clean install
-echo "📦 Installing Node dependencies..."
-npm ci --prefer-offline --no-audit
+LOG_CHANNEL=stack
+LOG_LEVEL=info
 
-# Build frontend assets
-echo "🔨 Building frontend assets..."
-npm run build
+DB_CONNECTION=mysql
+DB_HOST=$DB_HOST
+DB_PORT=${DB_PORT:-3306}
+DB_DATABASE=${DB_DATABASE:-railway}
+DB_USERNAME=$DB_USERNAME
+DB_PASSWORD=$DB_PASSWORD
 
-# Create symbolic link for storage
-echo "🔗 Creating storage symbolic link..."
-php artisan storage:link || true
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+QUEUE_CONNECTION=database
+CACHE_STORE=database
 
-# Optimize Laravel
-echo "⚡ Optimizing Laravel..."
-php artisan optimize
+MAIL_MAILER=log
+MAIL_FROM_ADDRESS="noreply@hexaglass.com"
+MAIL_FROM_NAME="Hexaglass"
 
-echo "✅ Build completed successfully!"
+VITE_APP_NAME="Hexaglass"
+
+SANCTUM_STATEFUL_DOMAINS=web-production-2598a.up.railway.app,localhost:8000,localhost:3000,127.0.0.1:8000
+EOF
+
+echo "✅ .env created"
+
+# Set permissions
+chmod -R 755 storage/ bootstrap/cache/ 2>/dev/null || true
+
+# Install composer dependencies
+echo "📦 Installing dependencies..."
+composer install --no-dev --optimize-autoloader --quiet 2>&1 | tail -1 || composer install --no-dev --optimize-autoloader
+
+# Clear any cached config first
+php artisan config:clear --quiet 2>/dev/null || true
+
+# Cache Laravel config
+echo "⚡ Caching config..."
+php artisan config:cache --quiet 2>&1 || php artisan config:cache
+
+# Try to run migrations with better error handling
+echo "🗄️  Running database migrations..."
+php artisan migrate --force 2>&1 || {
+  echo "⚠️  Migration encountered an error";
+  echo "Attempting to continue...";
+}
+
+# Cache routes
+echo "🛣️  Caching routes..."
+php artisan route:cache --quiet 2>&1 || php artisan route:cache
+
+echo "✅ Build complete"

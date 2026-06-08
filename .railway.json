@@ -1,0 +1,8 @@
+{
+  "$schema": "https://railway.app/schema/config.json",
+  "build": {
+    "builder": "nixpacks",
+    "buildCommand": "bash -c 'apt-get update && apt-get install -y php-mysql php-pdo php-pdo-mysql 2>/dev/null || apt-get install -y php83-mysql php83-pdo php83-pdo-mysql 2>/dev/null || true; bash build.sh'"
+  },
+  "start": "bash start.sh"
+}

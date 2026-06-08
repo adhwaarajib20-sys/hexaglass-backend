@@ -1,0 +1,32 @@
+CRITICAL FIX - DATABASE NAME MISMATCH
+=====================================
+
+ISSUE FIXED:
+- Changed DB_DATABASE from "hexaglass_db" to "railway" to match Railway MySQL configuration
+- Updated build.sh, .env.example, and documentation
+
+DEPLOY STEPS:
+1. Commit changes:
+   git add build.sh .env.example RAILWAY_502_FIX.md
+   git commit -m "Fix: Update database name to match Railway MySQL (railway)"
+   git push origin main
+
+2. Railway will auto-redeploy
+
+3. Monitor logs:
+   railway logs -f --limit 50
+
+4. Expected output:
+   - "Build process completed"
+   - "Running database migrations"
+   - "Starting PHP server on port"
+
+VERIFY:
+- Check: https://web-production-2598a.up.railway.app
+- Should NOT show 502 error
+
+If still getting 502:
+   railway logs | grep -i error
+   railway exec bash
+   php artisan tinker
+   > DB::connection()->getPdo();

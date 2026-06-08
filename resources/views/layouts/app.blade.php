@@ -522,7 +522,7 @@ class="sidebar-link {{ request()->routeIs('operator.perusahaan') ? 'active' : ''
                 </div>
                 @endif
 
-                {{ $slot }}
+                @yield('content', $slot ?? '')
             </main>
         </div>
     </div>
