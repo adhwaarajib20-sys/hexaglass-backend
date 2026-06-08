@@ -185,23 +185,36 @@ if ($_SERVER['REQUEST_URI'] === '/env-status') {
 if ($_SERVER['REQUEST_URI'] === '/run-migrations') {
     header('Content-Type: text/plain; charset=UTF-8');
     
+    ob_start();
+    
     try {
-        // Need to bootstrap Laravel to run migrations
+        // Bootstrap Laravel
         require __DIR__.'/../vendor/autoload.php';
         $app = require_once __DIR__.'/../bootstrap/app.php';
         
         $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
         
-        $status = $kernel->call('migrate', ['--force' => true]);
+        // Run migrations
+        $status = $kernel->call('migrate', ['--force' => true, '--verbose' => true]);
+        
+        $output = ob_get_clean();
         
         if ($status === 0) {
-            echo "✓ Migrations completed successfully!\n";
+            echo "✓ Migrations completed successfully!\n\n";
+            echo "Output:\n";
+            echo $output;
         } else {
-            echo "✗ Migration failed with status code: $status\n";
+            echo "✗ Migration failed with status code: $status\n\n";
+            echo "Output:\n";
+            echo $output;
         }
     } catch (\Exception $e) {
-        echo "✗ Error running migrations: " . $e->getMessage() . "\n";
-        echo "Stack trace:\n" . $e->getTraceAsString();
+        $output = ob_get_clean();
+        echo "✗ Error running migrations:\n";
+        echo $e->getMessage() . "\n\n";
+        if (!empty($output)) {
+            echo "Partial output:\n" . $output;
+        }
     }
     flush();
     exit(0);
