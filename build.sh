@@ -2,6 +2,15 @@
 
 echo "🚀 Build: Preparing Laravel application..."
 
+# Verify PHP MySQL extension is available
+echo "🔍 Checking PHP MySQL driver..."
+php -m | grep -i pdo_mysql > /dev/null 2>&1 || {
+  echo "⚠️  PDO MySQL not found, attempting to load...";
+  php -r "extension_loaded('pdo_mysql') or die('PDO MySQL extension required!');" 2>/dev/null || {
+    echo "⚠️  MySQL driver not available - this will be needed";
+  }
+}
+
 # Validate environment variables
 if [ -z "$APP_KEY" ]; then
   echo "❌ ERROR: APP_KEY not set!"
