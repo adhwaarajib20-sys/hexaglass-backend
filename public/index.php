@@ -181,6 +181,32 @@ if ($_SERVER['REQUEST_URI'] === '/env-status') {
     exit(0);
 }
 
+// === MIGRATION ENDPOINT (ONE-TIME SETUP) ===
+if ($_SERVER['REQUEST_URI'] === '/run-migrations') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    try {
+        // Need to bootstrap Laravel to run migrations
+        require __DIR__.'/../vendor/autoload.php';
+        $app = require_once __DIR__.'/../bootstrap/app.php';
+        
+        $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
+        
+        $status = $kernel->call('migrate', ['--force' => true]);
+        
+        if ($status === 0) {
+            echo "✓ Migrations completed successfully!\n";
+        } else {
+            echo "✗ Migration failed with status code: $status\n";
+        }
+    } catch (\Exception $e) {
+        echo "✗ Error running migrations: " . $e->getMessage() . "\n";
+        echo "Stack trace:\n" . $e->getTraceAsString();
+    }
+    flush();
+    exit(0);
+}
+
 // === MAINTENANCE ===
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
