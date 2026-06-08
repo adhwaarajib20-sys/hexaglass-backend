@@ -68,6 +68,31 @@ if (!file_exists($envPath)) {
 }
 
 // === TEST ENDPOINTS ===
+if ($_SERVER['REQUEST_URI'] === '/check-db-password') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    $output = "=== CHECKING DB_PASSWORD SOURCE ===\n\n";
+    
+    // Check /proc/self/environ
+    if (file_exists('/proc/self/environ')) {
+        $environ = file_get_contents('/proc/self/environ');
+        $vars = explode("\0", $environ);
+        
+        $output .= "Searching /proc/self/environ for DB_PASSWORD or MYSQL_PASSWORD...\n";
+        foreach ($vars as $var) {
+            if (strpos($var, 'PASSWORD') !== false) {
+                $output .= "Found: " . $var . "\n";
+            }
+        }
+    } else {
+        $output .= "/proc/self/environ NOT found\n";
+    }
+    
+    echo $output;
+    flush();
+    exit(0);
+}
+
 if ($_SERVER['REQUEST_URI'] === '/show-env') {
     header('Content-Type: text/plain; charset=UTF-8');
     
