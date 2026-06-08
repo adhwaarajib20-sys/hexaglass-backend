@@ -397,6 +397,25 @@ if ($_SERVER['REQUEST_URI'] === '/test-auth') {
     exit(0);
 }
 
+// === VIEW LARAVEL LOGS ===
+if ($_SERVER['REQUEST_URI'] === '/logs') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    $logPath = __DIR__.'/../storage/logs/laravel.log';
+    if (file_exists($logPath)) {
+        // Read last 100 lines
+        $lines = file($logPath);
+        $lastLines = array_slice($lines, -100);
+        
+        echo "=== Last 100 lines of Laravel log ===\n\n";
+        echo implode('', $lastLines);
+    } else {
+        echo "Log file not found at $logPath";
+    }
+    flush();
+    exit(0);
+}
+
 // === DEBUG REQUEST HEADERS ===
 if ($_SERVER['REQUEST_URI'] === '/debug-headers') {
     header('Content-Type: text/plain; charset=UTF-8');
