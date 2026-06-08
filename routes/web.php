@@ -18,6 +18,16 @@ Route::get('/health', function () {
     return response()->json(['status' => 'ok', 'time' => now()]);
 });
 
+// Simple test route
+Route::get('/test-text', function () {
+    return "HELLO WORLD - " . now();
+});
+
+// API test
+Route::get('/test-json', function () {
+    return ['message' => 'API working', 'timestamp' => now()];
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
