@@ -67,6 +67,26 @@ if (!file_exists($envPath)) {
     file_put_contents($envPath, $content);
 }
 
+// === LOAD .env into $_SERVER ===
+if (file_exists($envPath)) {
+    $envContent = file_get_contents($envPath);
+    $lines = explode("\n", $envContent);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (empty($line) || strpos($line, '#') === 0) continue;
+        if (strpos($line, '=') === false) continue;
+        
+        list($key, $value) = explode('=', $line, 2);
+        $key = trim($key);
+        $value = trim($value);
+        
+        // Set in both $_SERVER and $_ENV for compatibility
+        $_SERVER[$key] = $value;
+        $_ENV[$key] = $value;
+        if (!isset($_SERVER['DB_HOST']) && $key === 'DB_HOST') $_SERVER['DB_HOST'] = $value;
+    }
+}
+
 // === TEST ENDPOINTS ===
 if ($_SERVER['REQUEST_URI'] === '/dump-all-env') {
     header('Content-Type: text/plain; charset=UTF-8');
@@ -228,12 +248,22 @@ if (strpos($_SERVER['REQUEST_URI'], '/check-db') === 0) {
         require __DIR__.'/../vendor/autoload.php';
         $app = require_once __DIR__.'/../bootstrap/app.php';
         
+        $host = $_SERVER['DB_HOST'] ?? 'mysql.railway.internal';
+        $port = $_SERVER['DB_PORT'] ?? 3306;
+        $database = $_SERVER['DB_DATABASE'] ?? 'railway';
+        $username = $_SERVER['DB_USERNAME'] ?? 'railway';
+        $password = $_SERVER['DB_PASSWORD'] ?? '';
+        
+        echo "Attempting connection with:\n";
+        echo "  Host: $host\n";
+        echo "  Port: $port\n";
+        echo "  Database: $database\n";
+        echo "  Username: $username\n";
+        echo "  Password: " . (empty($password) ? '(empty)' : '(set)') . "\n\n";
+        
         // Test basic PDO connection
-        $pdo = new \PDO(
-            'mysql:host=' . ($_SERVER['DB_HOST'] ?? 'mysql.railway.internal') . ';port=' . ($_SERVER['DB_PORT'] ?? 3306) . ';dbname=' . ($_SERVER['DB_DATABASE'] ?? 'railway'),
-            $_SERVER['DB_USERNAME'] ?? 'railway',
-            $_SERVER['DB_PASSWORD'] ?? ''
-        );
+        $dsn = "mysql:host=$host;port=$port;dbname=$database";
+        $pdo = new \PDO($dsn, $username, $password);
         
         echo "✓ Database connection successful\n\n";
         
@@ -263,6 +293,7 @@ if (strpos($_SERVER['REQUEST_URI'], '/check-db') === 0) {
         
     } catch (\Exception $e) {
         echo "✗ Database Error: " . $e->getMessage() . "\n";
+        echo "Code: " . $e->getCode() . "\n";
     }
     flush();
     exit(0);
