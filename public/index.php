@@ -50,6 +50,50 @@ if ($_SERVER['REQUEST_URI'] === '/json-test') {
     die();
 }
 
+// TEST: Simple env generator test
+if ($_SERVER['REQUEST_URI'] === '/simple-gen') {
+    header('Content-Type: text/plain; charset=utf-8');
+    
+    // Check proc environ
+    echo "=== Checking /proc/self/environ ===\n";
+    if (file_exists('/proc/self/environ')) {
+        $environ = file_get_contents('/proc/self/environ');
+        $vars = explode("\0", $environ);
+        foreach ($vars as $var) {
+            if (strpos($var, 'DB_HOST') !== false) echo $var . "\n";
+            if (strpos($var, 'DB_DATABASE') !== false) echo $var . "\n";
+        }
+    }
+    
+    echo "\n=== Before calling env generator ===\n";
+    echo "CWD: " . getcwd() . "\n";
+    
+    $envPath = getcwd() . '/.env';
+    echo ".env path: " . $envPath . "\n";
+    echo ".env exists before: " . (file_exists($envPath) ? 'YES' : 'NO') . "\n";
+    
+    echo "\n=== Calling env generator ===\n";
+    set_error_handler(function($errno, $errstr) {
+        echo "ERROR [$errno]: $errstr\n";
+        return true;
+    });
+    
+    require __DIR__.'/../bootstrap/railway-env-generator.php';
+    
+    restore_error_handler();
+    
+    echo "\n=== After calling env generator ===\n";
+    echo ".env exists after: " . (file_exists($envPath) ? 'YES' : 'NO') . "\n";
+    if (file_exists($envPath)) {
+        echo ".env size: " . filesize($envPath) . " bytes\n";
+        $content = file_get_contents($envPath);
+        echo ".env first 300 chars:\n";
+        echo substr($content, 0, 300) . "\n";
+    }
+    
+    die();
+}
+
 // TEST: Run env generator and test it
 if ($_SERVER['REQUEST_URI'] === '/test-gen-env') {
     header('Content-Type: application/json; charset=utf-8');
