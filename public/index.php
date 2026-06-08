@@ -32,15 +32,10 @@ if ($_SERVER['REQUEST_URI'] === '/cache-status') {
     http_response_code(200);
     header('Content-Type: application/json; charset=utf-8');
     $cachePath = __DIR__.'/../bootstrap/cache';
-    $files = [];
-    if (is_dir($cachePath)) {
-        $files = scandir($cachePath);
-    }
     echo json_encode([
-        'cache_dir_exists' => is_dir($cachePath),
-        'cache_files' => $files,
-        'env_file' => file_exists(__DIR__.'/../.env') ? 'EXISTS' : 'MISSING',
-        'env_content_preview' => file_exists(__DIR__.'/../.env') ? substr(file_get_contents(__DIR__.'/../.env'), 0, 200) : null,
+        'config_cached' => file_exists($cachePath . '/config.php') ? 'YES' : 'NO',
+        'routes_cached' => file_exists($cachePath . '/routes-v7.php') ? 'YES' : 'NO',
+        'env_exists' => file_exists(__DIR__.'/../.env') ? 'YES' : 'NO',
     ], JSON_PRETTY_PRINT);
     exit(0);
 }
