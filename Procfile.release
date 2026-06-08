@@ -1,1 +1,1 @@
-php artisan config:clear && php artisan cache:clear && php -d display_errors=stderr bootstrap/railway-env-generator.php && php artisan config:cache && php artisan route:cache && php artisan view:cache
+php -d display_errors=stderr bootstrap/railway-env-generator.php && php artisan config:clear && php artisan cache:clear && php artisan config:cache
