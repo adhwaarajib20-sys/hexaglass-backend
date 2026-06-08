@@ -5,30 +5,19 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-// Log all requests for debugging
-error_log("REQUEST: " . $_SERVER['REQUEST_URI'] . " at " . date('Y-m-d H:i:s'));
+// === WRITE TO LOG FILE ===
+@file_put_contents('/tmp/php_request.log', '[' . date('Y-m-d H:i:s') . '] URI: ' . $_SERVER['REQUEST_URI'] . "\n", FILE_APPEND);
 
 // === ULTRA SIMPLE TEST ===
-if (strpos($_SERVER['REQUEST_URI'], '/ping') !== false) {
+if ($_SERVER['REQUEST_URI'] === '/ping') {
     header('Content-Type: text/plain; charset=UTF-8');
+    header('Content-Length: 4');
     echo "PONG";
-    error_log("PING endpoint executed");
+    flush();
     exit(0);
 }
 
-if (strpos($_SERVER['REQUEST_URI'], '/debug') !== false) {
-    $output = "OK at " . date('Y-m-d H:i:s');
-    header('Content-Type: text/plain; charset=UTF-8');
-    echo $output;
-    exit(0);
-}
-
-if (strpos($_SERVER['REQUEST_URI'], '/test') !== false) {
-    header('Content-Type: text/plain; charset=UTF-8');
-    echo "TEST OK";
-    exit(0);
-}
-
+// === BEFORE ANYTHING ELSE ===
 // Delete cache files
 $cachePath = __DIR__.'/../bootstrap/cache';
 foreach (['config.php', 'routes-v7.php', 'routes-v7.php.gz', 'events.php', 'events.php.gz'] as $file) {
@@ -73,18 +62,15 @@ if (!file_exists($envPath)) {
 
 // === TEST ENDPOINTS ===
 if ($_SERVER['REQUEST_URI'] === '/debug') {
-    $output = "OK at " . date('Y-m-d H:i:s');
+    @file_put_contents('php://stderr', "DEBUG endpoint hit\n");
     header('Content-Type: text/plain; charset=UTF-8');
-    echo $output;
+    echo "OK";
+    flush();
     exit(0);
 }
 
 if ($_SERVER['REQUEST_URI'] === '/env-status') {
-    $status = file_exists($envPath) ? "YES" : "NO";
-    $output = $status . " at " . date('Y-m-d H:i:s');
-    header('Content-Type: text/plain; charset=UTF-8');
-    echo $output;
-    exit(0);
+    exit(file_exists($envPath) ? "YES" : "NO");
 }
 
 // === MAINTENANCE ===

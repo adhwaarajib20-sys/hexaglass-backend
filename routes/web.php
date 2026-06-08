@@ -15,8 +15,9 @@ use App\Http\Controllers\ProfileController;
 
 // Ultra-simple test
 Route::get('/test', function () {
-    return response('TEST OK', 200)
-        ->header('Content-Type', 'text/plain; charset=UTF-8');
+    return response()->make('TEST_OK_FROM_LARAVEL', 200, [
+        'Content-Type' => 'text/plain; charset=UTF-8'
+    ]);
 });
 
 // Diagnostic route
