@@ -437,6 +437,42 @@ if ($_SERVER['REQUEST_URI'] === '/debug-headers') {
     exit(0);
 }
 
+// === DEBUG SESSION CONFIG ===
+if ($_SERVER['REQUEST_URI'] === '/session-config') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    echo "=== SESSION CONFIGURATION ===\n";
+    echo "SESSION_DRIVER: " . ($_SERVER['SESSION_DRIVER'] ?? 'NOT SET') . "\n";
+    echo "SESSION_LIFETIME: " . ($_SERVER['SESSION_LIFETIME'] ?? 'NOT SET') . "\n";
+    echo "SESSION_DOMAIN: " . ($_SERVER['SESSION_DOMAIN'] ?? 'NOT SET') . "\n";
+    echo "SESSION_PATH: " . ($_SERVER['SESSION_PATH'] ?? 'NOT SET') . "\n";
+    echo "SESSION_SECURE_COOKIE: " . ($_SERVER['SESSION_SECURE_COOKIE'] ?? 'NOT SET') . "\n";
+    echo "SESSION_HTTP_ONLY: " . ($_SERVER['SESSION_HTTP_ONLY'] ?? 'NOT SET') . "\n";
+    echo "SESSION_SAME_SITE: " . ($_SERVER['SESSION_SAME_SITE'] ?? 'NOT SET') . "\n\n";
+    
+    echo "=== REQUEST COOKIES ===\n";
+    echo "Incoming cookies: " . (empty($_COOKIE) ? "NONE" : count($_COOKIE)) . "\n";
+    foreach ($_COOKIE as $name => $value) {
+        echo "- $name = " . substr($value, 0, 30) . "...\n";
+    }
+    
+    echo "\n=== RESPONSE HEADERS TO BE SET ===\n";
+    echo "This page will include Set-Cookie headers (check network tab)\n";
+    
+    // Force set a test cookie to see if it works
+    setcookie('test-cookie', 'test-value-' . time(), [
+        'expires' => time() + 3600,
+        'path' => '/',
+        'domain' => '.railway.app',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    
+    flush();
+    exit(0);
+}
+
 // === MAINTENANCE ===
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
