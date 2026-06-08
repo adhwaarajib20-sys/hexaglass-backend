@@ -5,6 +5,11 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Generate .env from Railway environment variables before Laravel boots
+if (getenv('MYSQL_HOST')) {
+    require __DIR__.'/../bootstrap/railway-env-generator.php';
+}
+
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
