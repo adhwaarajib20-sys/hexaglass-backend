@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Skip view:cache due to component reference issues
+# Cache only config and routes
+
+php artisan config:cache
+php artisan route:cache
+php artisan event:cache
+
+# Do NOT cache views - causes "Unable to locate component [layouts.app]" error
+# php artisan view:cache
