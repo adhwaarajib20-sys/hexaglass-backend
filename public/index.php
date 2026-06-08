@@ -228,7 +228,8 @@ if (strpos($_SERVER['REQUEST_URI'], '/check-migrations-table') === 0) {
         require __DIR__.'/../vendor/autoload.php';
         $app = require_once __DIR__.'/../bootstrap/app.php';
         
-        $db = $app->make('db');
+        // Use DB facade
+        $db = \Illuminate\Support\Facades\DB::connection();
         
         // Check if migrations table exists
         $tables = $db->select("SHOW TABLES LIKE 'migrations'");
@@ -247,7 +248,7 @@ if (strpos($_SERVER['REQUEST_URI'], '/check-migrations-table') === 0) {
             }
         }
     } catch (\Exception $e) {
-        echo "✗ Error: " . $e->getMessage();
+        echo "✗ Error: " . $e->getMessage() . "\n";
     }
     flush();
     exit(0);
