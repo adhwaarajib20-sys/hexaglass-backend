@@ -351,6 +351,52 @@ if ($_SERVER['REQUEST_URI'] === '/run-seeders') {
     exit(0);
 }
 
+// === TEST AUTHENTICATION ===
+if ($_SERVER['REQUEST_URI'] === '/test-auth') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    try {
+        // Test database connection and user lookup directly
+        $dbHost = $_SERVER['DB_HOST'] ?? 'mysql.railway.internal';
+        $dbPort = $_SERVER['DB_PORT'] ?? '3306';
+        $dbDatabase = $_SERVER['DB_DATABASE'] ?? 'railway';
+        $dbUsername = $_SERVER['DB_USERNAME'] ?? 'root';
+        $dbPassword = $_SERVER['DB_PASSWORD'] ?? '';
+        
+        $dsn = "mysql:host=$dbHost;port=$dbPort;dbname=$dbDatabase";
+        $pdo = new \PDO($dsn, $dbUsername, $dbPassword);
+        
+        // Get admin user
+        $stmt = $pdo->prepare("SELECT id, name, email, password, status FROM users WHERE email = ?");
+        $stmt->execute(['admin@hexaglass.com']);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        echo "=== User Found ===\n";
+        echo "Email: " . $user['email'] . "\n";
+        echo "Name: " . $user['name'] . "\n";
+        echo "Password Hash: " . substr($user['password'], 0, 20) . "...\n";
+        echo "Status: " . $user['status'] . "\n\n";
+        
+        // Test password verification
+        $testPassword = "Admin@123";
+        $match = password_verify($testPassword, $user['password']);
+        
+        echo "=== Password Test ===\n";
+        echo "Testing password: $testPassword\n";
+        echo "Password matches: " . ($match ? "YES ✓" : "NO ✗") . "\n";
+        
+        if ($match) {
+            echo "\n✓ Authentication test PASSED - User credentials are correct!\n";
+        } else {
+            echo "\n✗ Authentication test FAILED - Password doesn't match!\n";
+        }
+    } catch (\Exception $e) {
+        echo "✗ Error: " . $e->getMessage() . "\n";
+    }
+    flush();
+    exit(0);
+}
+
 // === DEBUG REQUEST HEADERS ===
 if ($_SERVER['REQUEST_URI'] === '/debug-headers') {
     header('Content-Type: text/plain; charset=UTF-8');
