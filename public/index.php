@@ -491,13 +491,23 @@ if ($_SERVER['REQUEST_URI'] === '/session-storage') {
         if ($exists) {
             echo "✓ Sessions table EXISTS\n";
             
+            // Show table schema first
+            $stmt = $pdo->query("DESCRIBE sessions");
+            $columns = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            echo "  Table columns:\n";
+            foreach ($columns as $col) {
+                echo "  - " . $col['Field'] . " (" . $col['Type'] . ")\n";
+            }
+            echo "\n";
+            
             // Get session count
             $stmt = $pdo->query("SELECT COUNT(*) FROM sessions");
             $count = $stmt->fetchColumn();
             echo "  Current sessions in database: $count\n\n";
             
-            // Show recent sessions
-            $stmt = $pdo->query("SELECT id, user_id, payload, created_at, last_activity FROM sessions ORDER BY last_activity DESC LIMIT 5");
+            // Show recent sessions - use correct columns
+            $stmt = $pdo->query("SELECT id, user_id, payload, last_activity FROM sessions ORDER BY last_activity DESC LIMIT 5");
             $sessions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             
             if (!empty($sessions)) {
