@@ -29,30 +29,31 @@ $dbPassword = getEnvFromProc('DB_PASSWORD');
 $appKey = getEnvFromProc('APP_KEY');
 
 error_log("🔧 Env Generator: Checking Railway environment variables from /proc/self/environ...");
+error_log("   DB_HOST found: " . ($dbHost ? '✓ ' . $dbHost : '✗'));
+error_log("   DB_DATABASE found: " . ($dbDatabase ? '✓ ' . $dbDatabase : '✗'));
+error_log("   DB_USERNAME found: " . ($dbUsername ? '✓' : '✗'));
 
-// If not on Railway, skip (local .env will be used)
-if (!$dbHost) {
-    error_log("⚠️  Not on Railway (DB_HOST empty) - using local .env");
-    exit(0);
-}
-
-error_log("✅ Railway detected - will generate .env");
-error_log("   DB_HOST: " . ($dbHost ? '✓' : '✗'));
-error_log("   DB_DATABASE: " . ($dbDatabase ? '✓' : '✗'));
-error_log("   DB_USERNAME: " . ($dbUsername ? '✓' : '✗'));
-error_log("   DB_PASSWORD: " . ($dbPassword ? '✓ (hidden)' : '✗'));
-error_log("   APP_KEY: " . ($appKey ? '✓' : '✗'));
-
-// Validate required variables
-$missing = [];
-if (!$dbHost) $missing[] = 'DB_HOST';
-if (!$dbDatabase) $missing[] = 'DB_DATABASE';
-if (!$dbUsername) $missing[] = 'DB_USERNAME';
-if (!$dbPassword) $missing[] = 'DB_PASSWORD';
-
-if (!empty($missing)) {
-    error_log("❌ FATAL: Missing Railway environment variables: " . implode(', ', $missing));
-    exit(1);
+// Always try to create .env file, even if variables are missing
+if ($dbHost && $dbDatabase && $dbUsername && $dbPassword) {
+    error_log("✅ All required variables found - generating .env");
+} else {
+    error_log("⚠️  Some variables missing, will create .env with what we have");
+    if (!$dbHost) {
+        error_log("   DB_HOST is missing, trying fallback to localhost");
+        $dbHost = $dbHost ?: 'mysql.railway.internal';
+    }
+    if (!$dbDatabase) {
+        error_log("   DB_DATABASE is missing, trying fallback");
+        $dbDatabase = $dbDatabase ?: 'hexaglass_db';
+    }
+    if (!$dbUsername) {
+        error_log("   DB_USERNAME is missing, trying fallback");
+        $dbUsername = $dbUsername ?: 'railway';
+    }
+    if (!$dbPassword) {
+        error_log("   DB_PASSWORD is missing, skipping generation");
+        exit(1);
+    }
 }
 
 // Generate .env file
