@@ -302,6 +302,27 @@ if ($_SERVER['REQUEST_URI'] === '/run-seeders') {
     exit(0);
 }
 
+// === DEBUG REQUEST HEADERS ===
+if ($_SERVER['REQUEST_URI'] === '/debug-headers') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    echo "=== REQUEST INFORMATION ===\n";
+    echo "Scheme: " . ($_SERVER['REQUEST_SCHEME'] ?? 'NOT SET') . "\n";
+    echo "HTTPS: " . ($_SERVER['HTTPS'] ?? 'NOT SET') . "\n";
+    echo "HTTP_PROTOCOL: " . ($_SERVER['SERVER_PROTOCOL'] ?? 'NOT SET') . "\n";
+    echo "\n=== PROXY HEADERS ===\n";
+    echo "X-Forwarded-Proto: " . ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'NOT SET') . "\n";
+    echo "X-Forwarded-For: " . ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? 'NOT SET') . "\n";
+    echo "X-Forwarded-Host: " . ($_SERVER['HTTP_X_FORWARDED_HOST'] ?? 'NOT SET') . "\n";
+    echo "\n=== HTTP HOST ===\n";
+    echo "HTTP_HOST: " . ($_SERVER['HTTP_HOST'] ?? 'NOT SET') . "\n";
+    echo "SERVER_NAME: " . ($_SERVER['SERVER_NAME'] ?? 'NOT SET') . "\n";
+    echo "SERVER_PORT: " . ($_SERVER['SERVER_PORT'] ?? 'NOT SET') . "\n";
+    
+    flush();
+    exit(0);
+}
+
 // === MAINTENANCE ===
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
