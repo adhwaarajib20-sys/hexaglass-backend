@@ -61,13 +61,19 @@ chmod -R 755 storage/ bootstrap/cache/ 2>/dev/null || true
 echo "📦 Installing dependencies..."
 composer install --no-dev --optimize-autoloader --quiet 2>&1 | tail -1 || composer install --no-dev --optimize-autoloader
 
+# Clear any cached config first
+php artisan config:clear --quiet 2>/dev/null || true
+
 # Cache Laravel config
 echo "⚡ Caching config..."
 php artisan config:cache --quiet 2>&1 || php artisan config:cache
 
-# Try to run migrations (non-blocking)
+# Try to run migrations with better error handling
 echo "🗄️  Running database migrations..."
-php artisan migrate --force --quiet 2>&1 | tail -1 || echo "⚠️  Migrations will retry on startup"
+php artisan migrate --force 2>&1 || {
+  echo "⚠️  Migration encountered an error";
+  echo "Attempting to continue...";
+}
 
 # Cache routes
 echo "🛣️  Caching routes..."
