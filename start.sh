@@ -12,8 +12,8 @@ if [ ! -f .env ]; then
   
   # Validate required variables
   if [ -z "$APP_KEY" ]; then
-    echo "❌ ERROR: APP_KEY not set by Railway!"
-    exit 1
+    echo "⚠️  APP_KEY not set, generating one..."
+    APP_KEY="base64:$(head -c 32 /dev/urandom | base64)"
   fi
   
   if [ -z "$DB_HOST" ]; then
