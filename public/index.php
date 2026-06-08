@@ -32,28 +32,31 @@ if ($_SERVER['REQUEST_URI'] === '/check-users') {
         require __DIR__.'/../vendor/autoload.php';
         $app = require_once __DIR__.'/../bootstrap/app.php';
         
-        // Make sure the service providers are booted
-        $app->boot();
+        // Test raw PDO connection
+        $dsn = "mysql:host=" . $_ENV['DB_HOST'] . ";port=" . $_ENV['DB_PORT'] . ";dbname=" . $_ENV['DB_DATABASE'];
+        $pdo = new \PDO($dsn, $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
         
-        // Get the database manager
-        $db = $app->make('db');
-        $users = $db->table('users')->select('id', 'name', 'email', 'status')->get();
+        $stmt = $pdo->query("SELECT id, name, email, status FROM users LIMIT 10");
+        $users = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
-        echo "✓ Users table accessible\n";
+        echo "✓ Database connection successful\n";
         echo "Total users: " . count($users) . "\n\n";
         
         foreach ($users as $user) {
-            echo "- ID: {$user->id}, Email: {$user->email}, Name: {$user->name}, Status: {$user->status}\n";
+            echo "- ID: {$user['id']}, Email: {$user['email']}, Name: {$user['name']}, Status: {$user['status']}\n";
         }
         
         // Check admin user specifically
-        $admin = $db->table('users')->where('email', 'admin@hexaglass.com')->first();
+        $stmt = $pdo->prepare("SELECT id, name, email, status FROM users WHERE email = ?");
+        $stmt->execute(['admin@hexaglass.com']);
+        $admin = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
         echo "\n=== Admin User Details ===\n";
         if ($admin) {
-            echo "Found: " . $admin->email . "\n";
-            echo "Name: " . $admin->name . "\n";
-            echo "ID: " . $admin->id . "\n";
-            echo "Status: " . $admin->status . "\n";
+            echo "Found: " . $admin['email'] . "\n";
+            echo "Name: " . $admin['name'] . "\n";
+            echo "ID: " . $admin['id'] . "\n";
+            echo "Status: " . $admin['status'] . "\n";
         } else {
             echo "NOT FOUND\n";
         }
