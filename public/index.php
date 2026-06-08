@@ -50,7 +50,51 @@ if ($_SERVER['REQUEST_URI'] === '/json-test') {
     die();
 }
 
-// TEST: Check for any .env or env files in common locations
+// TEST: Run env generator and test it
+if ($_SERVER['REQUEST_URI'] === '/test-gen-env') {
+    header('Content-Type: application/json; charset=utf-8');
+    $response = [];
+    
+    // Check environ before generation
+    if (file_exists('/proc/self/environ')) {
+        $environ = file_get_contents('/proc/self/environ');
+        $vars = explode("\0", $environ);
+        foreach ($vars as $var) {
+            if (strpos($var, 'DB_HOST') !== false) {
+                $parts = explode('=', $var);
+                $response['proc_db_host'] = isset($parts[1]) ? $parts[1] : 'EMPTY';
+            }
+            if (strpos($var, 'DB_DATABASE') !== false) {
+                $parts = explode('=', $var);
+                $response['proc_db_database'] = isset($parts[1]) ? $parts[1] : 'EMPTY';
+            }
+        }
+    }
+    
+    // Try to run env generator
+    ob_start();
+    try {
+        require __DIR__.'/../bootstrap/railway-env-generator.php';
+        $response['generator_output'] = ob_get_clean();
+    } catch (Exception $e) {
+        $response['generator_error'] = $e->getMessage();
+        ob_end_clean();
+    }
+    
+    // Check if .env was created
+    $envPath = __DIR__.'/../.env';
+    $response['env_exists_after'] = file_exists($envPath) ? 'YES' : 'NO';
+    if (file_exists($envPath)) {
+        $response['env_size'] = filesize($envPath) . ' bytes';
+        $lines = explode("\n", file_get_contents($envPath));
+        $response['env_sample'] = implode("\n", array_slice($lines, 0, 3));
+    }
+    
+    echo json_encode($response, JSON_PRETTY_PRINT);
+    die();
+}
+
+// TEST: Find env - check for any .env or env files
 if ($_SERVER['REQUEST_URI'] === '/find-env') {
     header('Content-Type: application/json; charset=utf-8');
     $response = [];
