@@ -2,48 +2,41 @@
 /**
  * Bootstrap: Generate .env file from Railway environment variables
  * This runs before Laravel boots to ensure environment is properly configured
+ * Can be executed as: php bootstrap/railway-env-generator.php
  */
 
-// Only proceed if running on Railway (has MYSQL_HOST set)
+// Get all Railway MySQL variables
 $mysqlHost = getenv('MYSQL_HOST');
+$mysqlPort = getenv('MYSQL_PORT') ?: '3306';
+$mysqlName = getenv('MYSQL_NAME');
+$mysqlUser = getenv('MYSQL_USER');
+$mysqlPassword = getenv('MYSQL_PASSWORD');
 $appKey = getenv('APP_KEY');
+
+error_log("🔧 Env Generator: Checking for Railway environment variables...");
 
 // If not on Railway, skip (local .env will be used)
 if (!$mysqlHost) {
-    error_log("⚠️  Not on Railway - skipping .env generation (local .env will be used)");
-    return;
+    error_log("⚠️  Not on Railway (MYSQL_HOST empty) - using local .env");
+    exit(0);
 }
 
-// Get Railway MySQL variables
-$railwayVars = [
-    'APP_KEY' => $appKey,
-    'MYSQL_HOST' => $mysqlHost,
-    'MYSQL_PORT' => getenv('MYSQL_PORT') ?: '3306',
-    'MYSQL_NAME' => getenv('MYSQL_NAME'),
-    'MYSQL_USER' => getenv('MYSQL_USER'),
-    'MYSQL_PASSWORD' => getenv('MYSQL_PASSWORD'),
-];
-
-// Output what we're reading (for debugging)
-error_log("🔧 Railway Env Generator: Checking environment variables...");
-error_log("   MYSQL_HOST: " . ($railwayVars['MYSQL_HOST'] ? '✓ set' : '✗ empty'));
-error_log("   MYSQL_PORT: " . ($railwayVars['MYSQL_PORT'] ? '✓ set' : '✗ empty'));
-error_log("   MYSQL_NAME: " . ($railwayVars['MYSQL_NAME'] ? '✓ set' : '✗ empty'));
-error_log("   MYSQL_USER: " . ($railwayVars['MYSQL_USER'] ? '✓ set' : '✗ empty'));
-error_log("   MYSQL_PASSWORD: " . ($railwayVars['MYSQL_PASSWORD'] ? '✓ set (***hidden***)' : '✗ empty'));
-error_log("   APP_KEY: " . ($railwayVars['APP_KEY'] ? '✓ set' : '✗ empty'));
+error_log("✅ Railway detected - will generate .env");
+error_log("   MYSQL_HOST: " . ($mysqlHost ? '✓' : '✗'));
+error_log("   MYSQL_NAME: " . ($mysqlName ? '✓' : '✗'));
+error_log("   MYSQL_USER: " . ($mysqlUser ? '✓' : '✗'));
+error_log("   MYSQL_PASSWORD: " . ($mysqlPassword ? '✓ (hidden)' : '✗'));
+error_log("   APP_KEY: " . ($appKey ? '✓' : '✗'));
 
 // Validate required variables
-$required = ['MYSQL_HOST', 'MYSQL_NAME', 'MYSQL_USER', 'MYSQL_PASSWORD'];
 $missing = [];
-foreach ($required as $var) {
-    if (empty($railwayVars[$var])) {
-        $missing[] = $var;
-    }
-}
+if (!$mysqlHost) $missing[] = 'MYSQL_HOST';
+if (!$mysqlName) $missing[] = 'MYSQL_NAME';
+if (!$mysqlUser) $missing[] = 'MYSQL_USER';
+if (!$mysqlPassword) $missing[] = 'MYSQL_PASSWORD';
 
 if (!empty($missing)) {
-    error_log("❌ FATAL: Missing required Railway environment variables: " . implode(', ', $missing));
+    error_log("❌ FATAL: Missing Railway environment variables: " . implode(', ', $missing));
     exit(1);
 }
 
@@ -94,12 +87,12 @@ SANCTUM_STATEFUL_DOMAINS=web-production-fc4fb.up.railway.app,localhost:8000,loca
 EOF;
 
 // Replace placeholders with actual values
-$envContent = str_replace('%APP_KEY%', $railwayVars['APP_KEY'], $envContent);
-$envContent = str_replace('%MYSQL_HOST%', $railwayVars['MYSQL_HOST'], $envContent);
-$envContent = str_replace('%MYSQL_PORT%', $railwayVars['MYSQL_PORT'], $envContent);
-$envContent = str_replace('%MYSQL_NAME%', $railwayVars['MYSQL_NAME'], $envContent);
-$envContent = str_replace('%MYSQL_USER%', $railwayVars['MYSQL_USER'], $envContent);
-$envContent = str_replace('%MYSQL_PASSWORD%', $railwayVars['MYSQL_PASSWORD'], $envContent);
+$envContent = str_replace('%APP_KEY%', $appKey, $envContent);
+$envContent = str_replace('%MYSQL_HOST%', $mysqlHost, $envContent);
+$envContent = str_replace('%MYSQL_PORT%', $mysqlPort, $envContent);
+$envContent = str_replace('%MYSQL_NAME%', $mysqlName, $envContent);
+$envContent = str_replace('%MYSQL_USER%', $mysqlUser, $envContent);
+$envContent = str_replace('%MYSQL_PASSWORD%', $mysqlPassword, $envContent);
 
 // Write .env file
 if (file_put_contents($envPath, $envContent) === false) {
@@ -110,14 +103,14 @@ if (file_put_contents($envPath, $envContent) === false) {
 // Log success
 $envSize = filesize($envPath);
 error_log("✅ .env file generated successfully at $envPath (size: $envSize bytes)");
-error_log("   DB_HOST: " . $railwayVars['MYSQL_HOST']);
-error_log("   DB_PORT: " . $railwayVars['MYSQL_PORT']);
-error_log("   DB_DATABASE: " . $railwayVars['MYSQL_NAME']);
-error_log("   DB_USERNAME: " . $railwayVars['MYSQL_USER']);
+error_log("   DB_HOST: " . $mysqlHost);
+error_log("   DB_PORT: " . $mysqlPort);
+error_log("   DB_DATABASE: " . $mysqlName);
+error_log("   DB_USERNAME: " . $mysqlUser);
 
 // Verify the file was written correctly by reading it back
 $written = file_get_contents($envPath);
-if (strpos($written, $railwayVars['MYSQL_HOST']) === false) {
+if (strpos($written, $mysqlHost) === false) {
     error_log("❌ ERROR: .env file was written but MySQL host not found in content!");
     exit(1);
 }
