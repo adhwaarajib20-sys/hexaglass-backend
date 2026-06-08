@@ -68,6 +68,21 @@ if (!file_exists($envPath)) {
 }
 
 // === TEST ENDPOINTS ===
+if ($_SERVER['REQUEST_URI'] === '/show-env') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    
+    $envPath = __DIR__.'/../.env';
+    if (file_exists($envPath)) {
+        $content = file_get_contents($envPath);
+        echo "=== .env FILE CONTENT ===\n";
+        echo $content;
+    } else {
+        echo ".env file does not exist at $envPath";
+    }
+    flush();
+    exit(0);
+}
+
 if ($_SERVER['REQUEST_URI'] === '/debug-env-gen') {
     header('Content-Type: text/plain; charset=UTF-8');
     
