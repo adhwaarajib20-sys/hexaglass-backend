@@ -17,6 +17,13 @@ if ($_SERVER['REQUEST_URI'] === '/ping') {
     exit(0);
 }
 
+if ($_SERVER['REQUEST_URI'] === '/status') {
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo "STATUS_OK";
+    flush();
+    exit(0);
+}
+
 // === BEFORE ANYTHING ELSE ===
 // Delete cache files
 $cachePath = __DIR__.'/../bootstrap/cache';
