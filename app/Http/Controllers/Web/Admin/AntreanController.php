@@ -16,13 +16,21 @@ class AntreanController extends Controller
      */
     public function index(Request $request)
     {
-        $tanggal = $request->input('tanggal', Carbon::today()->format('Y-m-d'));
+        $query = Antrean::with(['kendaraan', 'operator']);
 
-        $query = Antrean::with(['kendaraan', 'operator'])
-            ->whereDate('tanggal', $tanggal);
+        // Filter tanggal: range atau default hari ini
+        if ($request->filled('dari_tanggal') && $request->filled('sampai_tanggal')) {
+            $query->whereBetween('tanggal', [$request->dari_tanggal, $request->sampai_tanggal]);
+        } else {
+            $query->whereDate('tanggal', Carbon::today()->format('Y-m-d'));
+        }
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
+        }
+
+        if ($request->filled('status_validasi')) {
+            $query->where('status_validasi_satpam', $request->status_validasi);
         }
 
         $antrean = $query->latest('waktu_daftar')->paginate(15);

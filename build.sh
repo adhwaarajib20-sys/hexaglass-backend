@@ -31,7 +31,7 @@ APP_NAME=Hexaglass
 APP_ENV=production
 APP_KEY=$APP_KEY
 APP_DEBUG=false
-APP_URL=https://web-production-2598a.up.railway.app
+APP_URL=https://web-production-fc4fb.up.railway.app
 
 APP_LOCALE=id
 APP_FALLBACK_LOCALE=en
@@ -58,7 +58,7 @@ MAIL_FROM_NAME="Hexaglass"
 
 VITE_APP_NAME="Hexaglass"
 
-SANCTUM_STATEFUL_DOMAINS=web-production-2598a.up.railway.app,localhost:8000,localhost:3000,127.0.0.1:8000
+SANCTUM_STATEFUL_DOMAINS=web-production-fc4fb.up.railway.app,localhost:8000,localhost:3000,127.0.0.1:8000
 EOF
 
 echo "✅ .env created"

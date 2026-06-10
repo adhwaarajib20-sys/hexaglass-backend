@@ -6,7 +6,7 @@ return [
     'allowed_origins' => [
         'http://localhost:3000',      // Local development frontend
         'http://localhost:8000',      // Local development backend
-        'https://web-production-2598a.up.railway.app', // Production backend
+        'https://web-production-fc4fb.up.railway.app', // Production backend
         env('FRONTEND_URL'),          // Frontend URL from environment
     ],
     'allowed_origins_patterns' => [

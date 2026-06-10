@@ -47,6 +47,15 @@
                     <option value="batal"     {{ request('status') == 'batal'     ? 'selected' : '' }}>Batal</option>
                 </select>
             </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Validasi Satpam</label>
+                <select name="status_validasi" class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">Semua</option>
+                    <option value="menunggu_validasi" {{ request('status_validasi') == 'menunggu_validasi' ? 'selected' : '' }}>Menunggu Validasi</option>
+                    <option value="disetujui"         {{ request('status_validasi') == 'disetujui'         ? 'selected' : '' }}>Disetujui</option>
+                    <option value="ditolak"            {{ request('status_validasi') == 'ditolak'            ? 'selected' : '' }}>Ditolak</option>
+                </select>
+            </div>
             <button type="submit" class="btn-primary">Filter</button>
             <a href="{{ route('admin.antrean.index') }}" class="btn-outline">Reset</a>
         </form>
@@ -61,6 +70,7 @@
                         <th class="px-6 py-3 text-left">No. Antrean</th>
                         <th class="px-6 py-3 text-left">Supir & Kendaraan</th>
                         <th class="px-6 py-3 text-left">Perusahaan</th>
+                        <th class="px-6 py-3 text-left">Validasi Satpam</th>
                         <th class="px-6 py-3 text-left">Prioritas</th>
                         <th class="px-6 py-3 text-left">Estimasi</th>
                         <th class="px-6 py-3 text-left">Gas (m³)</th>
@@ -81,6 +91,14 @@
                             <p class="text-xs text-gray-500">{{ $item->kendaraan?->nomor_polisi }} • {{ $item->kendaraan?->jenis_kendaraan }}</p>
                         </td>
                         <td class="px-6 py-4 text-gray-600 text-xs">{{ $item->kendaraan?->perusahaan ?? '-' }}</td>
+                        <td class="px-6 py-4">
+                            @switch($item->status_validasi_satpam)
+                                @case('menunggu_validasi') <span class="badge bg-yellow-100 text-yellow-700">⏳ Menunggu</span> @break
+                                @case('disetujui')         <span class="badge bg-green-100 text-green-700">✓ Disetujui</span> @break
+                                @case('ditolak')           <span class="badge bg-red-100 text-red-700">✗ Ditolak</span> @break
+                                @default                   <span class="badge bg-gray-100 text-gray-500">-</span>
+                            @endswitch
+                        </td>
                         <td class="px-6 py-4">
                             @if($item->is_prioritas)
                                 <span class="badge bg-orange-100 text-orange-700">⚡ Prioritas</span>
@@ -111,7 +129,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9" class="px-6 py-12 text-center text-gray-400">
+                        <td colspan="10" class="px-6 py-12 text-center text-gray-400">
                             <p class="text-3xl mb-2"><i class="fas fa-list"></i></p>
                             <p>Tidak ada data antrean</p>
                         </td>
