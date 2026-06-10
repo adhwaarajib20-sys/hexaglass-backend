@@ -13,6 +13,37 @@ use App\Http\Controllers\Web\Operator\PengisianController as OperatorPengisian;
 use App\Http\Controllers\Web\Operator\LaporanController as OperatorLaporan;
 use App\Http\Controllers\ProfileController;
 
+// Ultra-simple test
+Route::get('/test', function () {
+    return response()->make('TEST_OK_FROM_LARAVEL', 200, [
+        'Content-Type' => 'text/plain; charset=UTF-8'
+    ]);
+});
+
+// Diagnostic route
+Route::get('/diagnostic', function () {
+    return response()->make(json_encode([
+        'status' => 'working',
+        'env' => config('app.env'),
+        'debug' => config('app.debug'),
+    ]), 200, ['Content-Type' => 'application/json']);
+});
+
+// Health check
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok', 'time' => now()]);
+});
+
+// Simple test route
+Route::get('/test-text', function () {
+    return "HELLO WORLD - " . now();
+});
+
+// API test
+Route::get('/test-json', function () {
+    return ['message' => 'API working', 'timestamp' => now()];
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');

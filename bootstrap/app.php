@@ -12,6 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Trust all proxies for Railway deployment
+        $middleware->trustProxies(at: '*');
+        
+        // Force HTTPS from X-Forwarded-Proto header
+        $middleware->prepend(\App\Http\Middleware\ForceHttps::class);
+
         // Register CORS middleware
         $middleware->append(\App\Http\Middleware\HandleCors::class);
 
