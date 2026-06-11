@@ -20,7 +20,7 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <a href="/" class="flex items-center gap-2">
-                    <img src="{{ asset('img/logo.png') }}" alt="Hilir Migas Logo" class="h-10 w-auto">
+                    <img src="{{ asset('img/logo.png') }}" alt="Hilir Migas Logo" class="h-10 w-auto rounded-lg">
                     <span class="font-bold text-xl tracking-tight text-white hidden sm:block">PT. Migas Hilir Migas</span>
                 </a>
 
@@ -125,7 +125,7 @@
                         <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 shadow-lg shadow-blue-900/20">
                             <h3 class="text-lg font-bold text-white mb-2">Company Profile</h3>
                             <p class="text-sm text-white/80 mb-4">Download presentasi profil perusahaan HexaGlass</p>
-                            <a href="{{ asset('PPT_Project_Kel-1.pdf') }}" download="HexaGlass-Profile.pdf" class="block w-full bg-white text-blue-600 px-4 py-3 rounded-lg font-semibold text-center hover:bg-gray-100 transition-colors">
+                            <a href="{{ asset('PPT_Project_Kel-1.pdf') }}" download="PPT_Project_Kel-1.pdf" class="block w-full bg-white text-blue-600 px-4 py-3 rounded-lg font-semibold text-center hover:bg-gray-100 transition-colors">
                                 ⬇️ Download PDF
                             </a>
                         </div>
