@@ -35,7 +35,7 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="text-center mb-16">
-                <img src="{{ asset('img/HEXAGLASS.png') }}" alt="HEXAGLASS Logo" class="h-16 w-auto mx-auto mb-6">
+                <img src="{{ asset('img/HEXAGLASS.png') }}" alt="HEXAGLASS Logo" class="h-16 w-auto mx-auto mb-6 rounded-lg shadow-lg">
                 <h1 class="text-4xl sm:text-5xl font-bold text-white mb-2">Hak Cipta</h1>
                 <p class="text-gray-400">Platform Monitoring Operasional PT> Migas Hilir Jabar</p>
             </div>
@@ -125,8 +125,8 @@
                         <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 shadow-lg shadow-blue-900/20">
                             <h3 class="text-lg font-bold text-white mb-2">Company Profile</h3>
                             <p class="text-sm text-white/80 mb-4">Download presentasi profil perusahaan HexaGlass</p>
-                            <a href="{{ asset('PPT_Project_Kel-1.pdf') }}" download class="block w-full bg-white text-blue-600 px-4 py-3 rounded-lg font-semibold text-center hover:bg-gray-100 transition-colors">
-                                Download PDF
+                            <a href="{{ asset('PPT_Project_Kel-1.pdf') }}" download="HexaGlass-Profile.pdf" class="block w-full bg-white text-blue-600 px-4 py-3 rounded-lg font-semibold text-center hover:bg-gray-100 transition-colors">
+                                ⬇️ Download PDF
                             </a>
                         </div>
                     </div>
