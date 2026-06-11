@@ -160,7 +160,7 @@
 
                 <!-- CTA Buttons -->
                 <div class="hidden md:flex items-center space-x-4">
-                    <a href="https://expo.dev/accounts/adhwaa20/projects/hexaglass/builds/a844a4fc-11a9-4108-b7e3-7460ee85f2c3" target="_blank" class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-2 rounded-lg font-semibold transition-smooth">
+                    <a href="{{ route('download') }}" class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-2 rounded-lg font-semibold transition-smooth">
                         Download Aplikasi
                     </a>
                     <a href="{{ route('login') }}" class="text-gray-700 hover:text-green-600 transition-smooth font-semibold">
@@ -175,7 +175,7 @@
                 <a href="#tentang" class="block text-gray-700 hover:text-green-600 py-2">Tentang</a>
                 <a href="#fitur" class="block text-gray-700 hover:text-green-600 py-2">Fitur</a>
                 <a href="#galeri" class="block text-gray-700 hover:text-green-600 py-2">Galeri</a>
-                <a href="https://expo.dev/accounts/adhwaa20/projects/hexaglass/builds/a844a4fc-11a9-4108-b7e3-7460ee85f2c3" target="_blank" class="block bg-gradient-to-r from-green-600 to-green-700 text-white px-4 py-2 rounded-lg font-semibold text-center">
+                <a href="{{ route('download') }}" class="block bg-gradient-to-r from-green-600 to-green-700 text-white px-4 py-2 rounded-lg font-semibold text-center">
                     Download Aplikasi
                 </a>
                 <a href="{{ route('login') }}" class="block text-gray-700 hover:text-green-600 transition-smooth font-semibold text-center py-2">
@@ -201,7 +201,7 @@
             </p>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://expo.dev/accounts/adhwaa20/projects/hexaglass/builds/a844a4fc-11a9-4108-b7e3-7460ee85f2c3" target="_blank" class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-4 rounded-lg font-bold text-lg transition-smooth hover:shadow-2xl hover:glow-green">
+                <a href="{{ route('download') }}" class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-4 rounded-lg font-bold text-lg transition-smooth hover:shadow-2xl hover:glow-green">
                     Download Aplikasi
                 </a>
                 <button onclick="document.getElementById('tentang').scrollIntoView({ behavior: 'smooth' })" class="glass text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-opacity-20 transition-smooth">
@@ -428,7 +428,7 @@
                 Akses sistem monitoring dan manajemen operasional kapan saja melalui aplikasi Hilir Migas. Tingkatkan efisiensi dan transparansi operasional Anda hari ini.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://expo.dev/accounts/adhwaa20/projects/hexaglass/builds/a844a4fc-11a9-4108-b7e3-7460ee85f2c3" target="_blank" class="inline-block bg-white text-green-600 px-10 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition-smooth hover:shadow-2xl">
+                <a href="{{ route('download') }}" class="inline-block bg-white text-green-600 px-10 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition-smooth hover:shadow-2xl">
                     Download Sekarang →
                 </a>
                 <a href="{{ route('login') }}" class="inline-block bg-yellow-400 text-gray-800 px-10 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 transition-smooth hover:shadow-2xl">
@@ -464,7 +464,7 @@
                 <div>
                     <h4 class="text-white font-bold mb-4">Aplikasi</h4>
                     <ul class="space-y-2">
-                        <li><a href="https://expo.dev/accounts/adhwaa20/projects/hexaglass/builds/a844a4fc-11a9-4108-b7e3-7460ee85f2c3" target="_blank" class="hover:text-green-400 transition-smooth">Download Aplikasi</a></li>
+                        <li><a href="{{ route('download') }}" class="hover:text-green-400 transition-smooth">Download Aplikasi</a></li>
                         <li><a href="{{ route('login') }}" class="hover:text-green-400 transition-smooth">Login Dashboard Web</a></li>
                         <li><a href="#" class="hover:text-green-400 transition-smooth">Dokumentasi</a></li>
                     </ul>

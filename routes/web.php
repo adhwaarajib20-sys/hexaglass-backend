@@ -55,6 +55,11 @@ Route::get('/', function () {
     return view('landing');
 })->name('landing');
 
+// Download Page
+Route::get('/download', function () {
+    return view('download');
+})->name('download');
+
 // Redirect root to dashboard if authenticated
 Route::get('/home', function () {
     $user = auth()->user();
