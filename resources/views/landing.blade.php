@@ -506,6 +506,7 @@
             <a href="#fitur">Fitur</a>
             <a href="#operasional">Operasional</a>
             <a href="#galeri">Galeri</a>
+            <a href="/hakcipta" style="color:var(--green-light);">Hak Cipta</a>
         </div>
 
         <div class="nav-actions">
@@ -529,6 +530,7 @@
         <a href="#fitur" @click="mobileMenu=false" style="color:var(--text-secondary);text-decoration:none;font-size:0.92rem;font-weight:500;padding:0.5rem 0;border-bottom:1px solid var(--dark-border);">Fitur</a>
         <a href="#operasional" @click="mobileMenu=false" style="color:var(--text-secondary);text-decoration:none;font-size:0.92rem;font-weight:500;padding:0.5rem 0;border-bottom:1px solid var(--dark-border);">Operasional</a>
         <a href="#galeri" @click="mobileMenu=false" style="color:var(--text-secondary);text-decoration:none;font-size:0.92rem;font-weight:500;padding:0.5rem 0;border-bottom:1px solid var(--dark-border);">Galeri</a>
+        <a href="/hakcipta" @click="mobileMenu=false" style="color:var(--green-light);text-decoration:none;font-size:0.92rem;font-weight:500;padding:0.5rem 0;border-bottom:1px solid var(--dark-border);">Hak Cipta</a>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap;padding-top:0.5rem;">
             <a href="#" class="btn-login" @click.prevent="loginOpen=true;mobileMenu=false">Masuk</a>
             <a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download class="btn-primary">Download APK</a>
@@ -902,7 +904,7 @@
                 <ul>
                     <li><a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download>Download Aplikasi</a></li>
                     <li><a href="#">Dokumentasi</a></li>
-                    <li><a href="/resources/views/hakcipta.blade.php">Hak Cipta</a></li>
+                    <li><a href="/hakcipta">Hak Cipta</a></li>
                     <li><a href="#">FAQ</a></li>
                 </ul>
             </div>
@@ -920,7 +922,7 @@
         <div class="footer-bottom">
             <p>© 2025 Hilir Migas. All Rights Reserved.</p>
             <div class="footer-bottom-links">
-                <a href="#">Hak Cipta</a>
+                <a href="/hakcipta">Hak Cipta</a>
                 <a href="#">Privacy</a>
                 <a href="#">Terms</a>
             </div>
