@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\Operator\AntreanController as OperatorAntrean;
 use App\Http\Controllers\Web\Operator\PengisianController as OperatorPengisian;
 use App\Http\Controllers\Web\Operator\LaporanController as OperatorLaporan;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DownloadController;
 
 // Route Landing Page
 Route::view('/', 'landing');
@@ -20,18 +21,7 @@ Route::view('/', 'landing');
 Route::view('/hakcipta', 'hakcipta');
 
 // Route Download PDF
-Route::get('/download/pdf/{filename}', function ($filename) {
-    $filePath = public_path('img/' . $filename);
-    
-    if (!file_exists($filePath)) {
-        return response()->json(['error' => 'File not found'], 404);
-    }
-    
-    return response()->download($filePath, $filename, [
-        'Content-Type' => 'application/pdf',
-        'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-    ]);
-})->name('download.pdf');
+Route::get('/download/pdf/{filename}', [DownloadController::class, 'pdf'])->name('download.pdf');
 
 // Ultra-simple test
 Route::get('/test', function () {
