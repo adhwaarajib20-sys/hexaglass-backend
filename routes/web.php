@@ -19,6 +19,20 @@ Route::view('/', 'landing');
 // Route Halaman Hak Cipta
 Route::view('/hakcipta', 'hakcipta');
 
+// Route Download PDF
+Route::get('/download/pdf/{filename}', function ($filename) {
+    $filePath = public_path($filename);
+    
+    if (!file_exists($filePath)) {
+        return response()->json(['error' => 'File not found'], 404);
+    }
+    
+    return response()->download($filePath, $filename, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+    ]);
+})->name('download.pdf');
+
 // Ultra-simple test
 Route::get('/test', function () {
     return response()->make('TEST_OK_FROM_LARAVEL', 200, [
