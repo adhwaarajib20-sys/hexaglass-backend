@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hak Cipta - HEXAGLASS</title>
-    <meta name="description" content="Informasi tentang HexaGlass dan hak cipta Hilir Migas">
+    <meta name="description" content="Informasi tentang HexaGlass dan hak cipta PT. MIGAS Hilir Jabar">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
@@ -20,8 +20,8 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <a href="/" class="flex items-center gap-2">
-                    <img src="{{ asset('img/HEXAGLASS.png') }}" alt="HEXAGLASS Logo" class="h-10 w-auto">
-                    <span class="font-bold text-xl tracking-tight text-white hidden sm:block">HEXAGLASS</span>
+                    <img src="{{ asset('img/logo.png') }}" alt="Hilir Migas Logo" class="h-10 w-auto">
+                    <span class="font-bold text-xl tracking-tight text-white hidden sm:block">PT. Migas Hilir Migas</span>
                 </a>
 
                 <!-- Back Button -->
@@ -35,9 +35,9 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="text-center mb-16">
-                <img src="{{ asset('img/logo.png') }}" alt="Hilir Migas Logo" class="h-16 w-auto mx-auto mb-6">
+                <img src="{{ asset('img/HEXAGLASS.png') }}" alt="HEXAGLASS Logo" class="h-16 w-auto mx-auto mb-6">
                 <h1 class="text-4xl sm:text-5xl font-bold text-white mb-2">Hak Cipta</h1>
-                <p class="text-gray-400">Platform Monitoring Operasional Hilir Migas</p>
+                <p class="text-gray-400">Platform Monitoring Operasional PT> Migas Hilir Jabar</p>
             </div>
 
             <!-- Content Grid -->
