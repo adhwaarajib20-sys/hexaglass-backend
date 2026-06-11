@@ -100,7 +100,7 @@
 
                 <!-- CTA Desktop -->
                 <div class="hidden md:flex items-center">
-                    <a href="{{ asset('Migas.apk') }}" download class="bg-gradient-to-r from-[#15803D] to-[#EA580C] hover:from-[#166534] hover:to-[#C2410C] text-white px-6 py-2.5 rounded-full font-semibold text-sm shadow-lg shadow-orange-900/20 hover:shadow-orange-500/30 transition-all duration-300 hover:-translate-y-0.5">
+                    <a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download class="bg-gradient-to-r from-[#15803D] to-[#EA580C] hover:from-[#166534] hover:to-[#C2410C] text-white px-6 py-2.5 rounded-full font-semibold text-sm shadow-lg shadow-orange-900/20 hover:shadow-orange-500/30 transition-all duration-300 hover:-translate-y-0.5">
                         Download APK
                     </a>
                 </div>
@@ -121,7 +121,7 @@
                 <a href="#operasional" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5">Operasional</a>
                 <a href="#galeri" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5">Galeri</a>
                 <div class="pt-4">
-                    <a href="{{ asset('Migas.apk') }}" download class="block w-full text-center bg-gradient-to-r from-[#15803D] to-[#EA580C] text-white px-4 py-3 rounded-lg font-semibold">
+                    <a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download class="block w-full text-center bg-gradient-to-r from-[#15803D] to-[#EA580C] text-white px-4 py-3 rounded-lg font-semibold">
                         Download APK
                     </a>
                 </div>
@@ -151,7 +151,7 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="{{ asset('Migas.apk') }}" download class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#15803D] to-[#EA580C] hover:shadow-lg hover:shadow-orange-500/25 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:-translate-y-1">
+                    <a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#15803D] to-[#EA580C] hover:shadow-lg hover:shadow-orange-500/25 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:-translate-y-1">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         Download Migas.apk
                     </a>
@@ -479,7 +479,7 @@
                         <h3 class="text-2xl font-bold text-white">Download Langsung</h3>
                     </div>
                     <p class="text-gray-300 mb-6">Unduh file APK secara langsung dan instal di perangkat Android Anda</p>
-                    <a href="{{ asset('Migas.apk') }}" download class="block w-full bg-gradient-to-r from-[#15803D] to-[#22C55E] hover:from-[#166534] hover:to-[#16A34A] text-white px-6 py-4 rounded-xl font-semibold text-center transition-all duration-300 hover:shadow-lg hover:shadow-green-500/25">
+                    <a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download class="block w-full bg-gradient-to-r from-[#15803D] to-[#22C55E] hover:from-[#166534] hover:to-[#16A34A] text-white px-6 py-4 rounded-xl font-semibold text-center transition-all duration-300 hover:shadow-lg hover:shadow-green-500/25">
                         Download APK (Direct)
                     </a>
                     <p class="text-xs text-gray-400 mt-4">Ukuran: ~45 MB | Kompatibel dengan Android 8.0+</p>
@@ -538,7 +538,7 @@
 
             <!-- CTA Button -->
             <div class="text-center mt-12" data-aos="fade-up" data-aos-delay="300">
-                <a href="{{ asset('Migas.apk') }}" download class="inline-flex items-center gap-3 bg-gradient-to-r from-[#15803D] to-[#EA580C] hover:from-[#166534] hover:to-[#C2410C] text-white px-12 py-5 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:-translate-y-1">
+            <a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download class="inline-flex items-center gap-3 bg-gradient-to-r from-[#15803D] to-[#EA580C] hover:from-[#166534] hover:to-[#C2410C] text-white px-12 py-5 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:-translate-y-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     Download Aplikasi Sekarang
                 </a>
@@ -573,7 +573,7 @@
                 <div>
                     <h4 class="text-white font-semibold mb-4">Aplikasi</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ asset('Migas.apk') }}" download class="text-gray-400 hover:text-white transition-colors">Download Aplikasi</a></li>
+                        <li><a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download class="text-gray-400 hover:text-white transition-colors">Download Aplikasi</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Dokumentasi</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
                     </ul>

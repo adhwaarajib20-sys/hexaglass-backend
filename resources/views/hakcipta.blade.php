@@ -110,13 +110,25 @@
                         </div>
                     </div>
 
-                    <!-- Download Card -->
-                    <div class="mt-6 bg-gradient-to-br from-green-600 to-orange-600 rounded-2xl p-6 shadow-lg shadow-orange-900/20">
-                        <h3 class="text-lg font-bold text-white mb-2">Download Aplikasi</h3>
-                        <p class="text-sm text-white/80 mb-4">Dapatkan aplikasi Hilir Migas untuk pengalaman terbaik</p>
-                        <a href="{{ asset('Migas.apk') }}" download class="block w-full bg-white text-green-600 px-4 py-3 rounded-lg font-semibold text-center hover:bg-gray-100 transition-colors">
-                            Download APK
-                        </a>
+                    <!-- Download Cards -->
+                    <div class="space-y-4">
+                        <!-- APK Download -->
+                        <div class="bg-gradient-to-br from-green-600 to-orange-600 rounded-2xl p-6 shadow-lg shadow-orange-900/20">
+                            <h3 class="text-lg font-bold text-white mb-2">Download Aplikasi</h3>
+                            <p class="text-sm text-white/80 mb-4">Dapatkan aplikasi Hilir Migas untuk pengalaman terbaik</p>
+                            <a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download class="block w-full bg-white text-green-600 px-4 py-3 rounded-lg font-semibold text-center hover:bg-gray-100 transition-colors">
+                                Download APK
+                            </a>
+                        </div>
+
+                        <!-- PPT Download -->
+                        <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 shadow-lg shadow-blue-900/20">
+                            <h3 class="text-lg font-bold text-white mb-2">Company Profile</h3>
+                            <p class="text-sm text-white/80 mb-4">Download presentasi profil perusahaan HexaGlass</p>
+                            <a href="{{ asset('PPT_Project_Kel-1.pdf') }}" download class="block w-full bg-white text-blue-600 px-4 py-3 rounded-lg font-semibold text-center hover:bg-gray-100 transition-colors">
+                                Download PDF
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
