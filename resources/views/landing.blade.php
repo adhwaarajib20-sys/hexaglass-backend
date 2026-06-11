@@ -132,7 +132,7 @@
     <!-- ================= HERO SECTION ================= -->
     <section id="beranda" class="relative min-h-screen flex items-center overflow-hidden pt-16">
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('img/hilirmigas.jpg') }}" alt="Hilir Migas Operasional" class="w-full h-full object-cover">
+            <img src="{{ asset('img/hilirmigas.jpg.jpeg') }}" alt="Hilir Migas Operasional" class="w-full h-full object-cover">
             <div class="hero-overlay absolute inset-0"></div>
         </div>
         
@@ -198,7 +198,7 @@
                 <div data-aos="fade-left" data-aos-duration="1000" class="relative group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-[#15803D] to-[#EA580C] rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-500"></div>
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                        <img src="{{ asset('img/parkir.jpg') }}" alt="Fasilitas Hilir Migas" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105">
+                        <img src="{{ asset('img/parkir.jpg.jpeg') }}" alt="Fasilitas Hilir Migas" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105">
                     </div>
                 </div>
             </div>
@@ -280,7 +280,7 @@
                 <div data-aos="fade-right" data-aos-duration="1000" class="relative group order-2 lg:order-1">
                     <div class="absolute -inset-1 bg-gradient-to-r from-[#15803D] to-[#EA580C] rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-500"></div>
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                        <img src="{{ asset('img/truk.jpg') }}" alt="Distribusi Hilir Migas" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105">
+                        <img src="{{ asset('img/truk.jpg.jpeg') }}" alt="Distribusi Hilir Migas" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105">
                     </div>
                 </div>
 
@@ -325,7 +325,7 @@
                 <div data-aos="fade-left" data-aos-duration="1000" class="relative group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-[#15803D] to-[#EA580C] rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-500"></div>
                     <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                        <img src="{{ asset('img/teknisi.jpg') }}" alt="Teknisi Monitoring" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105">
+                        <img src="{{ asset('img/teknisi.jpg.jpeg') }}" alt="Teknisi Monitoring" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105">
                     </div>
                 </div>
             </div>
@@ -344,7 +344,7 @@
             <!-- Grid Galeri -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 @php
-                    $galleryImages = ['truk.jpg', 'teknisi.jpg', 'parkir.jpg', 'hilirmigas.jpg', 'gas.jpg', 'demosistem.jpg', 'fotbar.jpg', 'ptmigashilirjabar.jpg'];
+                    $galleryImages = ['truk.jpg.jpeg', 'teknisi.jpg.jpeg', 'parkir.jpg.jpeg', 'hilirmigas.jpg.jpeg', 'gas.jpg.jpeg', 'demosistem.jpg.jpeg', 'fotbar.jpg.jpeg', 'ptmigashilirjabar.jpg.jpeg'];
                 @endphp
                 @foreach($galleryImages as $img)
                 <div data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}" class="relative group rounded-xl overflow-hidden cursor-pointer" @click="lightboxOpen = true; lightboxImage = '{{ asset('img/' . $img) }}'">
