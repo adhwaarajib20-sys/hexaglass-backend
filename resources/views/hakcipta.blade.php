@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hak Cipta - Hilir Migas</title>
+    <title>Hak Cipta - HEXAGLASS</title>
     <meta name="description" content="Informasi tentang HexaGlass dan hak cipta Hilir Migas">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -20,8 +20,8 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <a href="/" class="flex items-center gap-2">
-                    <img src="{{ asset('img/logo.png') }}" alt="Hilir Migas Logo" class="h-10 w-auto">
-                    <span class="font-bold text-xl tracking-tight text-white hidden sm:block">Hilir Migas</span>
+                    <img src="{{ asset('img/HEXAGLASS.png') }}" alt="HEXAGLASS Logo" class="h-10 w-auto">
+                    <span class="font-bold text-xl tracking-tight text-white hidden sm:block">HEXAGLASS</span>
                 </a>
 
                 <!-- Back Button -->
