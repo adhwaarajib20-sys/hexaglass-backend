@@ -21,7 +21,7 @@ Route::view('/hakcipta', 'hakcipta');
 
 // Route Download PDF
 Route::get('/download/pdf/{filename}', function ($filename) {
-    $filePath = public_path($filename);
+    $filePath = public_path('img/' . $filename);
     
     if (!file_exists($filePath)) {
         return response()->json(['error' => 'File not found'], 404);
