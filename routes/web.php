@@ -50,10 +50,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Redirect root ke login
+// Landing Page
 Route::get('/', function () {
+    return view('landing');
+})->name('landing');
+
+// Redirect root to dashboard if authenticated
+Route::get('/home', function () {
+    $user = auth()->user();
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->role === 'operator') {
+        return redirect()->route('operator.dashboard');
+    }
     return redirect()->route('login');
-});
+})->middleware('auth')->name('home');
 
 // Auth routes (Breeze)
 require __DIR__.'/auth.php';
