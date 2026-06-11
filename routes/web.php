@@ -12,6 +12,13 @@ use App\Http\Controllers\Web\Operator\AntreanController as OperatorAntrean;
 use App\Http\Controllers\Web\Operator\PengisianController as OperatorPengisian;
 use App\Http\Controllers\Web\Operator\LaporanController as OperatorLaporan;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+
+// Route Landing Page
+Route::view('/', 'landing');
+
+// Route Halaman Hak Cipta
+Route::view('/hakcipta', 'hakcipta');
 
 // Ultra-simple test
 Route::get('/test', function () {
@@ -54,11 +61,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/', function () {
     return view('landing');
 })->name('landing');
-
-// Download Page
-Route::get('/download', function () {
-    return view('download');
-})->name('download');
 
 // Redirect root to dashboard if authenticated
 Route::get('/home', function () {
