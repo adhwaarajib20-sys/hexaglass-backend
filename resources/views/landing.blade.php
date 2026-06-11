@@ -902,7 +902,7 @@
                 <ul>
                     <li><a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download>Download Aplikasi</a></li>
                     <li><a href="#">Dokumentasi</a></li>
-                    <li><a href="#">Hak Cipta</a></li>
+                    <li><a href="/resources/views/hakcipta.blade.php">Hak Cipta</a></li>
                     <li><a href="#">FAQ</a></li>
                 </ul>
             </div>
