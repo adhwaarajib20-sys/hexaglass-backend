@@ -12,7 +12,6 @@ use App\Http\Controllers\Web\Operator\AntreanController as OperatorAntrean;
 use App\Http\Controllers\Web\Operator\PengisianController as OperatorPengisian;
 use App\Http\Controllers\Web\Operator\LaporanController as OperatorLaporan;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 
 // Route Landing Page
 Route::view('/', 'landing');
