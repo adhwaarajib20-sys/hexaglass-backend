@@ -20,6 +20,9 @@ Route::view('/', 'landing');
 // Route Halaman Hak Cipta
 Route::view('/hakcipta', 'hakcipta');
 
+// Route Login Page
+Route::view('/auth/login', 'auth.login')->name('login');
+
 // Route Download PDF
 Route::get('/download/pdf/{filename}', [DownloadController::class, 'pdf'])->name('download.pdf');
 

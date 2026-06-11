@@ -510,7 +510,7 @@
         </div>
 
         <div class="nav-actions">
-            <a href="#" class="btn-login" @click.prevent="loginOpen = true">
+            <a href="/auth/login" class="btn-login">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
                 Masuk
             </a>
@@ -532,7 +532,7 @@
         <a href="#galeri" @click="mobileMenu=false" style="color:var(--text-secondary);text-decoration:none;font-size:0.92rem;font-weight:500;padding:0.5rem 0;border-bottom:1px solid var(--dark-border);">Galeri</a>
         <a href="/hakcipta" @click="mobileMenu=false" style="color:var(--green-light);text-decoration:none;font-size:0.92rem;font-weight:500;padding:0.5rem 0;border-bottom:1px solid var(--dark-border);">Hak Cipta</a>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap;padding-top:0.5rem;">
-            <a href="#" class="btn-login" @click.prevent="loginOpen=true;mobileMenu=false">Masuk</a>
+            <a href="/auth/login" class="btn-login">Masuk</a>
             <a href="https://github.com/adhwaarajib20-sys/hexaglass-backend/releases/download/v.1.0.0/Migas.apk" download class="btn-primary">Download APK</a>
         </div>
     </div>
@@ -914,7 +914,7 @@
                 <ul>
                     <li><span>info@hilirmigas.id</span></li>
                     <li><span>Support: 24/7</span></li>
-                    <li><a href="#" @click.prevent="loginOpen=true">Login Dashboard</a></li>
+                    <li><a href="/auth/login">Login Dashboard</a></li>
                 </ul>
             </div>
         </div>
