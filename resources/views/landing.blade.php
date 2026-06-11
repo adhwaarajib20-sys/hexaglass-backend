@@ -797,41 +797,6 @@
     </div>
 </section>
 
-
-<!-- ===== TESTIMONI ===== -->
-<section class="testi-bg">
-    <div class="container">
-        <div class="text-center" data-aos="fade-up">
-            <span class="section-label label-green">Testimoni</span>
-            <h2 class="section-title">Apa Kata Mereka?</h2>
-        </div>
-        <div class="testi-grid">
-            <div class="testi-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="testi-header">
-                    <div class="testi-avatar" style="background:linear-gradient(135deg,var(--green-deep),var(--green-mid));">A</div>
-                    <div><div class="testi-name">Andi Pratama</div><div class="testi-role">Manajer Operasional</div></div>
-                </div>
-                <p>"Sistem monitoring real-time sangat membantu kami dalam mengelola distribusi gas dengan lebih efisien dan transparan."</p>
-            </div>
-            <div class="testi-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="testi-header">
-                    <div class="testi-avatar" style="background:linear-gradient(135deg,var(--orange-deep),var(--orange-mid));">S</div>
-                    <div><div class="testi-name">Siti Rahma</div><div class="testi-role">Supervisor Lapangan</div></div>
-                </div>
-                <p>"Fitur pelaporan digital sangat mempermudah pekerjaan admin, tidak perlu rekap manual lagi. Hemat waktu!"</p>
-            </div>
-            <div class="testi-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="testi-header">
-                    <div class="testi-avatar" style="background:linear-gradient(135deg,#1e3a5f,#3b82f6);">R</div>
-                    <div><div class="testi-name">Rudi Hartono</div><div class="testi-role">Teknisi Maintenance</div></div>
-                </div>
-                <p>"Aplikasi mobile-nya sangat responsif, memudahkan saya untuk cek jadwal inspeksi langsung dari lapangan."</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-
 <!-- ===== DOWNLOAD ===== -->
 <section class="dl-section">
     <div class="container dl-content">
